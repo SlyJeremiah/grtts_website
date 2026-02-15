@@ -115,33 +115,41 @@ USE_TZ = True
 # ========== BACKBLAZE B2 CONFIGURATION ==========
 # Get these from your Backblaze dashboard
 if not DEBUG:
-    # Production: Use Backblaze B2
+    # Production: Use Backblaze B2 with private bucket and signed URLs
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     
     # Your Backblaze credentials
-    AWS_ACCESS_KEY_ID = env('B2_KEY_ID')  # This is your Key ID (starts with K005)
-    AWS_SECRET_ACCESS_KEY = env('B2_APPLICATION_KEY')  # Your application key
+    AWS_ACCESS_KEY_ID = env('B2_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = env('B2_APPLICATION_KEY')
     AWS_STORAGE_BUCKET_NAME = env('B2_BUCKET_NAME', default='grtts-media')
     
-    # Backblaze B2 endpoint (adjust region if needed)
-    # Common regions: us-west-002, us-east-005, eu-central-003
-    AWS_S3_ENDPOINT_URL = 'https://s3.us-west-002.backblazeb2.com'
-    AWS_S3_REGION_NAME = 'us-west-002'
+    # Backblaze B2 endpoint - IMPORTANT: Use the correct region from your auth output
+    # From your earlier auth, you're in us-east-005
+    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='https://s3.us-east-005.backblazeb2.com')
+    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-005')
     
     # S3-compatible settings
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_ADDRESSING_STYLE = 'virtual'
     
-    # Make files publicly accessible
-    AWS_QUERYSTRING_AUTH = False
+    # ===== CRITICAL SETTINGS FOR PRIVATE BUCKET =====
+    # Enable signed URLs (required for private buckets)
+    AWS_QUERYSTRING_AUTH = True
+    # How long the signed URLs are valid (in seconds) - default 3600 (1 hour)
+    AWS_QUERYSTRING_EXPIRE = 3600
+    
+    # Don't set ACL for private bucket
+    AWS_DEFAULT_ACL = None
+    
+    # Prevent file overwriting
     AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = 'public-read'
     
     # Optional: Custom domain if you set up one
     # AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.backblazeb2.com'
     
-    # Media URL
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+    # Media URL - For private buckets, we don't set a static MEDIA_URL
+    # The storage backend will generate signed URLs automatically
+    MEDIA_URL = None
 else:
     # Development: Use local storage
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
