@@ -2,6 +2,8 @@ import os
 import dj_database_url
 from pathlib import Path
 import environ
+import pymysql
+pymysql.install_as_MySQLdb()
 
 # Initialize environ
 env = environ.Env(
@@ -20,14 +22,15 @@ SECRET_KEY = env('SECRET_KEY', default='your-secret-key-here-change-this-in-prod
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=False)
 
-# Allowed hosts - UPDATE THESE WITH YOUR RENDER DOMAIN
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
+# Allowed hosts - Updated for Vercel
+ALLOWED_HOSTS = [
+    '.vercel.app',
+    '.now.sh',
     'localhost',
     '127.0.0.1',
-    '.onrender.com',
     'grtts.co.zw',
     'www.grtts.co.zw',
-])
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -37,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Your apps
     'main',
     'blog',
-    
+
     # For file storage (storages app)
     'storages',
 ]
@@ -81,7 +84,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'grtts_project.wsgi.application'
 
-# Database - Configure for Render PostgreSQL
+# Database - Configure for Vercel (PostgreSQL recommended)
 DATABASES = {
     'default': dj_database_url.config(
         default=env('DATABASE_URL', default='sqlite:///db.sqlite3'),
@@ -112,37 +115,8 @@ TIME_ZONE = 'Africa/Harare'
 USE_I18N = True
 USE_TZ = True
 
-# ========== BACKBLAZE B2 CONFIGURATION ==========
-# Get these from your Backblaze dashboard
-if not DEBUG:
-    # Production: Use Backblaze B2
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    
-    # Your Backblaze credentials
-    AWS_ACCESS_KEY_ID = env('B2_KEY_ID')  # This is your Key ID (starts with K005)
-    AWS_SECRET_ACCESS_KEY = env('B2_APPLICATION_KEY')  # Your application key
-    AWS_STORAGE_BUCKET_NAME = env('B2_BUCKET_NAME', default='grtts-media')
-    
-    # Backblaze B2 endpoint (adjust region if needed)
-    # Common regions: us-west-002, us-east-005, eu-central-003
-    AWS_S3_ENDPOINT_URL = 'https://s3.us-west-002.backblazeb2.com'
-    AWS_S3_REGION_NAME = 'us-west-002'
-    
-    # S3-compatible settings
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
-    AWS_S3_ADDRESSING_STYLE = 'virtual'
-    
-    # Make files publicly accessible
-    AWS_QUERYSTRING_AUTH = False
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_DEFAULT_ACL = 'public-read'
-    
-    # Optional: Custom domain if you set up one
-    # AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.backblazeb2.com'
-    
-    # Media URL
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
-else:
+# ========== FILE STORAGE CONFIGURATION ==========
+if DEBUG:
     # Development: Use local storage
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     MEDIA_URL = '/media/'
@@ -154,7 +128,35 @@ else:
     os.makedirs(os.path.join(MEDIA_ROOT, 'courses'), exist_ok=True)
     os.makedirs(os.path.join(MEDIA_ROOT, 'testimonials'), exist_ok=True)
     os.makedirs(os.path.join(MEDIA_ROOT, 'locations'), exist_ok=True)
-# ========== END BACKBLAZE CONFIGURATION ==========
+else:
+    # Production: Use Backblaze B2 with private bucket and signed URLs
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    
+    # Your Backblaze credentials
+    AWS_ACCESS_KEY_ID = env('B2_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = env('B2_APPLICATION_KEY')
+    AWS_STORAGE_BUCKET_NAME = env('B2_BUCKET_NAME', default='grtts-media')
+    
+    # Backblaze B2 endpoint
+    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='https://s3.us-east-005.backblazeb2.com')
+    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-005')
+    
+    # S3-compatible settings
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_ADDRESSING_STYLE = 'virtual'
+    
+    # Settings for private bucket with signed URLs
+    AWS_QUERYSTRING_AUTH = True
+    AWS_QUERYSTRING_EXPIRE = 3600  # URLs valid for 1 hour
+    AWS_DEFAULT_ACL = None
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    
+    # Media URL is not set - backend generates signed URLs
+    MEDIA_URL = None
+# ========== END FILE STORAGE CONFIGURATION ==========
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
@@ -194,31 +196,38 @@ DEFAULT_FROM_EMAIL = 'GRTTS <info@grtts.co.zw>'
 # Admin email notifications
 ADMIN_EMAILS = ['shanyaslym19@gmail.com']
 
-# Site URL for email links - UPDATE WITH YOUR RENDER URL
-SITE_URL = env('SITE_URL', default='https://your-app.onrender.com')
+# Site URL for email links
+SITE_URL = env('SITE_URL', default='https://grtts-website.vercel.app')
 
-# Security Settings for Production
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
-    'https://your-app.onrender.com',
-    'http://your-app.onrender.com',
-    'https://grtts.co.zw',
-    'http://grtts.co.zw',
-])
-
-# Production security settings
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
-SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', default=True)
-CSRF_COOKIE_SECURE = env.bool('CSRF_COOKIE_SECURE', default=True)
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
+# ========== VERCEL SECURITY SETTINGS ==========
+if os.environ.get('VERCEL'):
+    # Security settings for Vercel
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    
+    # CSRF trusted origins
+    CSRF_TRUSTED_ORIGINS = [
+        'https://*.vercel.app',
+        'https://*.now.sh',
+        'https://grtts.co.zw',
+        'https://www.grtts.co.zw',
+    ]
+else:
+    # Local development security settings
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+# ========== END VERCEL SETTINGS ==========
 
 # Payment Gateway Settings
 PAYNOW_INTEGRATION_ID = env('PAYNOW_INTEGRATION_ID', default='')
 PAYNOW_INTEGRATION_KEY = env('PAYNOW_INTEGRATION_KEY', default='')
 
-ECOCASH_API_KEY = env('ECOCASH_API_KEY', default='')
 ECOCASH_API_SECRET = env('ECOCASH_API_SECRET', default='')
 
 ONEMONEY_MERCHANT_CODE = env('ONEMONEY_MERCHANT_CODE', default='')
