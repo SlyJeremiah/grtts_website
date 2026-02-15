@@ -1,0 +1,187 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}{{ location.name }} - GRTTS Locations{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gallery-image {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    .gallery-image:hover {
+        transform: scale(1.05);
+    }
+    .main-image {
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .thumbnail {
+        height: 80px;
+        width: 80px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+    .thumbnail:hover, .thumbnail.active {
+        opacity: 1;
+        border: 2px solid #ffd966;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'locations' %}">Locations</a></li>
+            <li class="breadcrumb-item active">{{ location.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1 style="color: #2d5a3b;">{{ location.name }}</h1>
+            
+            <!-- Location Type Badges -->
+            <div class="mb-3">
+                {% if location.is_training_center %}
+                <span class="badge me-2" style="background-color: #ffd966; color: #2d5a3b; font-size: 1rem;">
+                    <i class="fas fa-graduation-cap"></i> Training Center
+                </span>
+                {% endif %}
+                {% if location.is_deployment_location %}
+                <span class="badge me-2" style="background-color: #2d5a3b; color: white; font-size: 1rem;">
+                    <i class="fas fa-shield-alt"></i> Deployment Site
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- Image Gallery Section -->
+            {% with images=location.get_all_images %}
+            {% if images %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0"><i class="fas fa-images"></i> Photo Gallery</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Main Image Display -->
+                    <div class="text-center mb-4">
+                        <img id="mainImage" src="{% if images.0.image %}{{ images.0.image.url }}{% endif %}" 
+                             alt="{{ location.name }}" 
+                             class="img-fluid main-image" 
+                             style="max-height: 400px; width: 100%; object-fit: cover;">
+                    </div>
+                    
+                    <!-- Thumbnail Gallery -->
+                    {% if images|length > 1 %}
+                    <div class="row g-2">
+                        {% for image in images %}
+                        <div class="col-2">
+                            <img src="{{ image.image.url }}" 
+                                 alt="{{ image.caption|default:location.name }}"
+                                 class="thumbnail {% if forloop.first %}active{% endif %}"
+                                 onclick="document.getElementById('mainImage').src='{{ image.image.url }}'; 
+                                          document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('active'));
+                                          this.classList.add('active');">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Description -->
+            {% if location.description %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0"><i class="fas fa-info-circle"></i> About {{ location.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <p>{{ location.description|linebreaks }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Quick Info Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h5 class="mb-0"><i class="fas fa-map-pin"></i> Location Info</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-tag" style="color: #2d5a3b;"></i> 
+                            <strong>Type:</strong> 
+                            {% if location.is_training_center and location.is_deployment_location %}
+                                Training Center & Deployment Site
+                            {% elif location.is_training_center %}
+                                Training Center Only
+                            {% elif location.is_deployment_location %}
+                                Deployment Site Only
+                            {% endif %}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-calendar" style="color: #2d5a3b;"></i> 
+                            <strong>Added:</strong> {{ location.created_at|date:"F j, Y" }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-sync" style="color: #2d5a3b;"></i> 
+                            <strong>Last Updated:</strong> {{ location.updated_at|date:"F j, Y" }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Card -->
+            <div class="card shadow-sm mb-4" style="background-color: #f4f7f2;">
+                <div class="card-body">
+                    <h5><i class="fas fa-phone-alt" style="color: #2d5a3b;"></i> Get in Touch</h5>
+                    <p>Interested in training at {{ location.name }} or need deployment services?</p>
+                    <a href="{% url 'contact' %}?location={{ location.name }}" class="btn w-100" style="background-color: #2d5a3b; color: white;">
+                        <i class="fas fa-envelope"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+
+            <!-- Related Locations -->
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Other Locations</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for other in locations|slice:":5" %}
+                        {% if other.id != location.id %}
+                        <li class="mb-2">
+                            <a href="{% url 'location_detail' other.id %}" class="text-decoration-none" style="color: #2d5a3b;">
+                                <i class="fas fa-chevron-right"></i> {{ other.name }}
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    <a href="{% url 'locations' %}" class="btn btn-outline-success btn-sm w-100">View All Locations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Simple JavaScript for Gallery -->
+<script>
+function changeMainImage(imageUrl, element) {
+    document.getElementById('mainImage').src = imageUrl;
+    document.querySelectorAll('.thumbnail').forEach(img => img.classList.remove('active'));
+    element.classList.add('active');
+}
+</script>
+{% endblock %}

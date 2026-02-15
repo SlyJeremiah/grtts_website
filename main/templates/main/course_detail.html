@@ -1,0 +1,69 @@
+{% extends 'main/base.html' %}
+
+{% block title %}{{ course.title }} - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'courses' %}">Courses</a></li>
+            <li class="breadcrumb-item active">{{ course.title }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h2 class="mb-0">{{ course.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Duration:</strong> {{ course.duration }}</p>
+                            {% if course.intake_dates %}
+                            <p><strong>Intake:</strong> {{ course.intake_dates }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            {% if course.price %}
+                            <p><strong>Price:</strong> ${{ course.price }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="course-description">
+                        {{ course.description|linebreaks }}
+                    </div>
+                    
+                    {% if course.course_type == 'TRACKING' %}
+                    <div class="mt-4 p-3" style="background-color: #f4f7f2; border-left: 4px solid #ffd966;">
+                        <h5>What to Bring:</h5>
+                        <ul>
+                            <li>Toiletries</li>
+                            <li>Sunhat and rain gear</li>
+                            <li>Neutral colour clothing</li>
+                            <li>Sleeping bag/blanket</li>
+                            <li>Face mask</li>
+                            <li>Personal medical supplies</li>
+                        </ul>
+                        <p><small>*Accommodation in tents provided</small></p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Interested in this course?</h5>
+                    <p>Contact us for more information or to register.</p>
+                    <a href="{% url 'contact' %}" class="btn w-100 mb-2" style="background-color: #2d5a3b; color: white;">Contact Us</a>
+                    <a href="{% url 'courses' %}" class="btn w-100" style="background-color: #ffd966; color: #2d5a3b;">View All Courses</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

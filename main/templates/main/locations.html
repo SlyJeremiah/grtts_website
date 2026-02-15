@@ -1,0 +1,203 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Training Locations - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5" style="color: #2d5a3b;">Our Training & Deployment Locations</h1>
+    
+    <!-- Filter Info -->
+    {% if current_filter %}
+    <div class="alert alert-info mb-4">
+        Showing: <strong>{{ current_filter|title }} Training Center</strong>
+        <a href="{% url 'locations' %}" class="float-end">Clear Filter</a>
+    </div>
+    {% endif %}
+    
+    <!-- Main Training Centres -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4" style="color: #2d5a3b;">Main Training Centres</h3>
+        </div>
+        {% for location in training_centers %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <a href="{% url 'location_detail' location.id %}" class="text-decoration-none">
+                    {% if location.main_image %}
+                    <img src="{{ location.main_image.url }}" class="card-img-top" alt="{{ location.name }}" style="height: 200px; object-fit: cover;">
+                    {% elif location.gallery_images.first %}
+                    <img src="{{ location.gallery_images.first.image.url }}" class="card-img-top" alt="{{ location.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f4f7f2;">
+                        <div class="text-center">
+                            <i class="fas fa-map-marker-alt fa-4x mb-2" style="color: #2d5a3b;"></i>
+                            <p class="text-muted mb-0">{{ location.name }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <a href="{% url 'location_detail' location.id %}" class="text-decoration-none" style="color: inherit;">
+                        <h4>{{ location.name }}</h4>
+                    </a>
+                    {% if location.description %}
+                    <p>{{ location.description|truncatewords:30 }}</p>
+                    {% endif %}
+                    <div class="mt-2">
+                        <span class="badge" style="background-color: #ffd966; color: #2d5a3b;">Training Center</span>
+                        {% if location.is_deployment_location %}
+                        <span class="badge" style="background-color: #2d5a3b; color: white;">Deployment Site</span>
+                        {% endif %}
+                        {% with image_count=location.gallery_images.count %}
+                            {% if location.main_image %}
+                                {% with total=image_count|add:"1" %}
+                                <span class="badge bg-info text-white">
+                                    <i class="fas fa-images"></i> {{ total }} Photo{{ total|pluralize }}
+                                </span>
+                                {% endwith %}
+                            {% elif image_count > 0 %}
+                                <span class="badge bg-info text-white">
+                                    <i class="fas fa-images"></i> {{ image_count }} Photo{{ image_count|pluralize }}
+                                </span>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'location_detail' location.id %}" class="btn btn-sm" style="background-color: #2d5a3b; color: white;">
+                        View Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No training centers found.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Deployment Sites (Non-Training Locations) -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4" style="color: #2d5a3b;">Deployment Sites</h3>
+            <p class="text-muted mb-4">These locations are primarily for ranger deployment and management services.</p>
+        </div>
+        
+        {% for location in deployment_sites %}
+        {% if not location.is_training_center %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <a href="{% url 'location_detail' location.id %}" class="text-decoration-none">
+                    {% if location.main_image %}
+                    <img src="{{ location.main_image.url }}" class="card-img-top" alt="{{ location.name }}" style="height: 150px; object-fit: cover;">
+                    {% elif location.gallery_images.first %}
+                    <img src="{{ location.gallery_images.first.image.url }}" class="card-img-top" alt="{{ location.name }}" style="height: 150px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 150px; background: linear-gradient(135deg, #2d5a3b20 0%, #1e3c2c20 100%);">
+                        <div class="text-center">
+                            <i class="fas fa-tree fa-3x mb-2" style="color: #2d5a3b;"></i>
+                        </div>
+                    </div>
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <a href="{% url 'location_detail' location.id %}" class="text-decoration-none" style="color: inherit;">
+                        <h5>{{ location.name }}</h5>
+                    </a>
+                    {% if location.description %}
+                    <p class="small text-muted">{{ location.description|truncatewords:15 }}</p>
+                    {% endif %}
+                    <span class="badge" style="background-color: #2d5a3b; color: white;">Deployment Site</span>
+                    {% with image_count=location.gallery_images.count %}
+                        {% if location.main_image %}
+                            <span class="badge bg-info text-white ms-1">
+                                <i class="fas fa-images"></i> {{ image_count|add:"1" }}
+                            </span>
+                        {% elif image_count > 0 %}
+                            <span class="badge bg-info text-white ms-1">
+                                <i class="fas fa-images"></i> {{ image_count }}
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No deployment sites listed yet.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- All Locations Grid View -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0">All Locations</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for location in locations %}
+                        <div class="col-md-2 col-4 mb-3">
+                            <a href="{% url 'location_detail' location.id %}" class="text-decoration-none">
+                                <div class="text-center p-2 border rounded" style="background-color: #f8f9fa;">
+                                    {% if location.main_image %}
+                                    <img src="{{ location.main_image.url }}" alt="{{ location.name }}" class="rounded-circle mb-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% elif location.gallery_images.first %}
+                                    <img src="{{ location.gallery_images.first.image.url }}" alt="{{ location.name }}" class="rounded-circle mb-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                    <i class="fas fa-map-marker-alt fa-2x mb-2" style="color: #2d5a3b;"></i>
+                                    {% endif %}
+                                    <div><strong>{{ location.name }}</strong></div>
+                                    <div class="small">
+                                        {% if location.is_training_center %}
+                                        <span class="badge bg-warning text-dark">Training</span>
+                                        {% endif %}
+                                        {% if location.is_deployment_location %}
+                                        <span class="badge bg-success">Deployment</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Information Card -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm" style="background-color: #f4f7f2;">
+                <div class="card-body">
+                    <h4 class="mb-3" style="color: #2d5a3b;">About Our Locations</h4>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p>We have our main training centres in <strong>Gweru</strong> and <strong>Victoria Falls</strong>. We also deploy our expert Sergeants and Corporals on site in different wildlife properties to manage and assist supervising existing scouts and rangers on the ground.</p>
+                            <p>Our deployment locations span across private and community-owned wildlife areas, covering nearly 45,000 hectares of protected land.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-white p-3 rounded">
+                                <h5><i class="fas fa-info-circle" style="color: #2d5a3b;"></i> Quick Facts</h5>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> 5+ Major Locations</li>
+                                    <li><i class="fas fa-check text-success"></i> 45,000ha Protected</li>
+                                    <li><i class="fas fa-check text-success"></i> Training & Deployment</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

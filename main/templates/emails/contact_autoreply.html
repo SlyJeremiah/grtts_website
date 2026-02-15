@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #2d5a3b; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .signature { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+        .social { text-align: center; margin-top: 20px; }
+        .social a { display: inline-block; margin: 0 10px; color: #2d5a3b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Thank You for Contacting GRTTS</h2>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{ name }},</p>
+            
+            <p>Thank you for reaching out to <strong>Game Ranger and Tracker Training Specialist (GRTTS)</strong>. We have received your message and appreciate your interest in our programs and services.</p>
+            
+            <p>Our team will review your inquiry and get back to you within 24-48 hours during business days. If your matter is urgent, please feel free to contact us directly:</p>
+            
+            <ul>
+                <li><strong>Phone:</strong> +263 781 603 802</li>
+                <li><strong>WhatsApp:</strong> +267 388 661 234</li>
+                <li><strong>Email:</strong> info@grtts.co.zw</li>
+            </ul>
+            
+            <p>In the meantime, you might find helpful information on our website:</p>
+            <ul>
+                <li><a href="{{ site_url }}/courses/">View our Training Programs</a></li>
+                <li><a href="{{ site_url }}/locations/">Our Training Locations</a></li>
+                <li><a href="{{ site_url }}/blog/">Read News & Updates</a></li>
+            </ul>
+            
+            <div class="signature">
+                <p>Best regards,<br>
+                <strong>The GRTTS Team</strong><br>
+                <em>Training That Saves Lives</em></p>
+            </div>
+            
+            <div class="social">
+                <a href="#">Facebook</a> |
+                <a href="#">Twitter</a> |
+                <a href="#">LinkedIn</a> |
+                <a href="#">Instagram</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

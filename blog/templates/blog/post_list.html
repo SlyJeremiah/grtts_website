@@ -1,0 +1,157 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}News & Updates - GRTTS Blog{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="mb-4" style="color: #2d5a3b;">News & Updates</h1>
+            
+            <!-- Search Bar -->
+            <form method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search articles..." value="{{ search_query|default:'' }}">
+                    <button class="btn" type="submit" style="background-color: #2d5a3b; color: white;">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Blog Posts -->
+            {% for post in page_obj %}
+            <article class="card mb-4 shadow-sm">
+                {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}" style="height: 300px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <div class="mb-2">
+                        {% if post.category %}
+                        <a href="{% url 'blog:category_list' post.category.slug %}" class="badge text-decoration-none" style="background-color: #ffd966; color: #2d5a3b;">
+                            {{ post.category.name }}
+                        </a>
+                        {% endif %}
+                        <small class="text-muted ms-2">
+                            <i class="far fa-calendar"></i> {{ post.published_date|date:"F j, Y" }}
+                        </small>
+                    </div>
+                    
+                    <h2 class="card-title h4">
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="text-decoration-none" style="color: #2d5a3b;">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+                    
+                    <p class="card-text">{{ post.excerpt }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-sm" style="background-color: #2d5a3b; color: white;">
+                            Read More <i class="fas fa-arrow-right"></i>
+                        </a>
+                        
+                        <div>
+                            <small class="text-muted">
+                                <i class="fas fa-user"></i> {{ post.author.get_full_name|default:post.author.username }} |
+                                <i class="fas fa-eye"></i> {{ post.views }} views
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No blog posts found.
+            </div>
+            {% endfor %}
+            
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Blog pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" style="color: #2d5a3b;">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}" 
+                           {% if page_obj.number == num %}style="background-color: #2d5a3b; border-color: #2d5a3b; color: white;"{% else %}style="color: #2d5a3b;"{% endif %}>
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" style="color: #2d5a3b;">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Categories -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h5 class="mb-0">Categories</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for category in categories %}
+                        <li class="mb-2">
+                            <a href="{% url 'blog:category_list' category.slug %}" class="text-decoration-none" style="color: #2d5a3b;">
+                                <i class="fas fa-chevron-right"></i> {{ category.name }}
+                                <span class="badge float-end" style="background-color: #ffd966; color: #2d5a3b;">{{ category.post_count }}</span>
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="text-muted">No categories yet</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Recent Posts -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h5 class="mb-0">Recent Posts</h5>
+                </div>
+                <div class="card-body">
+                    {% for recent in recent_posts %}
+                    <div class="mb-3">
+                        <a href="{% url 'blog:post_detail' recent.slug %}" class="text-decoration-none" style="color: #2d5a3b;">
+                            <h6 class="mb-1">{{ recent.title }}</h6>
+                        </a>
+                        <small class="text-muted">{{ recent.published_date|date:"M d, Y" }}</small>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No recent posts</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Tags -->
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h5 class="mb-0">Tags</h5>
+                </div>
+                <div class="card-body">
+                    {% for tag in tags %}
+                    <a href="{% url 'blog:tag_list' tag.slug %}" class="badge text-decoration-none me-1 mb-1" style="background-color: #f4f7f2; color: #2d5a3b; border: 1px solid #2d5a3b; padding: 5px 10px;">
+                        {{ tag.name }}
+                    </a>
+                    {% empty %}
+                    <p class="text-muted">No tags yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

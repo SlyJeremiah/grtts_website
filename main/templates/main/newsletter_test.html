@@ -1,0 +1,84 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Newsletter Test - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0">🔧 Newsletter Test Page</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">This page tests if the newsletter endpoint is working.</p>
+                    
+                    <div id="result" class="alert alert-info" style="display: none;"></div>
+                    
+                    <form id="test-form" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Test Email</label>
+                            <input type="email" name="email" class="form-control" value="test@example.com" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            Send Test Request
+                        </button>
+                    </form>
+                    
+                    <hr>
+                    
+                    <h5>Debug Info:</h5>
+                    <ul>
+                        <li><strong>Test URL:</strong> <code>{% url 'newsletter_test' %}</code></li>
+                        <li><strong>Real URL:</strong> <code>{% url 'newsletter_signup' %}</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('test-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const formData = new FormData(form);
+    const resultDiv = document.getElementById('result');
+    
+    // Show loading
+    resultDiv.style.display = 'block';
+    resultDiv.className = 'alert alert-info';
+    resultDiv.innerHTML = 'Sending test request...';
+    
+    fetch('{% url 'newsletter_test' %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Test response:', data);
+        
+        if (data.success) {
+            resultDiv.className = 'alert alert-success';
+            resultDiv.innerHTML = '<strong>✅ Success!</strong><br>' + 
+                                data.message + 
+                                '<br><br><pre style="background:#f8f9fa; padding:10px;">' + 
+                                JSON.stringify(data.debug, null, 2) + '</pre>';
+        } else {
+            resultDiv.className = 'alert alert-danger';
+            resultDiv.innerHTML = '<strong>❌ Failed:</strong> ' + data.message;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        resultDiv.className = 'alert alert-danger';
+        resultDiv.innerHTML = '<strong>❌ Network Error:</strong> ' + error;
+    });
+});
+</script>
+{% endblock %}

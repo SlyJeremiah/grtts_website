@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #2d5a3b; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background-color: #f9f9f9; }
+        .field { margin-bottom: 15px; }
+        .label { font-weight: bold; color: #2d5a3b; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>New Contact Form Message</h2>
+        </div>
+        
+        <div class="content">
+            <div class="field">
+                <div class="label">Name:</div>
+                <div>{{ contact.name }}</div>
+            </div>
+            
+            <div class="field">
+                <div class="label">Email:</div>
+                <div>{{ contact.email }}</div>
+            </div>
+            
+            {% if contact.phone %}
+            <div class="field">
+                <div class="label">Phone:</div>
+                <div>{{ contact.phone }}</div>
+            </div>
+            {% endif %}
+            
+            <div class="field">
+                <div class="label">Subject:</div>
+                <div>{{ contact.subject }}</div>
+            </div>
+            
+            <div class="field">
+                <div class="label">Message:</div>
+                <div>{{ contact.message|linebreaks }}</div>
+            </div>
+            
+            <div class="field">
+                <div class="label">Received:</div>
+                <div>{{ contact.created_at|date:"F j, Y H:i" }}</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>This is an automated notification from GRTTS website.</p>
+            <p><a href="{{ site_url }}/admin/main/contactmessage/{{ contact.id }}/change/">View in Admin</a></p>
+        </div>
+    </div>
+</body>
+</html>

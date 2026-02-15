@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Certificate Verification - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5" style="color: #2d5a3b;">Certificate Verification</h1>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0">Verify a Certificate</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted mb-4">
+                        Enter the certificate number to verify its authenticity.
+                    </p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Certificate Number</label>
+                            <input type="text" name="certificate_number" class="form-control form-control-lg" 
+                                   placeholder="e.g., GRTTS-2024-0001" required>
+                        </div>
+                        
+                        <button type="submit" class="btn w-100 py-2" style="background-color: #2d5a3b; color: white;">
+                            <i class="fas fa-search"></i> Verify Certificate
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            {% if verified and certificate %}
+            <div class="card mt-4 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-check-circle"></i> Certificate Verified</h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="text-success">✓ Valid Certificate</h4>
+                    <hr>
+                    <p><strong>Certificate Number:</strong> {{ certificate.certificate_number }}</p>
+                    <p><strong>Recipient:</strong> {{ certificate.full_name }}</p>
+                    <p><strong>Course:</strong> {{ certificate.course_name }}</p>
+                    <p><strong>Completion Date:</strong> {{ certificate.completion_date|date:"F j, Y" }}</p>
+                    <p><strong>Issue Date:</strong> {{ certificate.issue_date|date:"F j, Y" }}</p>
+                    
+                    <a href="{% url 'certificate_detail' certificate.certificate_number %}" class="btn btn-outline-success w-100">
+                        View Full Certificate
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,580 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
+from django.contrib import messages
+from django.http import JsonResponse, HttpResponse
+from django.core.mail import send_mail
+from django.conf import settings
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
+from django.views.decorators.http import require_POST
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+import traceback
+import uuid
+from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
+from django.views.decorators.http import require_POST
+import json
+
+from .models import (
+    Course, Testimonial, DeploymentLocation, FAQ, ContactMessage,
+    NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog
+)
+from .utils import send_contact_notification
+from .forms import NewsletterSignupForm
+
+# =============================================================================
+# HOME & BASIC PAGES
+# =============================================================================
+
+def home(request):
+    """Home page view"""
+    # Get featured courses (limit to 3)
+    featured_courses = Course.objects.filter(is_active=True)[:3]
+    
+    # Get active testimonials
+    testimonials = Testimonial.objects.filter(is_active=True)[:3]
+    
+    context = {
+        'featured_courses': featured_courses,
+        'testimonials': testimonials,
+        'stats': {
+            'rangers_trained': 500,
+            'hectares_protected': 45000,
+            'locations': 5,
+            'year_founded': 2017
+        }
+    }
+    return render(request, 'main/home.html', context)
+
+
+def about(request):
+    """About us page"""
+    return render(request, 'main/about.html')
+
+
+def faq(request):
+    """FAQ page"""
+    faqs = FAQ.objects.filter(is_active=True)
+    return render(request, 'main/faq.html', {'faqs': faqs})
+
+
+# =============================================================================
+# COURSE VIEWS
+# =============================================================================
+
+def courses(request):
+    """All courses listing with filtering"""
+    # Get all active courses
+    courses = Course.objects.filter(is_active=True)
+    
+    # Get filter type from URL query parameters
+    course_type = request.GET.get('type')
+    
+    # Apply filter if specified
+    if course_type:
+        if course_type == 'basic':
+            courses = courses.filter(course_type='BASIC')
+        elif course_type == 'specialist':
+            courses = courses.filter(course_type='SPECIALIST')
+        elif course_type == 'advanced':
+            courses = courses.filter(course_type='ADVANCED')
+        elif course_type == 'tracking':
+            courses = courses.filter(course_type='TRACKING')
+    
+    # Get search query if any
+    search_query = request.GET.get('q')
+    if search_query:
+        courses = courses.filter(
+            Q(title__icontains=search_query) | 
+            Q(description__icontains=search_query)
+        )
+    
+    # Organize courses by type for display
+    context = {
+        'courses': courses,
+        'basic_courses': courses.filter(course_type='BASIC'),
+        'specialist_courses': courses.filter(course_type='SPECIALIST'),
+        'advanced_courses': courses.filter(course_type='ADVANCED'),
+        'tracking_courses': courses.filter(course_type='TRACKING'),
+        'current_filter': course_type,
+        'search_query': search_query,
+        'course_types': Course.COURSE_TYPES,
+    }
+    return render(request, 'main/courses.html', context)
+
+
+def course_detail(request, course_id):
+    """Individual course detail"""
+    course = get_object_or_404(Course, id=course_id, is_active=True)
+    return render(request, 'main/course_detail.html', {'course': course})
+
+
+# =============================================================================
+# LOCATION VIEWS
+# =============================================================================
+
+def locations(request):
+    """Training and deployment locations with filtering"""
+    # Get all locations
+    locations = DeploymentLocation.objects.all()
+    
+    # Get filter from URL query parameters
+    center = request.GET.get('center')
+    
+    # Apply filter if specified
+    if center:
+        # Convert URL-friendly name to proper case for filtering
+        center_name = center.replace('-', ' ').title()
+        locations = locations.filter(name__icontains=center_name)
+    
+    # Separate training centers and deployment locations
+    training_centers = locations.filter(is_training_center=True)
+    deployment_sites = locations.filter(is_deployment_location=True)
+    
+    context = {
+        'locations': locations,
+        'training_centers': training_centers,
+        'deployment_sites': deployment_sites,
+        'current_filter': center,
+    }
+    return render(request, 'main/locations.html', context)
+
+
+def location_detail(request, location_id):
+    """Individual location detail page with gallery"""
+    location = get_object_or_404(DeploymentLocation, id=location_id)
+    other_locations = DeploymentLocation.objects.exclude(id=location_id)[:5]
+    
+    context = {
+        'location': location,
+        'locations': other_locations,
+    }
+    return render(request, 'main/location_detail.html', context)
+
+
+# =============================================================================
+# CONTACT VIEW
+# =============================================================================
+
+@ensure_csrf_cookie
+def contact(request):
+    """Contact page with form"""
+    # Check for course parameter in URL
+    course_param = request.GET.get('course')
+    initial_subject = ''
+    
+    if course_param:
+        if course_param == 'basic':
+            initial_subject = 'Inquiry about Basic Ranger Course'
+        elif course_param == 'specialist':
+            initial_subject = 'Inquiry about Specialist Courses'
+        elif course_param == 'advanced':
+            initial_subject = 'Inquiry about Advanced Ranger Course'
+        elif course_param == 'tracking':
+            initial_subject = 'Inquiry about Tracking Course'
+    
+    if request.method == 'POST':
+        # Save to database
+        try:
+            contact = ContactMessage(
+                name=request.POST.get('name'),
+                email=request.POST.get('email'),
+                phone=request.POST.get('phone', ''),
+                subject=request.POST.get('subject', 'Website Contact Form'),
+                message=request.POST.get('message')
+            )
+            contact.save()
+            
+            # Send email notifications
+            try:
+                send_contact_notification(contact)
+                messages.success(request, 'Thank you for your message! We have sent a confirmation to your email.')
+            except Exception as e:
+                messages.success(request, 'Thank you for your message! We will contact you soon.')
+                # Log email error but don't show to user
+            
+        except Exception as e:
+            messages.error(request, 'There was an error sending your message. Please try again.')
+        
+        return redirect('contact')
+    
+    context = {
+        'initial_subject': initial_subject,
+        'faqs': FAQ.objects.filter(is_active=True)[:5],
+    }
+    return render(request, 'main/contact.html', context)
+
+def inquiry_page(request):
+    """Main inquiry page with all forms"""
+    return render(request, 'main/inquiry.html')
+
+@require_POST
+def inquiry_student(request):
+    """Process student inquiry"""
+    try:
+        inquiry = StudentInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phone'),
+            age=request.POST.get('age'),
+            nationality=request.POST.get('nationality'),
+            education=request.POST.get('education', ''),
+            course=request.POST.get('course'),
+            intake=request.POST.get('intake', ''),
+            experience=request.POST.get('experience', ''),
+        )
+        
+        # Send notification email
+        try:
+            send_inquiry_notification(inquiry, 'student')
+        except:
+            pass
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your student inquiry has been submitted successfully. We will contact you within 48 hours.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error submitting form: {str(e)}'
+        }, status=400)
+
+@require_POST
+def inquiry_landowner(request):
+    """Process landowner inquiry"""
+    try:
+        inquiry = LandownerInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phone'),
+            organization=request.POST.get('organization', ''),
+            service=request.POST.get('service'),
+            property_size=request.POST.get('property_size') or None,
+            property_location=request.POST.get('property_location', ''),
+            concerns_poaching=bool(request.POST.get('concerns_poaching')),
+            concerns_human_wildlife=bool(request.POST.get('concerns_human_wildlife')),
+            concerns_livestock=bool(request.POST.get('concerns_livestock')),
+            concerns_trespassing=bool(request.POST.get('concerns_trespassing')),
+            details=request.POST.get('details', ''),
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your landowner inquiry has been submitted successfully. We will contact you within 48 hours.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error submitting form: {str(e)}'
+        }, status=400)
+
+@require_POST
+def inquiry_enthusiast(request):
+    """Process enthusiast inquiry"""
+    try:
+        inquiry = EnthusiastInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            interest=request.POST.get('interest'),
+            background=request.POST.get('background', ''),
+            availability=request.POST.get('availability', ''),
+            message=request.POST.get('message', ''),
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your enthusiast inquiry has been submitted successfully. We will contact you within 48 hours.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error submitting form: {str(e)}'
+        }, status=400)
+
+@require_POST
+def inquiry_other(request):
+    """Process general inquiry"""
+    try:
+        inquiry = OtherInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phone', ''),
+            organization=request.POST.get('organization', ''),
+            category=request.POST.get('category'),
+            subject=request.POST.get('subject'),
+            message=request.POST.get('message'),
+            urgency=request.POST.get('urgency', 'normal'),
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your inquiry has been submitted successfully. We will respond within 48 hours.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error submitting form: {str(e)}'
+        }, status=400)
+# =============================================================================
+# NEWSLETTER VIEWS
+# =============================================================================
+
+@require_POST
+@csrf_protect
+def newsletter_signup(request):
+    """AJAX endpoint for newsletter signup"""
+    print("="*50)
+    print("📧 Newsletter signup attempted")
+    print(f"Time: {timezone.now()}")
+    print(f"Method: {request.method}")
+    print(f"POST data: {request.POST}")
+    print(f"AJAX: {request.headers.get('X-Requested-With')}")
+    print("="*50)
+    
+    try:
+        # Get email from POST
+        email = request.POST.get('email', '').strip()
+        
+        if not email:
+            return JsonResponse({
+                'success': False,
+                'message': 'Email address is required.'
+            }, status=400)
+        
+        # Validate email format
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({
+                'success': False,
+                'message': 'Please enter a valid email address.'
+            }, status=400)
+        
+        # Check if subscriber exists
+        subscriber, created = NewsletterSubscriber.objects.get_or_create(
+            email=email,
+            defaults={
+                'ip_address': request.META.get('REMOTE_ADDR', ''),
+                'source': 'website_footer'
+            }
+        )
+        
+        print(f"Subscriber exists: {not created}")
+        print(f"Is active: {subscriber.is_active}")
+        
+        if created:
+            # New subscriber
+            message = 'Thank you for subscribing to our newsletter!'
+            print(f"✅ New subscriber created: {email}")
+        else:
+            if not subscriber.is_active:
+                # Reactivate
+                subscriber.is_active = True
+                subscriber.ip_address = request.META.get('REMOTE_ADDR', '')
+                subscriber.save()
+                message = 'Your subscription has been reactivated!'
+                print(f"🔄 Subscriber reactivated: {email}")
+            else:
+                # Already active
+                print(f"⚠️ Already subscribed: {email}")
+                return JsonResponse({
+                    'success': False,
+                    'message': 'This email is already subscribed to our newsletter.'
+                }, status=400)
+        
+        # TODO: Send confirmation email (optional)
+        
+        return JsonResponse({
+            'success': True,
+            'message': message
+        })
+        
+    except Exception as e:
+        # Print full error for debugging
+        print("❌ ERROR in newsletter_signup:")
+        print(traceback.format_exc())
+        
+        return JsonResponse({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }, status=500)
+
+
+@csrf_exempt
+def track_newsletter_open(request, tracking_id):
+    """Track newsletter opens via pixel"""
+    try:
+        tracking = NewsletterTracking.objects.get(id=tracking_id)
+        tracking.opened_at = timezone.now()
+        tracking.save()
+        
+        # Update campaign stats
+        if tracking.campaign:
+            tracking.campaign.opens_count += 1
+            tracking.campaign.save()
+        
+        # Return 1x1 transparent GIF
+        pixel = b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b'
+        return HttpResponse(pixel, content_type='image/gif')
+    except NewsletterTracking.DoesNotExist:
+        return HttpResponse(status=404)
+
+
+def unsubscribe_newsletter(request, email):
+    """Unsubscribe from newsletter"""
+    try:
+        subscriber = NewsletterSubscriber.objects.get(email=email)
+        subscriber.is_active = False
+        subscriber.unsubscribed_at = timezone.now()
+        subscriber.save()
+        
+        return render(request, 'main/unsubscribe_confirmed.html', {'email': email})
+    except NewsletterSubscriber.DoesNotExist:
+        return render(request, 'main/unsubscribe_not_found.html')
+
+
+def newsletter_test(request):
+    """Simple test endpoint for debugging newsletter signup"""
+    print(f"🔍 Test endpoint accessed! Method: {request.method}")
+    print(f"POST data: {request.POST}")
+    print(f"Headers: {request.headers}")
+    
+    if request.method == 'POST':
+        email = request.POST.get('email', '')
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Test successful! Email received: {email}',
+            'debug': {
+                'method': request.method,
+                'email': email,
+                'csrf_token': request.POST.get('csrfmiddlewaretoken', 'Not sent'),
+                'ajax': request.headers.get('X-Requested-With', 'Not AJAX')
+            }
+        })
+    
+    return JsonResponse({
+        'success': False,
+        'message': 'This endpoint requires a POST request. Use it to test newsletter signup.',
+        'usage': 'Send a POST request with email parameter'
+    })
+
+
+def newsletter_test_page(request):
+    """Simple page to test newsletter"""
+    return render(request, 'main/newsletter_test.html')
+
+
+# =============================================================================
+# CERTIFICATE VIEWS
+# =============================================================================
+
+def verify_certificate(request):
+    """Certificate verification page"""
+    certificate = None
+    verified = False
+    
+    if request.method == 'POST':
+        cert_number = request.POST.get('certificate_number')
+        try:
+            certificate = Certificate.objects.get(
+                certificate_number=cert_number,
+                is_valid=True
+            )
+            certificate.view_count += 1
+            certificate.save()
+            
+            # Log verification
+            CertificateVerificationLog.objects.create(
+                certificate=certificate,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+                successful=True
+            )
+            
+            verified = True
+        except Certificate.DoesNotExist:
+            messages.error(request, 'Invalid certificate number or certificate not found')
+    
+    context = {
+        'certificate': certificate,
+        'verified': verified,
+    }
+    return render(request, 'main/verify_certificate.html', context)
+
+
+def certificate_detail(request, cert_number):
+    """Public certificate detail page"""
+    certificate = get_object_or_404(Certificate, certificate_number=cert_number, is_valid=True)
+    
+    # Log view
+    CertificateVerificationLog.objects.create(
+        certificate=certificate,
+        ip_address=request.META.get('REMOTE_ADDR'),
+        user_agent=request.META.get('HTTP_USER_AGENT', ''),
+        successful=True
+    )
+    
+    return render(request, 'main/certificate_detail.html', {'certificate': certificate})
+
+
+# =============================================================================
+# EMAIL TEST VIEW
+# =============================================================================
+
+def test_email(request):
+    """Simple test to verify email sending"""
+    try:
+        send_mail(
+            'Test Email from GRTTS',
+            'This is a test email to verify SMTP settings.',
+            settings.DEFAULT_FROM_EMAIL,
+            ['your-email@gmail.com'],  # Replace with your email
+            fail_silently=False,
+        )
+        return HttpResponse('Email sent successfully! Check your inbox.')
+    except Exception as e:
+        return HttpResponse(f'Error sending email: {str(e)}')
+
+
+# =============================================================================
+# PAYMENT VIEWS (COMMENTED OUT)
+# =============================================================================
+
+"""
+def donation_page(request):
+    # Donation page with payment options
+    payment_methods = PaymentMethod.objects.filter(is_active=True)
+    
+    context = {
+        'payment_methods': payment_methods,
+        'donation_amounts': [10, 20, 50, 100, 500, 1000],
+    }
+    return render(request, 'main/donation.html', context)
+
+def process_donation(request):
+    # Process donation payment
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
+        payment_method_id = request.POST.get('payment_method')
+        donor_name = request.POST.get('donor_name')
+        donor_email = request.POST.get('donor_email')
+        donor_phone = request.POST.get('donor_phone')
+        
+        # Create donation record
+        donation = Donation.objects.create(
+            transaction_id=str(uuid.uuid4()),
+            amount=amount,
+            payment_method_id=payment_method_id,
+            donor_name=donor_name,
+            donor_email=donor_email,
+            donor_phone=donor_phone,
+            status='pending'
+        )
+        
+        messages.success(request, 'Thank you for your donation! You will receive a confirmation soon.')
+        return redirect('donation')
+    
+    return redirect('donation_page')
+"""

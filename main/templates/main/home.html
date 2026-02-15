@@ -1,0 +1,393 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}GRTTS - Game Ranger & Tracker Training Specialist{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Enhanced Effects -->
+<section class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1549366021-9f761d450615?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; height: 600px; display: flex; align-items: center; text-align: center; color: white; position: relative; overflow: hidden;">
+    
+    <!-- Animated Background Overlay -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(255,217,102,0.1) 0%, transparent 50%); animation: pulse-bg 4s ease-in-out infinite;"></div>
+    
+    <div class="container" style="position: relative; z-index: 2;">
+        <h1 class="gradient-text" style="font-size: 4rem; margin-bottom: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; animation: fadeInDown 1s ease;">
+            GAME RANGER AND TRACKER<br>TRAINING SPECIALIST
+        </h1>
+        <p class="neon-text" style="font-size: 2.5rem; margin-bottom: 2rem; font-weight: 300; animation: fadeInUp 1s ease 0.3s both;">
+            Training That Saves Lives
+        </p>
+        <p class="shine-text" style="background-color: rgba(45, 90, 59, 0.95); display: inline-block; padding: 1rem 3rem; border-radius: 50px; font-size: 1.3rem; border: 2px solid #ffd966; animation: fadeIn 1s ease 0.6s both;">
+            <i class="fas fa-star" style="color: #ffd966; margin-right: 10px;"></i>
+            Over a Septennium of Excellence
+            <i class="fas fa-star" style="color: #ffd966; margin-left: 10px;"></i>
+        </p>
+    </div>
+</section>
+
+<!-- Stats Section - Removed circular pulse effect -->
+<section class="py-5" style="background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%); color: white; position: relative; overflow: hidden;">
+    
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffd966' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    
+    <div class="container" style="position: relative; z-index: 2;">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">500+</div>
+                    <i class="fas fa-users" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">RANGERS TRAINED</h4>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Professionally equipped and field-ready</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">45,000</div>
+                    <i class="fas fa-tree" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">HECTARES PROTECTED</h4>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Private & community wildlife areas</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">2017</div>
+                    <i class="fas fa-calendar-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">YEAR FOUNDED</h4>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Over 7 years of excellence</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">8</div>
+                    <i class="fas fa-map-marker-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">DEPLOYMENT LOCATIONS</h4>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Across Zimbabwe's prime wildlife areas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Who We Are -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 text-3d" style="font-size: 3rem; font-weight: 800;">
+            <i class="fas fa-paw" style="color: #ffd966; margin-right: 15px;"></i>
+            WHO ARE WE?
+            <i class="fas fa-paw" style="color: #ffd966; margin-left: 15px;"></i>
+        </h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-sm p-4" style="border-radius: 20px; background: linear-gradient(145deg, #ffffff, #f8f9fa);">
+                    <p class="lead animated-bg-text" style="font-size: 1.3rem; line-height: 1.8;">WE ARE THE LEADING ZIMBABWEAN COMPANY DEDICATED TO TRAINING, DEPLOYING AND MANAGING ANTI-POACHING RANGERS ACROSS THE COUNTRY WITH OVER A DECADE OF EXPERIENCE.</p>
+                    <p class="shine-text" style="font-size: 1.1rem; line-height: 1.6;">WE HAVE TRAINED AND DEPLOYED MORE THAN 500 MEN AND WOMEN, EMPOWERING THEM TO SERVE ON THE FRONTLINES OF WILDLIFE AND ENVIRONMENTAL PROTECTION.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- What We Do -->
+<section class="py-5" style="background-color: #f4f7f2;">
+    <div class="container">
+        <h2 class="text-center mb-5 split-text" data-text="WHAT WE DO" style="font-size: 3rem; font-weight: 800;">
+            WHAT WE DO
+        </h2>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; transition: all 0.3s ease;">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-shield-alt fa-4x mb-3" style="color: #2d5a3b;"></i>
+                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: #2d5a3b; font-weight: 600;">Ranger Training Programs</h4>
+                        <p style="font-size: 1rem; line-height: 1.6; color: #333;">Specialized training programs for individuals aspiring to join wildlife protection and anti-poaching operations.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; transition: all 0.3s ease;">
+                    <div class="card-body text-center p-5">
+                        <i class="fas fa-users fa-4x mb-3" style="color: #2d5a3b;"></i>
+                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: #2d5a3b; font-weight: 600;">Anti-Poaching Deployment</h4>
+                        <p style="font-size: 1rem; line-height: 1.6; color: #333;">Fully trained, professionally equipped, uniformed, armed and disciplined rangers ready for deployment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Core Services - Removed color change effect -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-5" style="font-size: 2rem; font-weight: 700; color: #2d5a3b;">OUR CORE SERVICES</h3>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-graduation-cap fa-3x mb-3" style="color: #ffd966;"></i>
+                    <h5 style="color: #2d5a3b; font-weight: 600;">Ranger Training Programs</h5>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-tree fa-3x mb-3" style="color: #ffd966;"></i>
+                    <h5 style="color: #2d5a3b; font-weight: 600;">Anti-Poaching Deployment</h5>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <i class="fas fa-hand-holding-heart fa-3x mb-3" style="color: #ffd966;"></i>
+                    <h5 style="color: #2d5a3b; font-weight: 600;">Ranger Management & Conservation</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Courses -->
+<section class="py-5">
+    <div class="container">
+        <div style="display: flex; justify-content: center;">
+            <h2 class="typing-effect" style="color: #2d5a3b; font-size: 2.5rem; font-weight: 800; display: inline-block; border-right: 4px solid #ffd966; padding-right: 10px;">
+                TRAINING PROGRAMS
+            </h2>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                    <div style="height: 10px; background: linear-gradient(90deg, #2d5a3b, #ffd966);"></div>
+                    <div class="card-body p-4">
+                        <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">BASIC RANGER COURSE</h4>
+                        <p class="text-muted">Conservation Guardianship</p>
+                        <p><strong>Duration:</strong> 6 Weeks</p>
+                        <p><strong>Intake:</strong> January, June, October</p>
+                        <p>Detailed entry level studies for aspiring rangers.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                    <div style="height: 10px; background: linear-gradient(90deg, #ffd966, #2d5a3b);"></div>
+                    <div class="card-body p-4">
+                        <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">SPECIALIST COURSES</h4>
+                        <p><strong>Available all year round</strong></p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check" style="color: #ffd966; margin-right: 8px;"></i> Basic, Advanced & Counter-Insurgency Tracking</li>
+                            <li><i class="fas fa-check" style="color: #ffd966; margin-right: 8px;"></i> Small Team Tactics</li>
+                            <li><i class="fas fa-check" style="color: #ffd966; margin-right: 8px;"></i> K9 Handling & Kennel Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                    <div style="height: 10px; background: linear-gradient(90deg, #2d5a3b, #ffd966, #2d5a3b);"></div>
+                    <div class="card-body p-4">
+                        <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">ADVANCED RANGER</h4>
+                        <p><strong>Duration:</strong> 2 Weeks</p>
+                        <p><strong>Intake:</strong> March, November</p>
+                        <p>Designed for rangers moving into leadership roles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'courses' %}" class="btn btn-lg shine-text" style="background-color: #2d5a3b; color: white; padding: 12px 40px; border-radius: 50px; font-size: 1.2rem;">
+                View All Courses <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+{% if testimonials %}
+<section class="py-5" style="background-color: #f4f7f2;">
+    <div class="container">
+        <h2 class="text-center mb-5 gradient-text" style="font-size: 2.5rem; font-weight: 800; position: relative;">
+            What People Say
+            <span style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 100px; height: 4px; background: #ffd966; animation: underline-grow 2s infinite;"></span>
+        </h2>
+        
+        <!-- Testimonials Carousel -->
+        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for testimonial in testimonials %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card shadow-sm border-0" style="border-radius: 20px; background: white;">
+                                <div class="card-body text-center p-5">
+                                    <i class="fas fa-quote-left fa-3x mb-4" style="color: #ffd966; opacity: 0.5;"></i>
+                                    <p class="lead mb-4" style="font-style: italic; font-size: 1.2rem; line-height: 1.8;">
+                                        "{{ testimonial.content }}"
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        {% if testimonial.image %}
+                                        <img src="{{ testimonial.image.url }}" 
+                                             alt="{{ testimonial.name }}" 
+                                             class="rounded-circle me-3"
+                                             style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #ffd966;">
+                                        {% else %}
+                                        <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" 
+                                             style="width: 70px; height: 70px; background-color: #2d5a3b; color: white; border: 3px solid #ffd966;">
+                                            <span style="font-size: 24px; font-weight: bold;">
+                                                {{ testimonial.name|make_list|first }}
+                                            </span>
+                                        </div>
+                                        {% endif %}
+                                        <div class="text-start">
+                                            <h5 class="mb-1" style="color: #2d5a3b;">{{ testimonial.name }}</h5>
+                                            <p class="text-muted mb-0">{{ testimonial.position }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if testimonials|length > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: #2d5a3b; border-radius: 50%; padding: 20px;"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: #2d5a3b; border-radius: 50%; padding: 20px;"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Locations - Added back float effect -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5" style="font-size: 2.5rem; font-weight: 800; color: #2d5a3b;">
+            <i class="fas fa-map-marker-alt" style="color: #ffd966; margin-right: 15px;"></i>
+            TRAINING & DEPLOYMENT LOCATIONS
+            <i class="fas fa-map-marker-alt" style="color: #ffd966; margin-left: 15px;"></i>
+        </h2>
+        <div class="row text-center">
+            <div class="col-md-2 col-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
+                    <strong style="color: #2d5a3b;">GWERU</strong>
+                </div>
+            </div>
+            <div class="col-md-2 col-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
+                    <strong style="color: #2d5a3b;">GURUVE</strong>
+                </div>
+            </div>
+            <div class="col-md-2 col-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
+                    <strong style="color: #2d5a3b;">MATOPO</strong>
+                </div>
+            </div>
+            <div class="col-md-2 col-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
+                    <strong style="color: #2d5a3b;">HWANGE</strong>
+                </div>
+            </div>
+            <div class="col-md-2 col-4 mb-3">
+                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
+                    <strong style="color: #2d5a3b;">VICTORIA FALLS</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%); color: white; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 70% 30%, rgba(255,217,102,0.1) 0%, transparent 50%);"></div>
+    
+    <div class="container text-center" style="position: relative; z-index: 2;">
+        <h3 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(255,217,102,0.3);">GET IN TOUCH</h3>
+        <p class="lead mb-4 animated-bg-text" style="font-size: 1.3rem;">For course deployment plans or ranger management contracts</p>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-2">
+                <div style="display: inline-block;">
+                    <i class="fas fa-phone-alt" style="color: #ffd966; margin-right: 8px;"></i> 
+                    <span style="font-size: 1.2rem;">+263 781 603 802</span>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div style="display: inline-block;">
+                    <i class="fas fa-phone-alt" style="color: #ffd966; margin-right: 8px;"></i> 
+                    <span style="font-size: 1.2rem;">+263 788 661 234</span>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div style="display: inline-block;">
+                    <i class="fas fa-envelope" style="color: #ffd966; margin-right: 8px;"></i> 
+                    <span style="font-size: 1.2rem;">grttsrangers@gmail.com</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Add all animations -->
+<style>
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes pulse-bg {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.6; }
+    }
+    
+    @keyframes underline-grow {
+        0% { width: 50px; opacity: 0.5; }
+        50% { width: 150px; opacity: 1; }
+        100% { width: 50px; opacity: 0.5; }
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .float-number {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 15px 25px rgba(0,0,0,0.2) !important;
+        border-color: #ffd966 !important;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock %}

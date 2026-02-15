@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Reset styles */
+        body, p, h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        /* Main container */
+        .email-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f7f2;
+        }
+        
+        /* Header */
+        .header {
+            background-color: #2d5a3b;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 16px;
+            color: #ffd966;
+        }
+        
+        /* Content */
+        .content {
+            background-color: white;
+            padding: 30px 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .content h2 {
+            color: #2d5a3b;
+            margin-bottom: 20px;
+        }
+        
+        .content p {
+            margin-bottom: 15px;
+        }
+        
+        /* Button */
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #2d5a3b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #1e3c2c;
+            color: #999;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .footer a {
+            color: #ffd966;
+            text-decoration: none;
+        }
+        
+        .social-links {
+            margin: 15px 0;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        /* Tracking pixel (invisible) */
+        .tracking-pixel {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <h1>GRTTS Newsletter</h1>
+            <p>Training That Saves Lives</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <h2>{{ campaign.title }}</h2>
+            
+            {{ campaign.content|safe|linebreaks }}
+            
+            <!-- Tracking pixel - helps count opens -->
+            {% if tracking_pixel %}
+            <img src="{{ tracking_pixel }}" width="1" height="1" class="tracking-pixel">
+            {% endif %}
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="social-links">
+                <a href="{{ site_url }}">Website</a> |
+                <a href="#">Facebook</a> |
+                <a href="#">Twitter</a> |
+                <a href="#">LinkedIn</a>
+            </div>
+            
+            <p>
+                You're receiving this email because you subscribed to the GRTTS newsletter.<br>
+                <a href="{{ site_url }}/newsletter/unsubscribe/{{ subscriber.email }}">Unsubscribe</a> |
+                <a href="{{ site_url }}">Visit our website</a>
+            </p>
+            
+            <p style="margin-top: 15px;">
+                &copy; {% now "Y" %} Game Ranger and Tracker Training Specialist. All rights reserved.<br>
+                Plot 72, Mityana Farm, Makonde, Mashonaland West, Zimbabwe
+            </p>
+        </div>
+    </div>
+</body>
+</html>

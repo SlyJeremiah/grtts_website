@@ -1,0 +1,128 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Support GRTTS - Donate{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5" style="color: #2d5a3b;">Support Wildlife Conservation</h1>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0">Make a Donation</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Your donation helps us train and deploy rangers to protect Zimbabwe's wildlife.</p>
+                    
+                    <form method="post" action="{% url 'process_donation' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Select Amount</label>
+                            <div class="row">
+                                {% for amount in donation_amounts %}
+                                <div class="col-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="amount" 
+                                               id="amount{{ amount }}" value="{{ amount }}" required>
+                                        <label class="form-check-label" for="amount{{ amount }}">
+                                            ${{ amount }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                <div class="col-12">
+                                    <div class="input-group mt-2">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" name="custom_amount" 
+                                               placeholder="Other amount">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Payment Method</label>
+                            {% for method in payment_methods %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="payment_method" 
+                                       id="method{{ method.id }}" value="{{ method.id }}" required>
+                                <label class="form-check-label" for="method{{ method.id }}">
+                                    {% if method.logo %}
+                                    <img src="{{ method.logo.url }}" alt="{{ method.display_name }}" 
+                                         style="height: 30px; margin-right: 10px;">
+                                    {% endif %}
+                                    {{ method.display_name }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Your Name</label>
+                            <input type="text" class="form-control" name="donor_name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email Address</label>
+                            <input type="email" class="form-control" name="donor_email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Phone Number (for mobile money)</label>
+                            <input type="tel" class="form-control" name="donor_phone" 
+                                   placeholder="0771234567">
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" name="is_anonymous" id="anonymous">
+                            <label class="form-check-label" for="anonymous">Donate anonymously</label>
+                        </div>
+                        
+                        <button type="submit" class="btn w-100" style="background-color: #2d5a3b; color: white; padding: 12px;">
+                            <i class="fas fa-lock"></i> Donate Now
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h4 class="mb-0">Why Donate?</h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-shield-alt fa-4x" style="color: #ffd966;"></i>
+                    </div>
+                    
+                    <h5>Your Support Helps:</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i> Train new rangers</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i> Equip anti-poaching units</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i> Protect endangered wildlife</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i> Support local communities</li>
+                        <li class="mb-3"><i class="fas fa-check-circle text-success me-2"></i> Maintain conservation areas</li>
+                    </ul>
+                    
+                    <hr>
+                    
+                    <div class="text-center">
+                        <h5 class="fw-bold" style="color: #2d5a3b;">$50</h5>
+                        <p>Provides a ranger with basic equipment for one month</p>
+                        
+                        <h5 class="fw-bold" style="color: #2d5a3b;">$100</h5>
+                        <p>Funds a week of specialized tracking training</p>
+                        
+                        <h5 class="fw-bold" style="color: #2d5a3b;">$500</h5>
+                        <p>Supports a full ranger training course for one person</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Training Courses - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5" style="color: #2d5a3b;">Our Training Programs</h1>
+    
+    <!-- Filter Info -->
+    {% if current_filter %}
+    <div class="alert alert-info mb-4">
+        Showing: <strong>{{ current_filter|title }} Courses</strong>
+        <a href="{% url 'courses' %}" class="float-end">Clear Filter</a>
+    </div>
+    {% endif %}
+    
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <form method="get" action="{% url 'courses' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search courses..." value="{{ search_query|default:'' }}">
+                    <button class="btn" style="background-color: #2d5a3b; color: white;" type="submit">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Basic Course -->
+    {% if not current_filter or current_filter == 'basic' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h3 class="mb-0">BASIC RANGER COURSE</h3>
+                </div>
+                <div class="card-body">
+                    <h5>Conservation Guardianship</h5>
+                    <p><strong>Duration:</strong> 6 Weeks</p>
+                    <p><strong>Intake:</strong> January, June, October</p>
+                    <p>Detailed entry level studies for individuals aspiring to join the field of wildlife protection and anti-poaching operations.</p>
+                    <a href="{% url 'contact' %}?course=basic&name=Basic%20Ranger%20Course" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About This Course</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Specialist Courses -->
+    {% if not current_filter or current_filter == 'specialist' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h3 class="mb-0">SPECIALIST COURSES</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Available all year round</strong></p>
+                    <ul>
+                        <li>Basic, Advanced and Counter-Insurgency Tracking</li>
+                        <li>Small Team Tactics</li>
+                        <li>K9 Handling and Kennel Management</li>
+                    </ul>
+                    <a href="{% url 'contact' %}?course=specialist" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Specialist Courses</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Advanced Course -->
+    {% if not current_filter or current_filter == 'advanced' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h3 class="mb-0">ADVANCED RANGER & PATROL</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Duration:</strong> 2 Weeks</p>
+                    <p><strong>Intake:</strong> March, November</p>
+                    <p>Designed for rangers moving into leadership roles.</p>
+                    <a href="{% url 'contact' %}?course=advanced" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Advanced Course</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Tracking Course -->
+    {% if not current_filter or current_filter == 'tracking' %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background-color: #2d5a3b; color: white;">
+                    <h3 class="mb-0">BASIC TRACKING COURSE</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>Duration:</strong> 7 Days</p>
+                    <p><strong>Location:</strong> Victoria Falls (Big 5 area)</p>
+                    <h5>Course Covers:</h5>
+                    <ul>
+                        <li>Signs of the wild</li>
+                        <li>The art of human and wildlife tracking</li>
+                        <li>Tracking as a science</li>
+                        <li>Track and Sign identification</li>
+                        <li>Trailing</li>
+                        <li>Tracking evaluation</li>
+                    </ul>
+                    <p><strong>Accommodation:</strong> Tents provided (bring personal gear)</p>
+                    <a href="{% url 'contact' %}?course=tracking" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Tracking Course</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- No Results Message -->
+    {% if current_filter and not basic_courses and not specialist_courses and not advanced_courses and not tracking_courses %}
+    <div class="alert alert-warning text-center">
+        No courses found for this category. <a href="{% url 'courses' %}">View all courses</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

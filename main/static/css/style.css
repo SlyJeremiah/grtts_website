@@ -1,0 +1,314 @@
+/* =======================
+   GRTTS Custom Styles
+   ======================= */
+
+:root {
+    --primary-green: #2d5a3b;
+    --accent-gold: #ffd966;
+    --dark-green: #1e3c2c;
+    --light-bg: #f4f7f2;
+    --text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    --glow-effect: 0 0 10px rgba(255, 217, 102, 0.5);
+}
+
+/* 1. Gradient Text Effect */
+.gradient-text {
+    background: linear-gradient(45deg, #2d5a3b, #ffd966, #2d5a3b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient 5s ease infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 2. Glowing Text Effect */
+.glow-text {
+    color: white;
+    text-shadow: 
+        0 0 10px #ffd966,
+        0 0 20px #ffd966,
+        0 0 30px #2d5a3b,
+        0 0 40px #2d5a3b;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px #ffd966, 0 0 20px #ffd966; }
+    to { text-shadow: 0 0 20px #ffd966, 0 0 30px #2d5a3b, 0 0 40px #2d5a3b; }
+}
+
+/* 3. 3D Text Effect */
+.text-3d {
+    color: #2d5a3b;
+    text-shadow: 
+        1px 1px 0 #ffd966,
+        2px 2px 0 #ffd966,
+        3px 3px 0 #ffd966,
+        4px 4px 0 #2d5a3b,
+        5px 5px 0 #2d5a3b;
+    transition: all 0.3s ease;
+}
+
+.text-3d:hover {
+    transform: translateY(-2px);
+    text-shadow: 
+        1px 1px 0 #ffd966,
+        2px 2px 0 #ffd966,
+        3px 3px 0 #ffd966,
+        6px 6px 0 #2d5a3b,
+        8px 8px 0 #2d5a3b;
+}
+
+/* 4. Neon Text Effect */
+.neon-text {
+    color: #fff;
+    text-shadow: 
+        0 0 5px #ffd966,
+        0 0 10px #ffd966,
+        0 0 20px #ffd966,
+        0 0 40px #2d5a3b,
+        0 0 80px #2d5a3b;
+    animation: flicker 3s infinite;
+}
+
+@keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow: 
+            0 0 5px #ffd966,
+            0 0 10px #ffd966,
+            0 0 20px #ffd966,
+            0 0 40px #2d5a3b,
+            0 0 80px #2d5a3b;
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+        color: #aaa;
+    }
+}
+
+/* 5. Animated Background Text */
+.animated-bg-text {
+    background: linear-gradient(90deg, #2d5a3b, #ffd966, #2d5a3b);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: slide 3s linear infinite;
+}
+
+@keyframes slide {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+/* 6. Number Counter Effects */
+.stat-number {
+    font-size: 3.5rem;
+    font-weight: bold;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.stat-number::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid #ffd966;
+    border-radius: 50%;
+    opacity: 0;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.stat-number.gold {
+    color: #ffd966;
+    text-shadow: 3px 3px 0 #2d5a3b;
+}
+
+.stat-number.green {
+    color: #2d5a3b;
+    text-shadow: 3px 3px 0 #ffd966;
+}
+
+/* 7. Typing Effect */
+.typing-effect {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid #ffd966;
+    animation: 
+        typing 3.5s steps(40, end),
+        blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #ffd966; }
+}
+
+/* 8. Floating Numbers */
+.float-number {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* 9. Shine Effect */
+.shine-text {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.shine-text::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.3) 50%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: rotate(30deg);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) rotate(30deg); }
+    20% { transform: translateX(100%) rotate(30deg); }
+    100% { transform: translateX(100%) rotate(30deg); }
+}
+
+/* 10. Outline Text */
+.outline-text {
+    color: transparent;
+    -webkit-text-stroke: 2px #2d5a3b;
+    text-stroke: 2px #2d5a3b;
+    font-weight: bold;
+}
+
+.outline-text:hover {
+    color: #2d5a3b;
+    -webkit-text-stroke: 2px #ffd966;
+    transition: all 0.3s ease;
+}
+
+/* 11. Rotating Numbers */
+.rotate-number {
+    display: inline-block;
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 12. Pulsing Numbers */
+.pulse-number {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* 13. Letter Spacing Animation */
+.spacing-text {
+    animation: spacing 2s infinite alternate;
+}
+
+@keyframes spacing {
+    from { letter-spacing: normal; }
+    to { letter-spacing: 5px; }
+}
+
+/* 14. Rainbow Text */
+.rainbow-text {
+    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 1800% 1800%;
+    animation: rainbow 18s ease infinite;
+}
+
+@keyframes rainbow { 
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 15. Split Text Effect */
+.split-text {
+    position: relative;
+    display: inline-block;
+}
+
+.split-text::before,
+.split-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.split-text::before {
+    color: #ffd966;
+    z-index: -1;
+    animation: split-left 2s infinite alternate;
+}
+
+.split-text::after {
+    color: #2d5a3b;
+    z-index: -2;
+    animation: split-right 2s infinite alternate;
+}
+
+@keyframes split-left {
+    from { transform: translateX(-5px); }
+    to { transform: translateX(-10px); }
+}
+
+@keyframes split-right {
+    from { transform: translateX(5px); }
+    to { transform: translateX(10px); }
+}
