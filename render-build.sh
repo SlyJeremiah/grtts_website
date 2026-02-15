@@ -60,4 +60,8 @@ else:
 END
 
 echo "=== Superuser check complete ==="
+<<<<<<< HEAD
 echo "=== Build finished ==="
+=======
+echo "=== Build finished ==="
+>>>>>>> 78981223153d2d4c4604ca9ccf6b703af99c2b57
