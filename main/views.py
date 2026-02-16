@@ -48,11 +48,11 @@ def register(request):
             user = authenticate(username=username, password=raw_password)
             login(request, user)
             messages.success(request, f'Welcome {username}! Your account has been created successfully.')
-            return redirect('home')
+            return redirect('main:home')
     else:
         form = UserCreationForm()
     
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'main/register.html', {'form': form})
 
 # =============================================================================
 # EMAIL NOTIFICATION HELPER FUNCTIONS
