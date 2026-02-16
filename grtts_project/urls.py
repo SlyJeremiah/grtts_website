@@ -19,7 +19,7 @@ urlpatterns = [
     # Django Admin (for you)
     path('admin/', admin.site.urls),
     
-    # Main app URLs (public site)
+    # Main app URLs - this includes ALL main URLs including register
     path('', include('main.urls')),
     
     # Blog app URLs
