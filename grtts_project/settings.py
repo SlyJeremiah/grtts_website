@@ -157,21 +157,19 @@ else:
     # Media URL is not set - backend generates signed URLs
     MEDIA_URL = None
 # ========== END FILE STORAGE CONFIGURATION ==========
-
-# ========== UPDATED STATIC FILES CONFIGURATION ==========
+# Static files configuration - use manifest storage since manifest is accessible
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Force WhiteNoise to serve static files reliably
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True
+# Use manifest storage since we have the manifest file
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-# Optional: Add manifest support if needed
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Optional: Add this to help with debugging
+if DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 # ========== END STATIC FILES CONFIGURATION ==========
 
 # File upload settings
