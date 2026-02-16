@@ -31,8 +31,9 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 def send_inquiry_notification(inquiry, inquiry_type):
-    """Send email notification for any inquiry type"""
+    """Send email notification for any inquiry type and auto-reply to user"""
     try:
+        # ===== EMAIL TO ADMIN (YOU) =====
         # Prepare email subject and body based on inquiry type
         if inquiry_type == 'student':
             subject = f"New Student Inquiry: {inquiry.name}"
@@ -124,7 +125,7 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
             subject = f"New {inquiry_type.title()} Inquiry"
             body = f"New inquiry received. Check admin panel for details."
 
-        # Send the email
+        # Send email to admin
         send_mail(
             subject,
             body,
@@ -132,10 +133,53 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
             ['shanyaslym19@gmail.com'],  # Your email
             fail_silently=False,
         )
-        logger.info(f"Email notification sent for {inquiry_type} inquiry from {inquiry.name}")
+        logger.info(f"Admin notification sent for {inquiry_type} inquiry from {inquiry.name}")
+        
+        # ===== NEW: AUTO-REPLY TO USER =====
+        auto_reply_subject = f"Thank You for Contacting GRTTS"
+        auto_reply_body = f"""
+Dear {inquiry.name},
+
+Thank you for reaching out to GRTTS (Game Ranger & Tracker Training Specialist).
+
+We have received your inquiry and one of our team members will get back to you within 48 hours. Your inquiry details have been saved and we'll respond as soon as possible.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR INQUIRY SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Type: {inquiry_type.title()} Inquiry
+Name: {inquiry.name}
+Email: {inquiry.email}
+Phone: {getattr(inquiry, 'phone', 'Not provided')}
+
+We will contact you shortly at the email or phone number provided.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+In the meantime, you can:
+• Visit our website: https://grtts-website.vercel.app
+• Check our training programs: https://grtts-website.vercel.app/courses
+• Read our FAQ: https://grtts-website.vercel.app/faq
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Best regards,
+The GRTTS Team
+Training That Saves Lives
+www.grtts.co.zw
+"""
+        
+        send_mail(
+            auto_reply_subject,
+            auto_reply_body,
+            settings.DEFAULT_FROM_EMAIL,
+            [inquiry.email],  # Send to the user who made the inquiry
+            fail_silently=False,
+        )
+        logger.info(f"Auto-reply sent to {inquiry.email}")
+        
         return True
+        
     except Exception as e:
-        logger.error(f"Failed to send {inquiry_type} inquiry email: {e}")
+        logger.error(f"Failed to send email for {inquiry_type} inquiry: {e}")
         return False
 
 
