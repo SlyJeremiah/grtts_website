@@ -18,22 +18,23 @@
                         </div>
                     {% endif %}
                     
+                    {% if next %}
+                        <div class="alert alert-info">
+                            Please login to access this page.
+                        </div>
+                    {% endif %}
+                    
                     <form method="post" novalidate>
                         {% csrf_token %}
                         
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" required>
+                            <input type="text" name="username" class="form-control" required autofocus>
                         </div>
                         
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" name="password" class="form-control" required>
-                        </div>
-                        
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" name="remember" class="form-check-input" id="remember">
-                            <label class="form-check-label" for="remember">Remember me</label>
                         </div>
                         
                         <div class="d-grid gap-2">
@@ -47,12 +48,9 @@
                     
                     <hr>
                     
-                    <p class="text-center mb-2">
+                    <p class="text-center mb-0">
                         Don't have an account? 
                         <a href="{% url 'register' %}" class="text-success">Register here</a>
-                    </p>
-                    <p class="text-center mb-0">
-                        <a href="{% url 'password_reset' %}" class="text-muted small">Forgot password?</a>
                     </p>
                 </div>
             </div>
