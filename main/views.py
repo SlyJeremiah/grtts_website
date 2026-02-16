@@ -10,6 +10,8 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login, authenticate
 import traceback
 import uuid
 import logging
@@ -27,6 +29,28 @@ from .forms import NewsletterSignupForm, CourseApplicationForm, ApplicantProfile
 
 # Set up logging
 logger = logging.getLogger(__name__)
+
+# =============================================================================
+# AUTHENTICATION VIEWS
+# =============================================================================
+
+def register(request):
+    """User registration view"""
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Log the user in
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            messages.success(request, f'Welcome {username}! Your account has been created successfully.')
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    
+    return render(request, 'registration/register.html', {'form': form})
 
 # =============================================================================
 # EMAIL NOTIFICATION HELPER FUNCTIONS
@@ -783,7 +807,7 @@ def certificate_detail(request, cert_number):
 
 
 # =============================================================================
-# COURSE APPLICATION VIEWS (NEW)
+# COURSE APPLICATION VIEWS
 # =============================================================================
 
 @login_required
