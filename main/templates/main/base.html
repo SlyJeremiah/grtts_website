@@ -239,7 +239,7 @@
     <!-- Navigation with Logo -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2d5a3b;">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">
+            <a class="navbar-brand" href="{% url 'main:home' %}">
                 <div class="logo-container">
                     <!-- Logo Image -->
                     {% load static %}
@@ -265,22 +265,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                        <a class="nav-link" href="{% url 'main:home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                        <a class="nav-link" href="{% url 'main:about' %}">About Us</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="coursesDropdown" role="button" data-bs-toggle="dropdown">
                             Courses
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'courses' %}">All Courses</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:courses' %}">All Courses</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'courses' %}?type=basic">Basic Ranger Course</a></li>
-                            <li><a class="dropdown-item" href="{% url 'courses' %}?type=specialist">Specialist Courses</a></li>
-                            <li><a class="dropdown-item" href="{% url 'courses' %}?type=advanced">Advanced Ranger</a></li>
-                            <li><a class="dropdown-item" href="{% url 'courses' %}?type=tracking">Tracking Course</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=basic">Basic Ranger Course</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=specialist">Specialist Courses</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=advanced">Advanced Ranger</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=tracking">Tracking Course</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -288,20 +288,20 @@
                             Locations
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'locations' %}">All Locations</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:locations' %}">All Locations</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'locations' %}?center=gweru">Gweru</a></li>
-                            <li><a class="dropdown-item" href="{% url 'locations' %}?center=guruve">Guruve</a></li>
-                            <li><a class="dropdown-item" href="{% url 'locations' %}?center=elephant-hills">Elephant Hills</a></li>
-                            <li><a class="dropdown-item" href="{% url 'locations' %}?center=hwange">Hwange</a></li>
-                            <li><a class="dropdown-item" href="{% url 'locations' %}?center=victoria-falls">Victoria Falls</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=gweru">Gweru</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=guruve">Guruve</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=elephant-hills">Elephant Hills</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=hwange">Hwange</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=victoria-falls">Victoria Falls</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'blog:post_list' %}">News & Blog</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                        <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
                     </li>
 
                     <!-- ===== AUTHENTICATION LINKS ===== -->
@@ -312,12 +312,12 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="{% url 'my_applications' %}">
+                                <a class="dropdown-item" href="{% url 'main:my_applications' %}">
                                     <i class="fas fa-file-alt"></i> My Applications
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{% url 'edit_profile' %}">
+                                <a class="dropdown-item" href="{% url 'main:edit_profile' %}">
                                     <i class="fas fa-user-edit"></i> Profile
                                 </a>
                             </li>
@@ -350,7 +350,7 @@
     <!-- Floating Action Buttons -->
     <div class="floating-buttons animate__animated animate__fadeInRight">
         <!-- Location Button -->
-        <a href="{% url 'locations' %}" class="floating-btn location" title="Our Locations">
+        <a href="{% url 'main:locations' %}" class="floating-btn location" title="Our Locations">
             <i class="fas fa-map-marker-alt"></i>
             <span class="btn-label">Locations</span>
         </a>
@@ -412,9 +412,9 @@
                 <div class="col-md-4">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{% url 'courses' %}" class="text-white-50 text-decoration-none">Training Programs</a></li>
-                        <li><a href="{% url 'locations' %}" class="text-white-50 text-decoration-none">Deployment Locations</a></li>
-                        <li><a href="{% url 'faq' %}" class="text-white-50 text-decoration-none">FAQ</a></li>
+                        <li><a href="{% url 'main:courses' %}" class="text-white-50 text-decoration-none">Training Programs</a></li>
+                        <li><a href="{% url 'main:locations' %}" class="text-white-50 text-decoration-none">Deployment Locations</a></li>
+                        <li><a href="{% url 'main:faq' %}" class="text-white-50 text-decoration-none">FAQ</a></li>
                         <li><a href="{% url 'blog:post_list' %}" class="text-white-50 text-decoration-none">News & Updates</a></li>
                     </ul>
                 </div>
