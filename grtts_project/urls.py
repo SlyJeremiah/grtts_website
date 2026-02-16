@@ -1,52 +1,54 @@
-from django.urls import path
-from . import views
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.http import HttpResponse
+from django.contrib.auth import views as auth_views
 
-app_name = 'main'
+# Simple ping view for testing
+def ping(request):
+    return HttpResponse("✅ Django is working on Vercel!")
 
 urlpatterns = [
-    # Basic pages
-    path('', views.home, name='home'),
-    path('about/', views.about, name='about'),
-    path('faq/', views.faq, name='faq'),
+    # Health check endpoint
+    path('ping/', ping, name='ping'),
     
-    # Course URLs
-    path('courses/', views.courses, name='courses'),
-    path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+    # Django Admin
+    path('admin/', admin.site.urls),
     
-    # Location URLs
-    path('locations/', views.locations, name='locations'),
-    path('locations/<int:location_id>/', views.location_detail, name='location_detail'),
+    # Main app URLs (home, courses, locations, etc.) - CORRECT
+    path('', include('main.urls')),
     
-    # Contact & Inquiry URLs
-    path('contact/', views.contact, name='contact'),
-    path('inquiry/', views.inquiry_page, name='inquiry_page'),
-    path('inquiry/student/', views.inquiry_student, name='inquiry_student'),
-    path('inquiry/landowner/', views.inquiry_landowner, name='inquiry_landowner'),
-    path('inquiry/enthusiast/', views.inquiry_enthusiast, name='inquiry_enthusiast'),
-    path('inquiry/other/', views.inquiry_other, name='inquiry_other'),
+    # Blog app URLs
+    path('blog/', include('blog.urls')),
     
-    # Newsletter URLs
-    path('newsletter/signup/', views.newsletter_signup, name='newsletter_signup'),
-    path('newsletter/test/', views.newsletter_test, name='newsletter_test'),
-    path('newsletter/test-page/', views.newsletter_test_page, name='newsletter_test_page'),
-    path('newsletter/unsubscribe/<str:email>/', views.unsubscribe_newsletter, name='unsubscribe_newsletter'),
-    path('newsletter/track/<uuid:tracking_id>/', views.track_newsletter_open, name='track_newsletter_open'),
+    # =========================================================================
+    # AUTHENTICATION URLS
+    # =========================================================================
+    path('login/', 
+         auth_views.LoginView.as_view(
+             template_name='main/login.html',
+             redirect_authenticated_user=True
+         ), 
+         name='login'),
     
-    # Certificate URLs
-    path('verify-certificate/', views.verify_certificate, name='verify_certificate'),
-    path('certificate/<str:cert_number>/', views.certificate_detail, name='certificate_detail'),
+    path('logout/', 
+         auth_views.LogoutView.as_view(
+             next_page='home'
+         ), 
+         name='logout'),
     
-    # ===== NEW APPLICATION URLs =====
-    # Profile management
-    path('profile/create/', views.create_profile, name='create_profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),
-    
-    # Course applications
-    path('apply/<int:course_id>/', views.apply_for_course, name='apply_for_course'),
-    path('application/<int:application_id>/edit/', views.edit_application, name='edit_application'),
-    path('application/<int:application_id>/', views.application_detail, name='application_detail'),
-    path('applications/', views.my_applications, name='my_applications'),
-    
-    # Email test
-    path('test-email/', views.test_email, name='test_email'),
+    # Password Reset (optional - remove if you don't have templates yet)
+    # path('password-reset/', 
+    #      auth_views.PasswordResetView.as_view(
+    #          template_name='main/password_reset.html',
+    #      ), 
+    #      name='password_reset'),
 ]
+
+# =============================================================================
+# SERVE MEDIA AND STATIC FILES IN DEVELOPMENT
+# =============================================================================
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
