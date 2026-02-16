@@ -830,7 +830,7 @@ def create_profile(request):
             profile.user = request.user
             profile.save()
             messages.success(request, 'Your profile has been created successfully! You can now apply for courses.')
-            return redirect('courses')
+            return redirect('main:courses')
     else:
         form = ApplicantProfileForm()
     
