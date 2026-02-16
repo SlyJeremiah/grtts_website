@@ -14,8 +14,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 import traceback
 import uuid
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 import logging
 from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
 from django.views.decorators.http import require_POST
@@ -461,7 +459,7 @@ def contact(request):
             logger.error(f"Contact form error: {e}")
             messages.error(request, 'There was an error sending your message. Please try again.')
         
-        return redirect('contact')
+        return redirect('main:contact')
     
     context = {
         'initial_subject': initial_subject,
@@ -819,7 +817,7 @@ def create_profile(request):
     try:
         profile = ApplicantProfile.objects.get(user=request.user)
         messages.info(request, 'You already have a profile. You can edit it here.')
-        return redirect('edit_profile')
+        return redirect('main:edit_profile')
     except ApplicantProfile.DoesNotExist:
         pass
     
@@ -845,17 +843,14 @@ def edit_profile(request):
     try:
         profile = ApplicantProfile.objects.get(user=request.user)
     except ApplicantProfile.DoesNotExist:
-        # CHANGE THIS LINE:
-        # return redirect('create_profile')
-        # TO THIS:
-        return redirect('main:create_profile')
+        return redirect('main:create_profile')  # FIXED: Added main: namespace
     
     if request.method == 'POST':
         form = ApplicantProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('main:my_applications')
+            return redirect('main:my_applications')  # FIXED: Added main: namespace
     else:
         form = ApplicantProfileForm(instance=profile)
     
@@ -863,6 +858,8 @@ def edit_profile(request):
         'form': form,
         'profile': profile,
     })
+
+
 @login_required
 def apply_for_course(request, course_id):
     """Apply for a specific course"""
@@ -873,7 +870,7 @@ def apply_for_course(request, course_id):
         applicant_profile = ApplicantProfile.objects.get(user=request.user)
     except ApplicantProfile.DoesNotExist:
         messages.warning(request, 'Please complete your profile before applying.')
-        return redirect('create_profile')
+        return redirect('main:create_profile')  # FIXED: Added main: namespace
     
     # Check if already applied
     existing_application = CourseApplication.objects.filter(
@@ -884,10 +881,10 @@ def apply_for_course(request, course_id):
     if existing_application:
         if existing_application.status == 'draft':
             messages.info(request, 'You have a draft application. Please complete it.')
-            return redirect('edit_application', application_id=existing_application.id)
+            return redirect('main:edit_application', application_id=existing_application.id)  # FIXED: Added main: namespace
         else:
             messages.warning(request, f'You have already applied for {course.title}. You can track your application in your dashboard.')
-            return redirect('application_detail', application_id=existing_application.id)
+            return redirect('main:application_detail', application_id=existing_application.id)  # FIXED: Added main: namespace
     
     if request.method == 'POST':
         form = CourseApplicationForm(request.POST, request.FILES)
@@ -957,7 +954,7 @@ Check admin panel for full details and uploaded documents.
                 logger.error(f"Admin application notification failed: {e}")
             
             messages.success(request, 'Your application has been submitted successfully! Check your email for confirmation.')
-            return redirect('application_detail', application_id=application.id)
+            return redirect('main:application_detail', application_id=application.id)  # FIXED: Added main: namespace
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
@@ -983,7 +980,7 @@ def edit_application(request, application_id):
         )
     except ApplicantProfile.DoesNotExist:
         messages.error(request, 'Profile not found.')
-        return redirect('create_profile')
+        return redirect('main:create_profile')  # FIXED: Added main: namespace
     
     if request.method == 'POST':
         form = CourseApplicationForm(request.POST, request.FILES, instance=application)
@@ -1018,7 +1015,7 @@ GRTTS Team
                 logger.error(f"Application submission email failed: {e}")
             
             messages.success(request, 'Your application has been submitted successfully!')
-            return redirect('application_detail', application_id=application.id)
+            return redirect('main:application_detail', application_id=application.id)  # FIXED: Added main: namespace
     else:
         form = CourseApplicationForm(instance=application)
     
@@ -1073,7 +1070,7 @@ def application_detail(request, application_id):
         )
     except ApplicantProfile.DoesNotExist:
         messages.error(request, 'Application not found.')
-        return redirect('my_applications')
+        return redirect('main:my_applications')  # FIXED: Added main: namespace
     
     return render(request, 'main/application_detail.html', {
         'application': application,
