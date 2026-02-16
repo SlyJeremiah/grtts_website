@@ -1,0 +1,223 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Application Details - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:my_applications' %}">My Applications</a></li>
+            <li class="breadcrumb-item active">Application #{{ application.application_number|default:application.id }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <!-- Status Banner -->
+            <div class="alert 
+                {% if application.status == 'accepted' or application.status == 'enrolled' or application.status == 'completed' %}
+                    alert-success
+                {% elif application.status == 'rejected' %}
+                    alert-danger
+                {% elif application.status == 'waitlisted' %}
+                    alert-warning
+                {% elif application.status == 'submitted' or application.status == 'under_review' %}
+                    alert-info
+                {% else %}
+                    alert-secondary
+                {% endif %}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Status:</strong> 
+                        {% if application.status == 'draft' %}
+                            Draft - Not yet submitted
+                        {% elif application.status == 'submitted' %}
+                            Submitted - Pending Review
+                        {% elif application.status == 'under_review' %}
+                            Under Review
+                        {% elif application.status == 'accepted' %}
+                            Accepted - Congratulations!
+                        {% elif application.status == 'waitlisted' %}
+                            Waitlisted
+                        {% elif application.status == 'rejected' %}
+                            Not Accepted
+                        {% elif application.status == 'enrolled' %}
+                            Enrolled
+                        {% elif application.status == 'completed' %}
+                            Course Completed
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>Applied:</strong> {{ application.application_date|date:"F j, Y" }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Application for {{ application.course.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Course Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Course Details</h5>
+                            <p>
+                                <strong>Duration:</strong> {{ application.course.duration }}<br>
+                                {% if application.course.intake_dates %}
+                                <strong>Intake Dates:</strong> {{ application.course.intake_dates }}<br>
+                                {% endif %}
+                                <strong>Application #:</strong> {{ application.application_number|default:application.id }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Motivation -->
+                    <div class="mb-4">
+                        <h5>Your Motivation</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                {{ application.motivation_text|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience -->
+                    {% if application.previous_experience %}
+                    <div class="mb-4">
+                        <h5>Previous Experience</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                {{ application.previous_experience|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Health Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Medical Conditions</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {{ application.medical_conditions|default:"None specified"|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Dietary Requirements</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    {{ application.dietary_requirements|default:"None specified"|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uploaded Documents -->
+                    <h5 class="mt-4">Uploaded Documents</h5>
+                    <div class="row">
+                        {% if application.profile_photo %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <i class="fas fa-user-circle fa-2x text-success mb-2"></i>
+                                    <h6>Profile Photo</h6>
+                                    <a href="{{ application.profile_photo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if application.id_document %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <i class="fas fa-id-card fa-2x text-success mb-2"></i>
+                                    <h6>ID Document</h6>
+                                    <a href="{{ application.id_document.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if application.cv_resume %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <i class="fas fa-file-alt fa-2x text-success mb-2"></i>
+                                    <h6>CV/Resume</h6>
+                                    <a href="{{ application.cv_resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if application.certificates %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <i class="fas fa-certificate fa-2x text-success mb-2"></i>
+                                    <h6>Certificates</h6>
+                                    <a href="{{ application.certificates.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if application.motivation_letter %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <i class="fas fa-envelope fa-2x text-success mb-2"></i>
+                                    <h6>Motivation Letter</h6>
+                                    <a href="{{ application.motivation_letter.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if application.additional_docs %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <i class="fas fa-folder-open fa-2x text-success mb-2"></i>
+                                    <h6>Additional Documents</h6>
+                                    <a href="{{ application.additional_docs.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4">
+                        <a href="{% url 'main:my_applications' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Applications
+                        </a>
+                        {% if application.status == 'draft' %}
+                            <a href="{% url 'main:edit_application' application.id %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Edit Draft
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
