@@ -163,13 +163,15 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# For production on Vercel, use ManifestStaticFilesStorage
-if os.environ.get('VERCEL_ENV'):
+# Use the appropriate static files storage based on environment
+if os.environ.get('VERCEL'):  # Fixed: Now matches your other Vercel check
+    # On Vercel, use Django's manifest storage
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 else:
+    # Locally, use WhiteNoise with compression
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
