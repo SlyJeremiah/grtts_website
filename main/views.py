@@ -845,14 +845,17 @@ def edit_profile(request):
     try:
         profile = ApplicantProfile.objects.get(user=request.user)
     except ApplicantProfile.DoesNotExist:
-        return redirect('create_profile')
+        # CHANGE THIS LINE:
+        # return redirect('create_profile')
+        # TO THIS:
+        return redirect('main:create_profile')
     
     if request.method == 'POST':
         form = ApplicantProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('my_applications')
+            return redirect('main:my_applications')
     else:
         form = ApplicantProfileForm(instance=profile)
     
@@ -860,8 +863,6 @@ def edit_profile(request):
         'form': form,
         'profile': profile,
     })
-
-
 @login_required
 def apply_for_course(request, course_id):
     """Apply for a specific course"""
