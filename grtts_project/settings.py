@@ -157,24 +157,24 @@ else:
     MEDIA_URL = None
 # ========== END FILE STORAGE CONFIGURATION ==========
 
-# Static files (CSS, JavaScript, Images)
+# ========== STATIC FILES CONFIGURATION ==========
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Choose ONE storage backend based on environment
+# Single source of truth for static files storage
 if os.environ.get('VERCEL'):
-    # On Vercel, use Django's manifest storage
+    # On Vercel, use Django's manifest storage for hashed files
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-else:
-    # Locally, use WhiteNoise for compression and caching
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Optional: Override for debugging locally
-if DEBUG and not os.environ.get('VERCEL'):
+elif DEBUG:
+    # Local development - simple storage for easy debugging
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    # Local production simulation - WhiteNoise with compression
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# ========== END STATIC FILES CONFIGURATION ==========
 
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
