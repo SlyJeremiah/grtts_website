@@ -1,5 +1,5 @@
 from django import forms
-from .models import ContactMessage, Course, NewsletterSubscriber, CourseApplication
+from .models import ContactMessage, Course, NewsletterSubscriber, CourseApplication, ApplicantProfile
 
 class CourseInquiryForm(forms.Form):
     """Simple inquiry form for course questions (not applications)"""
@@ -49,108 +49,152 @@ class NewsletterSignupForm(forms.ModelForm):
         return email
 
 
+class ApplicantProfileForm(forms.ModelForm):
+    """Form for updating applicant profile"""
+    class Meta:
+        model = ApplicantProfile
+        fields = [
+            'date_of_birth', 'gender', 'nationality',
+            'address', 'city', 'province',
+            'emergency_name', 'emergency_phone', 'emergency_relationship',
+            'medical_conditions', 'dietary_requirements',
+            'id_document', 'cv', 'certificates'
+        ]
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'gender': forms.Select(attrs={'class': 'form-control'}),
+            'nationality': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Zimbabwean'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Your physical address'}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City/Town'}),
+            'province': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Province'}),
+            'emergency_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Emergency contact full name'}),
+            'emergency_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Emergency contact phone'}),
+            'emergency_relationship': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Relationship to contact'}),
+            'medical_conditions': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Any medical conditions we should know about'}),
+            'dietary_requirements': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Any dietary requirements'}),
+            'id_document': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.jpg,.jpeg,.png'}),
+            'cv': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.doc,.docx'}),
+            'certificates': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.jpg,.jpeg,.png'}),
+        }
+        labels = {
+            'date_of_birth': 'Date of Birth',
+            'gender': 'Gender',
+            'nationality': 'Nationality',
+            'address': 'Address',
+            'city': 'City',
+            'province': 'Province',
+            'emergency_name': 'Emergency Contact Name',
+            'emergency_phone': 'Emergency Contact Phone',
+            'emergency_relationship': 'Relationship',
+            'medical_conditions': 'Medical Conditions',
+            'dietary_requirements': 'Dietary Requirements',
+            'id_document': 'ID Document (Passport/National ID)',
+            'cv': 'CV/Resume',
+            'certificates': 'Certificates',
+        }
+
+
 class CourseApplicationForm(forms.ModelForm):
-    """Comprehensive application form for course enrollment"""
+    """Comprehensive application form for course enrollment with file uploads"""
     
-    EDUCATION_LEVELS = [
-        ('secondary', 'Secondary School'),
-        ('diploma', 'Diploma'),
-        ('degree', "Bachelor's Degree"),
-        ('masters', "Master's Degree"),
-        ('other', 'Other'),
-    ]
-    
-    HEAR_ABOUT_CHOICES = [
-        ('google', 'Google Search'),
-        ('facebook', 'Facebook'),
-        ('whatsapp', 'WhatsApp'),
-        ('friend', 'Friend/Word of Mouth'),
-        ('email', 'Email Newsletter'),
-        ('other', 'Other'),
-    ]
-    
-    # Override the education_level field to use our choices
-    education_level = forms.ChoiceField(
-        choices=EDUCATION_LEVELS,
-        widget=forms.Select(attrs={'class': 'form-control'})
+    # Text fields that override profile defaults
+    motivation_text = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 5,
+            'placeholder': 'Tell us why you want to take this course. What are your goals and aspirations?'
+        }),
+        label="Motivation"
     )
     
-    # Override the how_did_you_hear field
-    how_did_you_hear = forms.ChoiceField(
-        choices=HEAR_ABOUT_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'})
+    previous_experience = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 4,
+            'placeholder': 'Any relevant experience in conservation, military, security, or related fields.'
+        }),
+        label="Previous Experience"
+    )
+    
+    medical_conditions = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Any medical conditions we should be aware of for training purposes.'
+        }),
+        label="Medical Conditions"
+    )
+    
+    dietary_requirements = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 2,
+            'placeholder': 'Any dietary requirements or restrictions.'
+        }),
+        label="Dietary Requirements"
     )
     
     class Meta:
         model = CourseApplication
         fields = [
-            'full_name', 'email', 'phone', 'date_of_birth',
-            'nationality', 'education_level', 'previous_experience',
-            'medical_conditions', 'emergency_contact_name',
-            'emergency_contact_phone', 'how_did_you_hear', 'additional_notes'
+            # File uploads
+            'profile_photo', 'id_document', 'cv_resume', 'certificates',
+            'motivation_letter', 'additional_docs',
+            
+            # Text fields (handled above)
+            # Note: These are already defined as form fields above
         ]
         widgets = {
-            'full_name': forms.TextInput(attrs={
+            'profile_photo': forms.FileInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter your full name'
+                'accept': 'image/*',
+                'aria-describedby': 'profile_photo_help'
             }),
-            'email': forms.EmailInput(attrs={
+            'id_document': forms.FileInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'your.email@example.com'
+                'accept': '.pdf,.jpg,.jpeg,.png',
+                'aria-describedby': 'id_document_help'
             }),
-            'phone': forms.TextInput(attrs={
+            'cv_resume': forms.FileInput(attrs={
                 'class': 'form-control',
-                'placeholder': '+263 123 456 789'
+                'accept': '.pdf,.doc,.docx',
+                'aria-describedby': 'cv_resume_help'
             }),
-            'date_of_birth': forms.DateInput(attrs={
+            'certificates': forms.FileInput(attrs={
                 'class': 'form-control',
-                'type': 'date'
+                'accept': '.pdf,.jpg,.jpeg,.png',
+                'aria-describedby': 'certificates_help'
             }),
-            'nationality': forms.TextInput(attrs={
+            'motivation_letter': forms.FileInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'e.g., Zimbabwean'
+                'accept': '.pdf,.doc,.docx',
+                'aria-describedby': 'motivation_letter_help'
             }),
-            'previous_experience': forms.Textarea(attrs={
+            'additional_docs': forms.FileInput(attrs={
                 'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Tell us about any relevant experience (optional)'
-            }),
-            'medical_conditions': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'List any medical conditions we should know about (optional)'
-            }),
-            'emergency_contact_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Emergency contact full name'
-            }),
-            'emergency_contact_phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Emergency contact phone'
-            }),
-            'additional_notes': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Any other information you\'d like to share (optional)'
+                'accept': '.pdf,.doc,.docx,.jpg,.jpeg,.png',
+                'aria-describedby': 'additional_docs_help'
             }),
         }
         labels = {
-            'full_name': 'Full Name',
-            'email': 'Email Address',
-            'phone': 'Phone Number',
-            'date_of_birth': 'Date of Birth',
-            'nationality': 'Nationality',
-            'education_level': 'Highest Education Level',
-            'previous_experience': 'Previous Experience',
-            'medical_conditions': 'Medical Conditions',
-            'emergency_contact_name': 'Emergency Contact Name',
-            'emergency_contact_phone': 'Emergency Contact Phone',
-            'how_did_you_hear': 'How did you hear about us?',
-            'additional_notes': 'Additional Notes',
+            'profile_photo': 'Profile Photo',
+            'id_document': 'ID Document (Passport/National ID)',
+            'cv_resume': 'CV / Resume',
+            'certificates': 'Certificates',
+            'motivation_letter': 'Motivation Letter',
+            'additional_docs': 'Additional Documents',
         }
         help_texts = {
-            'previous_experience': 'Any relevant experience in conservation, military, security, or related fields.',
-            'medical_conditions': 'Please list any medical conditions we should be aware of for training purposes.',
+            'profile_photo': 'Upload a recent passport-sized photo (JPG, PNG). Max 2MB.',
+            'id_document': 'Upload your ID or Passport (PDF, JPG, PNG). Max 5MB.',
+            'cv_resume': 'Upload your CV/Resume (PDF, DOC, DOCX). Max 5MB.',
+            'certificates': 'Upload any relevant certificates (PDF, JPG, PNG). Max 5MB per file.',
+            'motivation_letter': 'Upload your motivation letter (PDF, DOC, DOCX). Max 5MB.',
+            'additional_docs': 'Any other supporting documents. Max 5MB per file.',
         }
 
 
