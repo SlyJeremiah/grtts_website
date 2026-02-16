@@ -474,7 +474,14 @@ class ApplicantProfile(models.Model):
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.user.email}"
 
+
+# =============================================================================
+# ENHANCED COURSE APPLICATION MODEL WITH COMPREHENSIVE FILE UPLOADS
+# =============================================================================
+
 class CourseApplication(models.Model):
+    """Comprehensive course application with file uploads and tracking"""
+    
     STATUS_CHOICES = [
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -486,17 +493,65 @@ class CourseApplication(models.Model):
         ('completed', 'Completed'),
     ]
     
-    applicant = models.ForeignKey(ApplicantProfile, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    # ===== RELATIONSHIPS =====
+    applicant = models.ForeignKey(ApplicantProfile, on_delete=models.CASCADE, related_name='course_applications')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='applications')
+    
+    # ===== APPLICATION STATUS =====
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    application_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
     application_date = models.DateTimeField(auto_now_add=True)
-    reviewed_date = models.DateTimeField(blank=True, null=True)
-    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_applications')
-    motivation_letter = models.FileField(upload_to='applications/motivation/', blank=True)
-    additional_docs = models.FileField(upload_to='applications/additional/', blank=True)
+    
+    # ===== TEXT FIELDS (from applicant, can override profile) =====
+    motivation_text = models.TextField(blank=True, help_text="Why you want to take this course")
+    previous_experience = models.TextField(blank=True, help_text="Relevant experience in conservation, military, security, etc.")
+    medical_conditions = models.TextField(blank=True, help_text="Any medical conditions we should be aware of")
+    dietary_requirements = models.TextField(blank=True)
+    
+    # ===== COMPREHENSIVE FILE UPLOADS =====
+    profile_photo = models.ImageField(
+        upload_to='applications/photos/',
+        blank=True,
+        null=True,
+        help_text="Passport-sized photo (JPG, PNG)"
+    )
+    id_document = models.FileField(
+        upload_to='applications/id_documents/',
+        blank=True,
+        null=True,
+        help_text="Upload your ID or Passport (PDF, JPG, PNG)"
+    )
+    cv_resume = models.FileField(
+        upload_to='applications/cv/',
+        blank=True,
+        null=True,
+        help_text="Upload your CV/Resume (PDF, DOC, DOCX)"
+    )
+    certificates = models.FileField(
+        upload_to='applications/certificates/',
+        blank=True,
+        null=True,
+        help_text="Upload any relevant certificates (PDF, JPG, PNG)"
+    )
+    motivation_letter = models.FileField(
+        upload_to='applications/motivation/',
+        blank=True,
+        null=True,
+        help_text="Upload your motivation letter (PDF, DOC, DOCX)"
+    )
+    additional_docs = models.FileField(
+        upload_to='applications/additional/',
+        blank=True,
+        null=True,
+        help_text="Any other supporting documents"
+    )
+    
+    # ===== INTERVIEW DETAILS =====
     interview_date = models.DateTimeField(blank=True, null=True)
     interview_notes = models.TextField(blank=True)
     interview_score = models.IntegerField(blank=True, null=True)
+    
+    # ===== PAYMENT INFORMATION =====
     payment_required = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     payment_made = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     payment_status = models.CharField(max_length=20, choices=[
@@ -504,7 +559,14 @@ class CourseApplication(models.Model):
         ('partial', 'Partial'),
         ('paid', 'Paid'),
     ], default='pending')
+    
+    # ===== ADMIN FIELDS =====
+    reviewed_date = models.DateTimeField(blank=True, null=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_applications')
     admin_notes = models.TextField(blank=True)
+    
+    # ===== TIMESTAMPS =====
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         unique_together = ['applicant', 'course']
@@ -512,6 +574,28 @@ class CourseApplication(models.Model):
     
     def __str__(self):
         return f"{self.applicant.user.get_full_name()} - {self.course.title}"
+    
+    def save(self, *args, **kwargs):
+        if not self.application_number:
+            # Generate a unique application number: APP-2026-0001
+            year = timezone.now().year
+            last_app = CourseApplication.objects.filter(
+                application_number__startswith=f"APP-{year}"
+            ).order_by('-application_number').first()
+            
+            if last_app and last_app.application_number:
+                last_num = int(last_app.application_number.split('-')[-1])
+                new_num = last_num + 1
+            else:
+                new_num = 1
+            
+            self.application_number = f"APP-{year}-{new_num:04d}"
+        
+        super().save(*args, **kwargs)
+    
+    def get_status_display(self):
+        return dict(self.STATUS_CHOICES).get(self.status, self.status)
+
 
 class Certificate(models.Model):
     certificate_number = models.CharField(max_length=50, unique=True)
