@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import traceback
 import uuid
+import logging
 from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
 from django.views.decorators.http import require_POST
 import json
@@ -21,6 +22,183 @@ from .models import (
 )
 from .utils import send_contact_notification
 from .forms import NewsletterSignupForm
+
+# Set up logging
+logger = logging.getLogger(__name__)
+
+# =============================================================================
+# EMAIL NOTIFICATION HELPER FUNCTIONS
+# =============================================================================
+
+def send_inquiry_notification(inquiry, inquiry_type):
+    """Send email notification for any inquiry type"""
+    try:
+        # Prepare email subject and body based on inquiry type
+        if inquiry_type == 'student':
+            subject = f"New Student Inquiry: {inquiry.name}"
+            body = f"""
+NEW STUDENT INQUIRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: {inquiry.name}
+Email: {inquiry.email}
+Phone: {inquiry.phone}
+Age: {inquiry.age}
+Nationality: {inquiry.nationality}
+Education: {inquiry.education or 'Not specified'}
+Course Interested: {inquiry.course}
+Intake: {inquiry.intake or 'Not specified'}
+Experience: {inquiry.experience or 'Not specified'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        elif inquiry_type == 'landowner':
+            subject = f"New Landowner Inquiry: {inquiry.name}"
+            body = f"""
+NEW LANDOWNER INQUIRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: {inquiry.name}
+Email: {inquiry.email}
+Phone: {inquiry.phone}
+Organization: {inquiry.organization or 'Not specified'}
+Service Needed: {inquiry.service}
+Property Size: {inquiry.property_size or 'Not specified'} hectares
+Property Location: {inquiry.property_location or 'Not specified'}
+
+CONCERNS:
+• Poaching: {'✓' if inquiry.concerns_poaching else '✗'}
+• Human-Wildlife Conflict: {'✓' if inquiry.concerns_human_wildlife else '✗'}
+• Livestock Protection: {'✓' if inquiry.concerns_livestock else '✗'}
+• Trespassing: {'✓' if inquiry.concerns_trespassing else '✗'}
+
+Details: {inquiry.details or 'No additional details'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        elif inquiry_type == 'enthusiast':
+            subject = f"New Enthusiast Inquiry: {inquiry.name}"
+            body = f"""
+NEW ENTHUSIAST INQUIRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: {inquiry.name}
+Email: {inquiry.email}
+Interest: {inquiry.interest}
+Background: {inquiry.background or 'Not specified'}
+Availability: {inquiry.availability or 'Not specified'}
+
+Message: {inquiry.message or 'No message'}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        elif inquiry_type == 'other':
+            subject = f"New General Inquiry: {inquiry.name}"
+            body = f"""
+NEW GENERAL INQUIRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: {inquiry.name}
+Email: {inquiry.email}
+Phone: {inquiry.phone or 'Not provided'}
+Organization: {inquiry.organization or 'Not provided'}
+Category: {inquiry.category}
+Subject: {inquiry.subject}
+Urgency: {inquiry.urgency}
+
+Message:
+{inquiry.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        else:
+            # Generic for any other type
+            subject = f"New {inquiry_type.title()} Inquiry"
+            body = f"New inquiry received. Check admin panel for details."
+
+        # Send the email
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            ['shanyaslym19@gmail.com'],  # Your email
+            fail_silently=False,
+        )
+        logger.info(f"Email notification sent for {inquiry_type} inquiry from {inquiry.name}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send {inquiry_type} inquiry email: {e}")
+        return False
+
+
+def send_contact_notification(contact):
+    """Send notification for contact form submissions"""
+    try:
+        subject = f"New Contact Message: {contact.subject}"
+        body = f"""
+NEW CONTACT MESSAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: {contact.name}
+Email: {contact.email}
+Phone: {contact.phone or 'Not provided'}
+Subject: {contact.subject}
+
+Message:
+{contact.message}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            ['shanyaslym19@gmail.com'],
+            fail_silently=False,
+        )
+        logger.info(f"Email notification sent for contact from {contact.name}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send contact email: {e}")
+        return False
+
+
+def send_newsletter_notification(email):
+    """Send notification when someone subscribes to newsletter"""
+    try:
+        subject = "New Newsletter Subscriber"
+        body = f"""
+NEW NEWSLETTER SUBSCRIBER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Email: {email}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Time: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"""
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            ['shanyaslym19@gmail.com'],
+            fail_silently=False,
+        )
+        logger.info(f"Email notification sent for newsletter subscriber: {email}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send newsletter notification: {e}")
+        return False
+
 
 # =============================================================================
 # HOME & BASIC PAGES
@@ -185,15 +363,13 @@ def contact(request):
             )
             contact.save()
             
-            # Send email notifications
-            try:
-                send_contact_notification(contact)
-                messages.success(request, 'Thank you for your message! We have sent a confirmation to your email.')
-            except Exception as e:
-                messages.success(request, 'Thank you for your message! We will contact you soon.')
-                # Log email error but don't show to user
+            # Send email notification
+            send_contact_notification(contact)
+            
+            messages.success(request, 'Thank you for your message! We will contact you soon.')
             
         except Exception as e:
+            logger.error(f"Contact form error: {e}")
             messages.error(request, 'There was an error sending your message. Please try again.')
         
         return redirect('contact')
@@ -204,9 +380,11 @@ def contact(request):
     }
     return render(request, 'main/contact.html', context)
 
+
 def inquiry_page(request):
     """Main inquiry page with all forms"""
     return render(request, 'main/inquiry.html')
+
 
 @require_POST
 def inquiry_student(request):
@@ -224,21 +402,20 @@ def inquiry_student(request):
             experience=request.POST.get('experience', ''),
         )
         
-        # Send notification email
-        try:
-            send_inquiry_notification(inquiry, 'student')
-        except:
-            pass
+        # Send email notification
+        send_inquiry_notification(inquiry, 'student')
         
         return JsonResponse({
             'success': True,
             'message': 'Your student inquiry has been submitted successfully. We will contact you within 48 hours.'
         })
     except Exception as e:
+        logger.error(f"Student inquiry error: {e}")
         return JsonResponse({
             'success': False,
-            'message': f'Error submitting form: {str(e)}'
+            'message': f'Error submitting form. Please try again.'
         }, status=400)
+
 
 @require_POST
 def inquiry_landowner(request):
@@ -259,15 +436,20 @@ def inquiry_landowner(request):
             details=request.POST.get('details', ''),
         )
         
+        # Send email notification
+        send_inquiry_notification(inquiry, 'landowner')
+        
         return JsonResponse({
             'success': True,
             'message': 'Your landowner inquiry has been submitted successfully. We will contact you within 48 hours.'
         })
     except Exception as e:
+        logger.error(f"Landowner inquiry error: {e}")
         return JsonResponse({
             'success': False,
-            'message': f'Error submitting form: {str(e)}'
+            'message': f'Error submitting form. Please try again.'
         }, status=400)
+
 
 @require_POST
 def inquiry_enthusiast(request):
@@ -282,15 +464,20 @@ def inquiry_enthusiast(request):
             message=request.POST.get('message', ''),
         )
         
+        # Send email notification
+        send_inquiry_notification(inquiry, 'enthusiast')
+        
         return JsonResponse({
             'success': True,
             'message': 'Your enthusiast inquiry has been submitted successfully. We will contact you within 48 hours.'
         })
     except Exception as e:
+        logger.error(f"Enthusiast inquiry error: {e}")
         return JsonResponse({
             'success': False,
-            'message': f'Error submitting form: {str(e)}'
+            'message': f'Error submitting form. Please try again.'
         }, status=400)
+
 
 @require_POST
 def inquiry_other(request):
@@ -307,15 +494,21 @@ def inquiry_other(request):
             urgency=request.POST.get('urgency', 'normal'),
         )
         
+        # Send email notification
+        send_inquiry_notification(inquiry, 'other')
+        
         return JsonResponse({
             'success': True,
             'message': 'Your inquiry has been submitted successfully. We will respond within 48 hours.'
         })
     except Exception as e:
+        logger.error(f"Other inquiry error: {e}")
         return JsonResponse({
             'success': False,
-            'message': f'Error submitting form: {str(e)}'
+            'message': f'Error submitting form. Please try again.'
         }, status=400)
+
+
 # =============================================================================
 # NEWSLETTER VIEWS
 # =============================================================================
@@ -367,6 +560,10 @@ def newsletter_signup(request):
             # New subscriber
             message = 'Thank you for subscribing to our newsletter!'
             print(f"✅ New subscriber created: {email}")
+            
+            # Send notification email to admin
+            send_newsletter_notification(email)
+            
         else:
             if not subscriber.is_active:
                 # Reactivate
@@ -375,6 +572,10 @@ def newsletter_signup(request):
                 subscriber.save()
                 message = 'Your subscription has been reactivated!'
                 print(f"🔄 Subscriber reactivated: {email}")
+                
+                # Send notification email to admin
+                send_newsletter_notification(email)
+                
             else:
                 # Already active
                 print(f"⚠️ Already subscribed: {email}")
@@ -382,8 +583,6 @@ def newsletter_signup(request):
                     'success': False,
                     'message': 'This email is already subscribed to our newsletter.'
                 }, status=400)
-        
-        # TODO: Send confirmation email (optional)
         
         return JsonResponse({
             'success': True,
@@ -394,10 +593,11 @@ def newsletter_signup(request):
         # Print full error for debugging
         print("❌ ERROR in newsletter_signup:")
         print(traceback.format_exc())
+        logger.error(f"Newsletter signup error: {e}")
         
         return JsonResponse({
             'success': False,
-            'message': f'Server error: {str(e)}'
+            'message': f'Server error. Please try again later.'
         }, status=500)
 
 
@@ -530,11 +730,12 @@ def test_email(request):
             'Test Email from GRTTS',
             'This is a test email to verify SMTP settings.',
             settings.DEFAULT_FROM_EMAIL,
-            ['your-email@gmail.com'],  # Replace with your email
+            ['shanyaslym19@gmail.com'],
             fail_silently=False,
         )
         return HttpResponse('Email sent successfully! Check your inbox.')
     except Exception as e:
+        logger.error(f"Test email error: {e}")
         return HttpResponse(f'Error sending email: {str(e)}')
 
 
