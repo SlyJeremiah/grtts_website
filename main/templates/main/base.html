@@ -304,44 +304,19 @@
                         <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
                     </li>
 
-                    <!-- ===== AUTHENTICATION LINKS ===== -->
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> {{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="{% url 'main:my_applications' %}">
-                                    <i class="fas fa-file-alt"></i> My Applications
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{% url 'main:edit_profile' %}">
-                                    <i class="fas fa-user-edit"></i> Profile
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    {% else %}
+                    <!-- ===== REGISTRATION ONLY (NO LOGIN) ===== -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">
+                        <a class="nav-link" href="{% url 'main:register' %}">
                             <i class="fas fa-user-plus"></i> Register
                         </a>
                     </li>
-                    {% endif %}
-                    <!-- ===== END AUTHENTICATION LINKS ===== -->
+
+                    <!-- Admin link (only visible to you) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">
+                            <i class="fas fa-lock"></i> Admin
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
