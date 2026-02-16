@@ -47,7 +47,7 @@
                     <p><strong>Completion Date:</strong> {{ certificate.completion_date|date:"F j, Y" }}</p>
                     <p><strong>Issue Date:</strong> {{ certificate.issue_date|date:"F j, Y" }}</p>
                     
-                    <a href="{% url 'certificate_detail' certificate.certificate_number %}" class="btn btn-outline-success w-100">
+                    <a href="{% url 'main:certificate_detail' certificate.certificate_number %}" class="btn btn-outline-success w-100">
                         View Full Certificate
                     </a>
                 </div>

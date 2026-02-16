@@ -436,7 +436,7 @@
 
                     <div id="newsletter-status"></div>
 
-                    <form id="newsletter-form" method="post" action="{% url 'newsletter_signup' %}">
+                    <form id="newsletter-form" method="post" action="{% url 'main:newsletter_signup' %}">
                         {% csrf_token %}
                         <div class="input-group mb-2">
                             <input type="email" name="email" class="form-control form-control-sm" placeholder="Your email address" required>

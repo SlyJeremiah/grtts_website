@@ -30,8 +30,8 @@
                     
                     <h5>Debug Info:</h5>
                     <ul>
-                        <li><strong>Test URL:</strong> <code>{% url 'newsletter_test' %}</code></li>
-                        <li><strong>Real URL:</strong> <code>{% url 'newsletter_signup' %}</code></li>
+                        <li><strong>Test URL:</strong> <code>{% url 'main:newsletter_test' %}</code></li>
+                        <li><strong>Real URL:</strong> <code>{% url 'main:newsletter_signup' %}</code></li>
                     </ul>
                 </div>
             </div>
@@ -52,7 +52,7 @@ document.getElementById('test-form').addEventListener('submit', function(e) {
     resultDiv.className = 'alert alert-info';
     resultDiv.innerHTML = 'Sending test request...';
     
-    fetch('{% url 'newsletter_test' %}', {
+    fetch('{% url 'main:newsletter_test' %}', {
         method: 'POST',
         body: formData,
         headers: {

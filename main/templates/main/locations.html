@@ -11,7 +11,7 @@
     {% if current_filter %}
     <div class="alert alert-info mb-4">
         Showing: <strong>{{ current_filter|title }} Training Center</strong>
-        <a href="{% url 'locations' %}" class="float-end">Clear Filter</a>
+        <a href="{% url 'main:locations' %}" class="float-end">Clear Filter</a>
     </div>
     {% endif %}
     
@@ -23,7 +23,7 @@
         {% for location in training_centers %}
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
-                <a href="{% url 'location_detail' location.id %}" class="text-decoration-none">
+                <a href="{% url 'main:location_detail' location.id %}" class="text-decoration-none">
                     {% if location.main_image %}
                     <img src="{{ location.main_image.url }}" class="card-img-top" alt="{{ location.name }}" style="height: 200px; object-fit: cover;">
                     {% elif location.gallery_images.first %}
@@ -38,7 +38,7 @@
                     {% endif %}
                 </a>
                 <div class="card-body">
-                    <a href="{% url 'location_detail' location.id %}" class="text-decoration-none" style="color: inherit;">
+                    <a href="{% url 'main:location_detail' location.id %}" class="text-decoration-none" style="color: inherit;">
                         <h4>{{ location.name }}</h4>
                     </a>
                     {% if location.description %}
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent">
-                    <a href="{% url 'location_detail' location.id %}" class="btn btn-sm" style="background-color: #2d5a3b; color: white;">
+                    <a href="{% url 'main:location_detail' location.id %}" class="btn btn-sm" style="background-color: #2d5a3b; color: white;">
                         View Details <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -89,7 +89,7 @@
         {% if not location.is_training_center %}
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm h-100">
-                <a href="{% url 'location_detail' location.id %}" class="text-decoration-none">
+                <a href="{% url 'main:location_detail' location.id %}" class="text-decoration-none">
                     {% if location.main_image %}
                     <img src="{{ location.main_image.url }}" class="card-img-top" alt="{{ location.name }}" style="height: 150px; object-fit: cover;">
                     {% elif location.gallery_images.first %}
@@ -103,7 +103,7 @@
                     {% endif %}
                 </a>
                 <div class="card-body">
-                    <a href="{% url 'location_detail' location.id %}" class="text-decoration-none" style="color: inherit;">
+                    <a href="{% url 'main:location_detail' location.id %}" class="text-decoration-none" style="color: inherit;">
                         <h5>{{ location.name }}</h5>
                     </a>
                     {% if location.description %}
@@ -145,7 +145,7 @@
                     <div class="row">
                         {% for location in locations %}
                         <div class="col-md-2 col-4 mb-3">
-                            <a href="{% url 'location_detail' location.id %}" class="text-decoration-none">
+                            <a href="{% url 'main:location_detail' location.id %}" class="text-decoration-none">
                                 <div class="text-center p-2 border rounded" style="background-color: #f8f9fa;">
                                     {% if location.main_image %}
                                     <img src="{{ location.main_image.url }}" alt="{{ location.name }}" class="rounded-circle mb-2" style="width: 50px; height: 50px; object-fit: cover;">

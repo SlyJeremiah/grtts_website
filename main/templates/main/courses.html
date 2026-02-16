@@ -10,14 +10,14 @@
     {% if current_filter %}
     <div class="alert alert-info mb-4">
         Showing: <strong>{{ current_filter|title }} Courses</strong>
-        <a href="{% url 'courses' %}" class="float-end">Clear Filter</a>
+        <a href="{% url 'main:courses' %}" class="float-end">Clear Filter</a>
     </div>
     {% endif %}
     
     <!-- Search Bar -->
     <div class="row mb-4">
         <div class="col-md-6 mx-auto">
-            <form method="get" action="{% url 'courses' %}">
+            <form method="get" action="{% url 'main:courses' %}">
                 <div class="input-group">
                     <input type="text" name="q" class="form-control" placeholder="Search courses..." value="{{ search_query|default:'' }}">
                     <button class="btn" style="background-color: #2d5a3b; color: white;" type="submit">
@@ -41,7 +41,7 @@
                     <p><strong>Duration:</strong> 6 Weeks</p>
                     <p><strong>Intake:</strong> January, June, October</p>
                     <p>Detailed entry level studies for individuals aspiring to join the field of wildlife protection and anti-poaching operations.</p>
-                    <a href="{% url 'contact' %}?course=basic&name=Basic%20Ranger%20Course" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About This Course</a>
+                    <a href="{% url 'main:contact' %}?course=basic&name=Basic%20Ranger%20Course" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About This Course</a>
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@
                         <li>Small Team Tactics</li>
                         <li>K9 Handling and Kennel Management</li>
                     </ul>
-                    <a href="{% url 'contact' %}?course=specialist" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Specialist Courses</a>
+                    <a href="{% url 'main:contact' %}?course=specialist" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Specialist Courses</a>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
                     <p><strong>Duration:</strong> 2 Weeks</p>
                     <p><strong>Intake:</strong> March, November</p>
                     <p>Designed for rangers moving into leadership roles.</p>
-                    <a href="{% url 'contact' %}?course=advanced" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Advanced Course</a>
+                    <a href="{% url 'main:contact' %}?course=advanced" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Advanced Course</a>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
                         <li>Tracking evaluation</li>
                     </ul>
                     <p><strong>Accommodation:</strong> Tents provided (bring personal gear)</p>
-                    <a href="{% url 'contact' %}?course=tracking" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Tracking Course</a>
+                    <a href="{% url 'main:contact' %}?course=tracking" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Tracking Course</a>
                 </div>
             </div>
         </div>
@@ -120,7 +120,7 @@
     <!-- No Results Message -->
     {% if current_filter and not basic_courses and not specialist_courses and not advanced_courses and not tracking_courses %}
     <div class="alert alert-warning text-center">
-        No courses found for this category. <a href="{% url 'courses' %}">View all courses</a>
+        No courses found for this category. <a href="{% url 'main:courses' %}">View all courses</a>
     </div>
     {% endif %}
 </div>

@@ -457,7 +457,7 @@
         <!-- Form Status Messages (for AJAX) -->
         <div class="form-status" id="studentStatus"></div>
         
-        <form id="studentForm" method="post" action="{% url 'inquiry_student' %}">
+        <form id="studentForm" method="post" action="{% url 'main:inquiry_student' %}">
             {% csrf_token %}
             
             <div class="form-row">
@@ -572,7 +572,7 @@
         
         <div class="form-status" id="landownerStatus"></div>
         
-        <form id="landownerForm" method="post" action="{% url 'inquiry_landowner' %}">
+        <form id="landownerForm" method="post" action="{% url 'main:inquiry_landowner' %}">
             {% csrf_token %}
             
             <div class="form-row">
@@ -682,7 +682,7 @@
         
         <div class="form-status" id="enthusiastStatus"></div>
         
-        <form id="enthusiastForm" method="post" action="{% url 'inquiry_enthusiast' %}">
+        <form id="enthusiastForm" method="post" action="{% url 'main:inquiry_enthusiast' %}">
             {% csrf_token %}
             
             <div class="form-row">
@@ -765,7 +765,7 @@
         
         <div class="form-status" id="otherStatus"></div>
         
-        <form id="otherForm" method="post" action="{% url 'inquiry_other' %}">
+        <form id="otherForm" method="post" action="{% url 'main:inquiry_other' %}">
             {% csrf_token %}
             
             <div class="form-row">
@@ -882,22 +882,22 @@
     // Form Submission with AJAX
     document.getElementById('studentForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        submitForm(this, 'student', '{% url 'inquiry_student' %}');
+        submitForm(this, 'student', '{% url 'main:inquiry_student' %}');
     });
 
     document.getElementById('landownerForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        submitForm(this, 'landowner', '{% url 'inquiry_landowner' %}');
+        submitForm(this, 'landowner', '{% url 'main:inquiry_landowner' %}');
     });
 
     document.getElementById('enthusiastForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        submitForm(this, 'enthusiast', '{% url 'inquiry_enthusiast' %}');
+        submitForm(this, 'enthusiast', '{% url 'main:inquiry_enthusiast' %}');
     });
 
     document.getElementById('otherForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        submitForm(this, 'other', '{% url 'inquiry_other' %}');
+        submitForm(this, 'other', '{% url 'main:inquiry_other' %}');
     });
 
     function submitForm(form, type, url) {

@@ -6,7 +6,7 @@
 <div class="container py-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'courses' %}">Courses</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:courses' %}">Courses</a></li>
             <li class="breadcrumb-item active">{{ course.title }}</li>
         </ol>
     </nav>
@@ -90,8 +90,8 @@
                 <div class="card-body">
                     <h5 class="card-title">Interested in this course?</h5>
                     <p>Contact us for more information or to register.</p>
-                    <a href="{% url 'contact' %}" class="btn w-100 mb-2" style="background-color: #2d5a3b; color: white;">Contact Us</a>
-                    <a href="{% url 'courses' %}" class="btn w-100" style="background-color: #ffd966; color: #2d5a3b;">View All Courses</a>
+                    <a href="{% url 'main:contact' %}" class="btn w-100 mb-2" style="background-color: #2d5a3b; color: white;">Contact Us</a>
+                    <a href="{% url 'main:courses' %}" class="btn w-100" style="background-color: #ffd966; color: #2d5a3b;">View All Courses</a>
                 </div>
             </div>
 
