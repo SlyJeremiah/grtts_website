@@ -37,7 +37,8 @@ urlpatterns = [
     # ===== AUTHENTICATION URLS =====
     path('register/', views.register, name='register'),
     # Login/Logout are handled in project URLs
-    
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     # ===== APPLICATION URLS =====
     # Profile management
     path('profile/create/', views.create_profile, name='create_profile'),
