@@ -1,0 +1,141 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}My Applications - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">My Applications</h2>
+            
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ stats.total }}</h3>
+                            <p class="mb-0">Total Applications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ stats.draft }}</h3>
+                            <p class="mb-0">Drafts</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ stats.submitted|add:stats.under_review }}</h3>
+                            <p class="mb-0">In Review</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h3>{{ stats.accepted|add:stats.enrolled|add:stats.completed }}</h3>
+                            <p class="mb-0">Successful</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Actions -->
+            <div class="mb-4">
+                <a href="{% url 'main:edit_profile' %}" class="btn btn-outline-success">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </a>
+                <a href="{% url 'main:courses' %}" class="btn btn-success">
+                    <i class="fas fa-search"></i> Browse Courses
+                </a>
+            </div>
+
+            <!-- Applications List -->
+            {% if applications %}
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Your Applications</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Application #</th>
+                                        <th>Course</th>
+                                        <th>Submitted</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for app in applications %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ app.application_number|default:app.id }}</strong>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'main:course_detail' app.course.id %}">
+                                                {{ app.course.title }}
+                                            </a>
+                                        </td>
+                                        <td>{{ app.application_date|date:"M d, Y" }}</td>
+                                        <td>
+                                            {% if app.status == 'draft' %}
+                                                <span class="badge bg-warning">Draft</span>
+                                            {% elif app.status == 'submitted' %}
+                                                <span class="badge bg-info">Submitted</span>
+                                            {% elif app.status == 'under_review' %}
+                                                <span class="badge bg-primary">Under Review</span>
+                                            {% elif app.status == 'accepted' %}
+                                                <span class="badge bg-success">Accepted</span>
+                                            {% elif app.status == 'waitlisted' %}
+                                                <span class="badge bg-secondary">Waitlisted</span>
+                                            {% elif app.status == 'rejected' %}
+                                                <span class="badge bg-danger">Rejected</span>
+                                            {% elif app.status == 'enrolled' %}
+                                                <span class="badge bg-success">Enrolled</span>
+                                            {% elif app.status == 'completed' %}
+                                                <span class="badge bg-success">Completed</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ app.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'main:application_detail' app.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            {% if app.status == 'draft' %}
+                                                <a href="{% url 'main:edit_application' app.id %}" class="btn btn-sm btn-outline-warning">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-file-alt fa-4x text-muted mb-3"></i>
+                        <h4>No Applications Yet</h4>
+                        <p class="text-muted">You haven't applied for any courses yet.</p>
+                        <a href="{% url 'main:courses' %}" class="btn btn-success">
+                            Browse Courses
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
