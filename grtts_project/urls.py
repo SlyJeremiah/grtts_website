@@ -34,13 +34,12 @@ urlpatterns = [
          ), 
          name='login'),
     
-    # Logout
-    path('logout/', 
-         auth_views.LogoutView.as_view(
-             next_page='main:home'
-         ), 
-         name='logout'),
-]
+# Logout
+path('logout/', 
+     auth_views.LogoutView.as_view(
+         next_page='main:home'  # This should be 'main:home'
+     ), 
+     name='logout'),
 
 # Serve media and static files in development
 if settings.DEBUG:
