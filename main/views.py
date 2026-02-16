@@ -14,6 +14,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate
 import traceback
 import uuid
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
 import logging
 from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
 from django.views.decorators.http import require_POST
