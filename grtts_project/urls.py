@@ -1,20 +1,52 @@
-from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
-from django.http import HttpResponse  # Add this import
+from django.urls import path
+from . import views
 
-# Simple ping view for testing
-def ping(request):
-    return HttpResponse("✅ Django is working on Vercel!")
+app_name = 'main'
 
 urlpatterns = [
-    path('ping/', ping),  # Add this line at the top
-    path('admin/', admin.site.urls),
-    path('', include('main.urls')),
-    path('blog/', include('blog.urls')),
+    # Basic pages
+    path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('faq/', views.faq, name='faq'),
+    
+    # Course URLs
+    path('courses/', views.courses, name='courses'),
+    path('course/<int:course_id>/', views.course_detail, name='course_detail'),
+    
+    # Location URLs
+    path('locations/', views.locations, name='locations'),
+    path('locations/<int:location_id>/', views.location_detail, name='location_detail'),
+    
+    # Contact & Inquiry URLs
+    path('contact/', views.contact, name='contact'),
+    path('inquiry/', views.inquiry_page, name='inquiry_page'),
+    path('inquiry/student/', views.inquiry_student, name='inquiry_student'),
+    path('inquiry/landowner/', views.inquiry_landowner, name='inquiry_landowner'),
+    path('inquiry/enthusiast/', views.inquiry_enthusiast, name='inquiry_enthusiast'),
+    path('inquiry/other/', views.inquiry_other, name='inquiry_other'),
+    
+    # Newsletter URLs
+    path('newsletter/signup/', views.newsletter_signup, name='newsletter_signup'),
+    path('newsletter/test/', views.newsletter_test, name='newsletter_test'),
+    path('newsletter/test-page/', views.newsletter_test_page, name='newsletter_test_page'),
+    path('newsletter/unsubscribe/<str:email>/', views.unsubscribe_newsletter, name='unsubscribe_newsletter'),
+    path('newsletter/track/<uuid:tracking_id>/', views.track_newsletter_open, name='track_newsletter_open'),
+    
+    # Certificate URLs
+    path('verify-certificate/', views.verify_certificate, name='verify_certificate'),
+    path('certificate/<str:cert_number>/', views.certificate_detail, name='certificate_detail'),
+    
+    # ===== NEW APPLICATION URLs =====
+    # Profile management
+    path('profile/create/', views.create_profile, name='create_profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    
+    # Course applications
+    path('apply/<int:course_id>/', views.apply_for_course, name='apply_for_course'),
+    path('application/<int:application_id>/edit/', views.edit_application, name='edit_application'),
+    path('application/<int:application_id>/', views.application_detail, name='application_detail'),
+    path('applications/', views.my_applications, name='my_applications'),
+    
+    # Email test
+    path('test-email/', views.test_email, name='test_email'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
