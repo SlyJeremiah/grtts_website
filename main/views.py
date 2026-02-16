@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 import traceback
 import uuid
 import logging
@@ -18,10 +19,11 @@ import json
 
 from .models import (
     Course, Testimonial, DeploymentLocation, FAQ, ContactMessage,
-    NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog
+    NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog,
+    ApplicantProfile, CourseApplication
 )
 from .utils import send_contact_notification
-from .forms import NewsletterSignupForm
+from .forms import NewsletterSignupForm, CourseApplicationForm, ApplicantProfileForm
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -135,7 +137,7 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
         )
         logger.info(f"Admin notification sent for {inquiry_type} inquiry from {inquiry.name}")
         
-        # ===== NEW: AUTO-REPLY TO USER =====
+        # ===== AUTO-REPLY TO USER =====
         auto_reply_subject = f"Thank You for Contacting GRTTS"
         auto_reply_body = f"""
 Dear {inquiry.name},
@@ -328,7 +330,24 @@ def courses(request):
 def course_detail(request, course_id):
     """Individual course detail"""
     course = get_object_or_404(Course, id=course_id, is_active=True)
-    return render(request, 'main/course_detail.html', {'course': course})
+    
+    # Check if user has already applied (if logged in)
+    existing_application = None
+    if request.user.is_authenticated:
+        try:
+            applicant_profile = ApplicantProfile.objects.get(user=request.user)
+            existing_application = CourseApplication.objects.filter(
+                applicant=applicant_profile,
+                course=course
+            ).first()
+        except ApplicantProfile.DoesNotExist:
+            pass
+    
+    context = {
+        'course': course,
+        'existing_application': existing_application,
+    }
+    return render(request, 'main/course_detail.html', context)
 
 
 # =============================================================================
@@ -761,6 +780,277 @@ def certificate_detail(request, cert_number):
     )
     
     return render(request, 'main/certificate_detail.html', {'certificate': certificate})
+
+
+# =============================================================================
+# COURSE APPLICATION VIEWS (NEW)
+# =============================================================================
+
+@login_required
+def create_profile(request):
+    """Create applicant profile (first step before applying)"""
+    # Check if profile already exists
+    try:
+        profile = ApplicantProfile.objects.get(user=request.user)
+        messages.info(request, 'You already have a profile. You can edit it here.')
+        return redirect('edit_profile')
+    except ApplicantProfile.DoesNotExist:
+        pass
+    
+    if request.method == 'POST':
+        form = ApplicantProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            messages.success(request, 'Your profile has been created successfully! You can now apply for courses.')
+            return redirect('courses')
+    else:
+        form = ApplicantProfileForm()
+    
+    return render(request, 'main/create_profile.html', {
+        'form': form,
+    })
+
+
+@login_required
+def edit_profile(request):
+    """Edit applicant profile"""
+    try:
+        profile = ApplicantProfile.objects.get(user=request.user)
+    except ApplicantProfile.DoesNotExist:
+        return redirect('create_profile')
+    
+    if request.method == 'POST':
+        form = ApplicantProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('my_applications')
+    else:
+        form = ApplicantProfileForm(instance=profile)
+    
+    return render(request, 'main/edit_profile.html', {
+        'form': form,
+        'profile': profile,
+    })
+
+
+@login_required
+def apply_for_course(request, course_id):
+    """Apply for a specific course"""
+    course = get_object_or_404(Course, id=course_id, is_active=True)
+    
+    # Get or create applicant profile
+    try:
+        applicant_profile = ApplicantProfile.objects.get(user=request.user)
+    except ApplicantProfile.DoesNotExist:
+        messages.warning(request, 'Please complete your profile before applying.')
+        return redirect('create_profile')
+    
+    # Check if already applied
+    existing_application = CourseApplication.objects.filter(
+        applicant=applicant_profile,
+        course=course
+    ).first()
+    
+    if existing_application:
+        if existing_application.status == 'draft':
+            messages.info(request, 'You have a draft application. Please complete it.')
+            return redirect('edit_application', application_id=existing_application.id)
+        else:
+            messages.warning(request, f'You have already applied for {course.title}. You can track your application in your dashboard.')
+            return redirect('application_detail', application_id=existing_application.id)
+    
+    if request.method == 'POST':
+        form = CourseApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.applicant = applicant_profile
+            application.course = course
+            application.status = 'submitted'
+            application.save()
+            
+            # Send confirmation emails
+            try:
+                # Email to applicant
+                subject = f"Application Received: {course.title}"
+                message = f"""
+Dear {request.user.get_full_name() or request.user.username},
+
+Thank you for applying for {course.title} at GRTTS.
+
+Your application has been submitted successfully. You can track its status in your dashboard:
+https://grtts-website.vercel.app/applications/
+
+Application Details:
+- Course: {course.title}
+- Application Number: {application.application_number}
+- Submitted: {application.application_date.strftime('%Y-%m-%d %H:%M')}
+
+We will review your application and contact you within 48 hours.
+
+Best regards,
+GRTTS Team
+Training That Saves Lives
+                """
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [request.user.email],
+                    fail_silently=False,
+                )
+                logger.info(f"Application confirmation email sent to {request.user.email}")
+            except Exception as e:
+                logger.error(f"Application confirmation email failed: {e}")
+            
+            # Email to admin
+            try:
+                admin_subject = f"New Course Application: {course.title}"
+                admin_message = f"""
+New application received:
+
+Applicant: {request.user.get_full_name() or request.user.username}
+Email: {request.user.email}
+Course: {course.title}
+Application Number: {application.application_number}
+
+Check admin panel for full details and uploaded documents.
+                """
+                send_mail(
+                    admin_subject,
+                    admin_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    ['shanyaslym19@gmail.com'],
+                    fail_silently=False,
+                )
+                logger.info("Admin notification sent for new application")
+            except Exception as e:
+                logger.error(f"Admin application notification failed: {e}")
+            
+            messages.success(request, 'Your application has been submitted successfully! Check your email for confirmation.')
+            return redirect('application_detail', application_id=application.id)
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = CourseApplicationForm()
+    
+    return render(request, 'main/apply_course.html', {
+        'course': course,
+        'form': form,
+        'applicant_profile': applicant_profile,
+    })
+
+
+@login_required
+def edit_application(request, application_id):
+    """Edit a draft application"""
+    try:
+        applicant_profile = ApplicantProfile.objects.get(user=request.user)
+        application = get_object_or_404(
+            CourseApplication,
+            id=application_id,
+            applicant=applicant_profile,
+            status='draft'
+        )
+    except ApplicantProfile.DoesNotExist:
+        messages.error(request, 'Profile not found.')
+        return redirect('create_profile')
+    
+    if request.method == 'POST':
+        form = CourseApplicationForm(request.POST, request.FILES, instance=application)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.status = 'submitted'
+            application.save()
+            
+            # Send confirmation emails (similar to above)
+            try:
+                subject = f"Application Submitted: {application.course.title}"
+                message = f"""
+Dear {request.user.get_full_name() or request.user.username},
+
+Your application for {application.course.title} has been submitted successfully.
+
+Application Number: {application.application_number}
+
+You can track your application status in your dashboard.
+
+Best regards,
+GRTTS Team
+                """
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [request.user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                logger.error(f"Application submission email failed: {e}")
+            
+            messages.success(request, 'Your application has been submitted successfully!')
+            return redirect('application_detail', application_id=application.id)
+    else:
+        form = CourseApplicationForm(instance=application)
+    
+    return render(request, 'main/apply_course.html', {
+        'course': application.course,
+        'form': form,
+        'applicant_profile': applicant_profile,
+        'is_editing': True,
+        'application': application,
+    })
+
+
+@login_required
+def my_applications(request):
+    """List all applications for the logged-in user"""
+    try:
+        applicant_profile = ApplicantProfile.objects.get(user=request.user)
+        applications = CourseApplication.objects.filter(applicant=applicant_profile)
+        
+        # Count by status for dashboard stats
+        stats = {
+            'draft': applications.filter(status='draft').count(),
+            'submitted': applications.filter(status='submitted').count(),
+            'under_review': applications.filter(status='under_review').count(),
+            'accepted': applications.filter(status='accepted').count(),
+            'waitlisted': applications.filter(status='waitlisted').count(),
+            'rejected': applications.filter(status='rejected').count(),
+            'enrolled': applications.filter(status='enrolled').count(),
+            'completed': applications.filter(status='completed').count(),
+            'total': applications.count(),
+        }
+    except ApplicantProfile.DoesNotExist:
+        applications = []
+        stats = {k: 0 for k in ['draft', 'submitted', 'under_review', 'accepted', 
+                                 'waitlisted', 'rejected', 'enrolled', 'completed', 'total']}
+    
+    return render(request, 'main/my_applications.html', {
+        'applications': applications,
+        'stats': stats,
+    })
+
+
+@login_required
+def application_detail(request, application_id):
+    """View details of a specific application"""
+    try:
+        applicant_profile = ApplicantProfile.objects.get(user=request.user)
+        application = get_object_or_404(
+            CourseApplication,
+            id=application_id,
+            applicant=applicant_profile
+        )
+    except ApplicantProfile.DoesNotExist:
+        messages.error(request, 'Application not found.')
+        return redirect('my_applications')
+    
+    return render(request, 'main/application_detail.html', {
+        'application': application,
+    })
 
 
 # =============================================================================
