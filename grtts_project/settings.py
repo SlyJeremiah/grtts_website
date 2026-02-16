@@ -164,6 +164,12 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Use manifest storage but ensure files are collected
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+# Add this to help with debugging
+if DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 # Use the appropriate static files storage based on environment
 if os.environ.get('VERCEL'):  # Fixed: Now matches your other Vercel check
     # On Vercel, use Django's manifest storage
