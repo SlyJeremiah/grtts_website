@@ -1,0 +1,160 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Apply for {{ course.title }} - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:courses' %}">Courses</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'main:course_detail' course.id %}">{{ course.title }}</a></li>
+            <li class="breadcrumb-item active">Apply</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Apply for {{ course.title }}</h3>
+                </div>
+                <div class="card-body">
+                    {% if is_editing %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-edit"></i>
+                        You are editing a draft application. Please complete and submit it.
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        Please complete all required fields. Your profile information will be used to pre-fill the application.
+                    </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        <h5 class="text-success mt-3">Course Information</h5>
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h5>{{ course.title }}</h5>
+                                <p><strong>Duration:</strong> {{ course.duration }}</p>
+                                {% if course.intake_dates %}
+                                <p><strong>Intake Dates:</strong> {{ course.intake_dates }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="text-success mt-4">Your Motivation</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.motivation_text.id_for_label }}" class="form-label">Why do you want to take this course? *</label>
+                            {{ form.motivation_text }}
+                            {% if form.motivation_text.errors %}
+                                <div class="text-danger small">{{ form.motivation_text.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <h5 class="text-success mt-4">Experience & Qualifications</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.previous_experience.id_for_label }}" class="form-label">Previous Experience</label>
+                            {{ form.previous_experience }}
+                            <div class="form-text">Any relevant experience in conservation, military, security, or related fields.</div>
+                            {% if form.previous_experience.errors %}
+                                <div class="text-danger small">{{ form.previous_experience.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <h5 class="text-success mt-4">Health Information</h5>
+                        <div class="mb-3">
+                            <label for="{{ form.medical_conditions.id_for_label }}" class="form-label">Medical Conditions</label>
+                            {{ form.medical_conditions }}
+                            <div class="form-text">Please list any medical conditions we should be aware of for training purposes.</div>
+                            {% if form.medical_conditions.errors %}
+                                <div class="text-danger small">{{ form.medical_conditions.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.dietary_requirements.id_for_label }}" class="form-label">Dietary Requirements</label>
+                            {{ form.dietary_requirements }}
+                            {% if form.dietary_requirements.errors %}
+                                <div class="text-danger small">{{ form.dietary_requirements.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <h5 class="text-success mt-4">Required Documents</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.profile_photo.id_for_label }}" class="form-label">Profile Photo</label>
+                                {{ form.profile_photo }}
+                                <div class="form-text">Passport-sized photo (JPG, PNG). Max 2MB.</div>
+                                {% if form.profile_photo.errors %}
+                                    <div class="text-danger small">{{ form.profile_photo.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.id_document.id_for_label }}" class="form-label">ID Document</label>
+                                {{ form.id_document }}
+                                <div class="form-text">ID or Passport (PDF, JPG, PNG). Max 5MB.</div>
+                                {% if form.id_document.errors %}
+                                    <div class="text-danger small">{{ form.id_document.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.cv_resume.id_for_label }}" class="form-label">CV/Resume</label>
+                                {{ form.cv_resume }}
+                                <div class="form-text">CV/Resume (PDF, DOC, DOCX). Max 5MB.</div>
+                                {% if form.cv_resume.errors %}
+                                    <div class="text-danger small">{{ form.cv_resume.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.certificates.id_for_label }}" class="form-label">Certificates</label>
+                                {{ form.certificates }}
+                                <div class="form-text">Relevant certificates (PDF, JPG, PNG). Max 5MB.</div>
+                                {% if form.certificates.errors %}
+                                    <div class="text-danger small">{{ form.certificates.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h5 class="text-success mt-4">Optional Documents</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.motivation_letter.id_for_label }}" class="form-label">Motivation Letter</label>
+                                {{ form.motivation_letter }}
+                                <div class="form-text">Upload a motivation letter (PDF, DOC, DOCX). Max 5MB.</div>
+                                {% if form.motivation_letter.errors %}
+                                    <div class="text-danger small">{{ form.motivation_letter.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.additional_docs.id_for_label }}" class="form-label">Additional Documents</label>
+                                {{ form.additional_docs }}
+                                <div class="form-text">Any other supporting documents. Max 5MB.</div>
+                                {% if form.additional_docs.errors %}
+                                    <div class="text-danger small">{{ form.additional_docs.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-paper-plane"></i> 
+                                {% if is_editing %}Submit Application{% else %}Submit Application{% endif %}
+                            </button>
+                            <a href="{% url 'main:course_detail' course.id %}" class="btn btn-outline-secondary btn-lg ms-2">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
