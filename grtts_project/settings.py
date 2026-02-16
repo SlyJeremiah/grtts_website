@@ -49,9 +49,10 @@ INSTALLED_APPS = [
     'storages',
 ]
 
+# UPDATED MIDDLEWARE CONFIGURATION - WhiteNoise must be near the top
 MIDDLEWARE = [
-     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Must be here!
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Critical: Must be here after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,23 +158,20 @@ else:
     MEDIA_URL = None
 # ========== END FILE STORAGE CONFIGURATION ==========
 
-# ========== STATIC FILES CONFIGURATION ==========
+# ========== UPDATED STATIC FILES CONFIGURATION ==========
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Single source of truth for static files storage
-if os.environ.get('VERCEL'):
-    # On Vercel, use Django's manifest storage for hashed files
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-elif DEBUG:
-    # Local development - simple storage for easy debugging
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-else:
-    # Local production simulation - WhiteNoise with compression
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+# Force WhiteNoise to serve static files reliably
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
+# Optional: Add manifest support if needed
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ========== END STATIC FILES CONFIGURATION ==========
 
 # File upload settings
