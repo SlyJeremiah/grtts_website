@@ -6,9 +6,7 @@ from .models import (
     Payment, PaymentWebhook, NewsletterSubscriber, NewsletterCampaign,
     NewsletterTracking, User, ApplicantProfile, CourseApplication,
     Certificate, CertificateVerificationLog,
-    # Add the new inquiry models here
     StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry,
-    # Add UserDocument model
     UserDocument
 )
 
@@ -303,7 +301,6 @@ class StudentInquiryAdmin(admin.ModelAdmin):
         }),
     )
 
-
 @admin.register(LandownerInquiry)
 class LandownerInquiryAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'service', 'property_size', 'created_at', 'is_read']
@@ -334,7 +331,6 @@ class LandownerInquiryAdmin(admin.ModelAdmin):
         }),
     )
 
-
 @admin.register(EnthusiastInquiry)
 class EnthusiastInquiryAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'interest', 'created_at', 'is_read']
@@ -357,7 +353,6 @@ class EnthusiastInquiryAdmin(admin.ModelAdmin):
             'fields': ('is_read', 'created_at')
         }),
     )
-
 
 @admin.register(OtherInquiry)
 class OtherInquiryAdmin(admin.ModelAdmin):
@@ -394,7 +389,6 @@ class NewsletterCampaignAdmin(admin.ModelAdmin):
             if campaign.sent_at:
                 self.message_user(request, f"Campaign '{campaign.title}' was already sent on {campaign.sent_at}", level='WARNING')
             else:
-                # Call the send function
                 try:
                     send_newsletter_campaign(campaign.id)
                     self.message_user(request, f"Newsletter '{campaign.title}' sent successfully!")
@@ -436,9 +430,9 @@ class UserAdmin(admin.ModelAdmin):
 # ===== FIXED APPLICANTPROFILE ADMIN =====
 @admin.register(ApplicantProfile)
 class ApplicantProfileAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'email', 'phone', 'nationality', 'created_at']
+    list_display = ['full_name', 'email', 'city', 'nationality', 'created_at']
     list_filter = ['gender', 'nationality', 'created_at']
-    search_fields = ['first_name', 'last_name', 'email', 'phone']
+    search_fields = ['first_name', 'last_name', 'email']
     readonly_fields = ['created_at', 'updated_at', 'full_name']
     
     def full_name(self, obj):
@@ -451,7 +445,7 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Personal Information', {
-            'fields': ('first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'nationality')
+            'fields': ('first_name', 'last_name', 'email', 'date_of_birth', 'gender', 'nationality')
         }),
         ('Address', {
             'fields': ('address', 'city', 'province')
@@ -470,7 +464,6 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at')
         }),
     )
-
 
 @admin.register(CourseApplication)
 class CourseApplicationAdmin(admin.ModelAdmin):
@@ -501,7 +494,6 @@ class CourseApplicationAdmin(admin.ModelAdmin):
     )
     readonly_fields = ['application_date']
 
-
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
     list_display = ['certificate_number', 'full_name', 'course_name', 'is_valid', 'issue_date', 'view_count']
@@ -530,7 +522,6 @@ class CertificateAdmin(admin.ModelAdmin):
         }),
     )
 
-
 @admin.register(CertificateVerificationLog)
 class CertificateVerificationLogAdmin(admin.ModelAdmin):
     list_display = ['certificate', 'ip_address', 'successful', 'verified_at']
@@ -538,8 +529,6 @@ class CertificateVerificationLogAdmin(admin.ModelAdmin):
     search_fields = ['certificate__certificate_number', 'ip_address']
     readonly_fields = ['certificate', 'ip_address', 'user_agent', 'verified_at', 'successful']
 
-
-# ===== NEW: Register UserDocument Model =====
 @admin.register(UserDocument)
 class UserDocumentAdmin(admin.ModelAdmin):
     list_display = ['id', 'user_display', 'document_type', 'file_link', 'uploaded_at']
