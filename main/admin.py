@@ -469,6 +469,7 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at')
         }),
     )
+
 @admin.register(CourseApplication)
 class CourseApplicationAdmin(admin.ModelAdmin):
     list_display = ['applicant', 'course', 'status', 'application_date', 'payment_status']
