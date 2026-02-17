@@ -41,7 +41,10 @@
                     <p><strong>Duration:</strong> 6 Weeks</p>
                     <p><strong>Intake:</strong> January, June, October</p>
                     <p>Detailed entry level studies for individuals aspiring to join the field of wildlife protection and anti-poaching operations.</p>
-                    <a href="{% url 'main:contact' %}?course=basic&name=Basic%20Ranger%20Course" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About This Course</a>
+                    <!-- UPDATED: Added type=course parameter -->
+                    <a href="{% url 'main:contact' %}?type=course&course=basic" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
+                        <i class="fas fa-info-circle"></i> Inquire About This Course
+                    </a>
                 </div>
             </div>
         </div>
@@ -63,7 +66,10 @@
                         <li>Small Team Tactics</li>
                         <li>K9 Handling and Kennel Management</li>
                     </ul>
-                    <a href="{% url 'main:contact' %}?course=specialist" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Specialist Courses</a>
+                    <!-- UPDATED: Added type=course parameter -->
+                    <a href="{% url 'main:contact' %}?type=course&course=specialist" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
+                        <i class="fas fa-info-circle"></i> Inquire About Specialist Courses
+                    </a>
                 </div>
             </div>
         </div>
@@ -82,7 +88,10 @@
                     <p><strong>Duration:</strong> 2 Weeks</p>
                     <p><strong>Intake:</strong> March, November</p>
                     <p>Designed for rangers moving into leadership roles.</p>
-                    <a href="{% url 'main:contact' %}?course=advanced" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Advanced Course</a>
+                    <!-- UPDATED: Added type=course parameter -->
+                    <a href="{% url 'main:contact' %}?type=course&course=advanced" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
+                        <i class="fas fa-info-circle"></i> Inquire About Advanced Course
+                    </a>
                 </div>
             </div>
         </div>
@@ -110,7 +119,10 @@
                         <li>Tracking evaluation</li>
                     </ul>
                     <p><strong>Accommodation:</strong> Tents provided (bring personal gear)</p>
-                    <a href="{% url 'main:contact' %}?course=tracking" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">Inquire About Tracking Course</a>
+                    <!-- UPDATED: Added type=course parameter -->
+                    <a href="{% url 'main:contact' %}?type=course&course=tracking" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
+                        <i class="fas fa-info-circle"></i> Inquire About Tracking Course
+                    </a>
                 </div>
             </div>
         </div>
@@ -120,7 +132,8 @@
     <!-- No Results Message -->
     {% if current_filter and not basic_courses and not specialist_courses and not advanced_courses and not tracking_courses %}
     <div class="alert alert-warning text-center">
-        No courses found for this category. <a href="{% url 'main:courses' %}">View all courses</a>
+        <i class="fas fa-exclamation-triangle"></i> No courses found for this category. 
+        <a href="{% url 'main:courses' %}" class="alert-link">View all courses</a>
     </div>
     {% endif %}
 </div>
