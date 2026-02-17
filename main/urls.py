@@ -31,6 +31,10 @@ urlpatterns = [
     path('newsletter/test-page/', views.newsletter_test_page, name='newsletter_test_page'),
     path('newsletter/unsubscribe/<str:email>/', views.unsubscribe_newsletter, name='unsubscribe_newsletter'),
     path('newsletter/track/<uuid:tracking_id>/', views.track_newsletter_open, name='track_newsletter_open'),
+    # Add these with your other URL patterns
+path('gis-applications/', views.gis_applications, name='gis_applications'),
+path('apply-now/', views.apply_now, name='apply_now'),
+path('careers/', views.careers, name='careers'),
     
     # Certificate URLs
     path('verify-certificate/', views.verify_certificate, name='verify_certificate'),
