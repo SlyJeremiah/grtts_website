@@ -51,7 +51,7 @@
                     </div>
                     {% endif %}
 
-                    <!-- ===== NEW: Application Button Section ===== -->
+                    <!-- ===== Application Button Section ===== -->
                     <div class="mt-4 p-4" style="background-color: #f8f9fa; border-radius: 10px;">
                         <h5 class="mb-3">Ready to join this course?</h5>
                         {% if user.is_authenticated %}
@@ -90,12 +90,17 @@
                 <div class="card-body">
                     <h5 class="card-title">Interested in this course?</h5>
                     <p>Contact us for more information or to register.</p>
-                    <a href="{% url 'main:contact' %}" class="btn w-100 mb-2" style="background-color: #2d5a3b; color: white;">Contact Us</a>
-                    <a href="{% url 'main:courses' %}" class="btn w-100" style="background-color: #ffd966; color: #2d5a3b;">View All Courses</a>
+                    <!-- UPDATED: Added type=course parameter with course ID -->
+                    <a href="{% url 'main:contact' %}?type=course&course_id={{ course.id }}" class="btn w-100 mb-2" style="background-color: #2d5a3b; color: white;">
+                        <i class="fas fa-info-circle"></i> Inquire About This Course
+                    </a>
+                    <a href="{% url 'main:courses' %}" class="btn w-100" style="background-color: #ffd966; color: #2d5a3b;">
+                        <i class="fas fa-arrow-left"></i> View All Courses
+                    </a>
                 </div>
             </div>
 
-            <!-- Optional: Add a quick info card -->
+            <!-- Quick Info Card -->
             <div class="card shadow-sm mt-4">
                 <div class="card-body">
                     <h5 class="card-title">Course Highlights</h5>
