@@ -1,0 +1,114 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Apply for {{ job.title }} - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'main:careers' %}">Careers</a></li>
+            <li class="breadcrumb-item active">Apply for {{ job.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Apply for {{ job.title }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Position:</strong> {{ job.title }} - {{ job.location }}<br>
+                        <strong>Job Type:</strong> {{ job.get_job_type_display }}<br>
+                        {% if job.deadline %}
+                        <strong>Application Deadline:</strong> {{ job.deadline|date:"F j, Y" }}
+                        {% endif %}
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <h5 class="text-success">Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number *</label>
+                                <input type="text" class="form-control" id="phone" name="phone" required>
+                            </div>
+                        </div>
+
+                        <h5 class="text-success mt-4">Professional Information</h5>
+                        <div class="mb-3">
+                            <label for="cover_letter" class="form-label">Cover Letter *</label>
+                            <textarea class="form-control" id="cover_letter" name="cover_letter" rows="6" required></textarea>
+                            <div class="form-text">Tell us why you're interested in this position and why you'd be a good fit.</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="experience_years" class="form-label">Years of Relevant Experience</label>
+                                <input type="number" class="form-control" id="experience_years" name="experience_years" min="0" value="0">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="current_employer" class="form-label">Current Employer</label>
+                                <input type="text" class="form-control" id="current_employer" name="current_employer">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="current_position" class="form-label">Current Position</label>
+                            <input type="text" class="form-control" id="current_position" name="current_position">
+                        </div>
+
+                        <h5 class="text-success mt-4">Documents</h5>
+                        <div class="mb-3">
+                            <label for="cv" class="form-label">CV/Resume * (PDF, DOC, DOCX) Max 10MB</label>
+                            <input type="file" class="form-control" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cover_letter_file" class="form-label">Cover Letter File (Optional)</label>
+                            <input type="file" class="form-control" id="cover_letter_file" name="cover_letter_file" accept=".pdf,.doc,.docx">
+                            <div class="form-text">You can upload a separate cover letter file if you have one.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="additional_docs" class="form-label">Additional Documents (Optional)</label>
+                            <input type="file" class="form-control" id="additional_docs" name="additional_docs" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <div class="form-text">Certificates, references, or any other relevant documents.</div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Submit Application</button>
+                            <a href="{% url 'main:careers' %}" class="btn btn-outline-secondary btn-lg ms-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
