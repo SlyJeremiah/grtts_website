@@ -436,13 +436,20 @@ def location_detail(request, location_id):
 
 
 # =============================================================================
-# CONTACT VIEW
+# ENHANCED CONTACT VIEW
 # =============================================================================
 
 @ensure_csrf_cookie
 def contact(request):
-    """Contact page with form"""
+    """Enhanced contact page that handles different inquiry types"""
+    
+    # Get parameters from URL
+    inquiry_type = request.GET.get('type', 'general')
     course_param = request.GET.get('course')
+    job_param = request.GET.get('job')
+    location_param = request.GET.get('location')
+    
+    # Set initial subject based on parameters
     initial_subject = ''
     
     if course_param:
@@ -454,7 +461,20 @@ def contact(request):
             initial_subject = 'Inquiry about Advanced Ranger Course'
         elif course_param == 'tracking':
             initial_subject = 'Inquiry about Tracking Course'
+        elif course_param == 'gis':
+            initial_subject = 'Inquiry about GIS Applications Training'
     
+    if job_param:
+        try:
+            job = JobPost.objects.get(id=job_param, is_active=True)
+            initial_subject = f"Job Application Inquiry: {job.title}"
+        except JobPost.DoesNotExist:
+            pass
+    
+    if location_param:
+        initial_subject = f"Inquiry about {location_param.replace('-', ' ').title()} Location"
+    
+    # Handle form submission
     if request.method == 'POST':
         try:
             contact = ContactMessage(
@@ -465,108 +485,33 @@ def contact(request):
                 message=request.POST.get('message')
             )
             contact.save()
+            
+            # Send email notification
             send_contact_notification(contact)
+            
             messages.success(request, 'Thank you for your message! We will contact you soon.')
+            return redirect('main:contact')
+            
         except Exception as e:
             logger.error(f"Contact form error: {e}")
             messages.error(request, 'There was an error sending your message. Please try again.')
-        
-        return redirect('main:contact')
+    
+    # Get FAQs for the sidebar
+    faqs = FAQ.objects.filter(is_active=True)[:5]
+    
+    # Get active jobs for dropdown (optional)
+    active_jobs = JobPost.objects.filter(is_active=True)
     
     context = {
         'initial_subject': initial_subject,
-        'faqs': FAQ.objects.filter(is_active=True)[:5],
+        'inquiry_type': inquiry_type,
+        'faqs': faqs,
+        'active_jobs': active_jobs,
+        'course_param': course_param,
+        'job_param': job_param,
+        'location_param': location_param,
     }
     return render(request, 'main/contact.html', context)
-
-
-def inquiry_page(request):
-    """Main inquiry page with all forms"""
-    return render(request, 'main/inquiry.html')
-
-
-@require_POST
-def inquiry_student(request):
-    try:
-        inquiry = StudentInquiry.objects.create(
-            name=request.POST.get('name'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phone'),
-            age=request.POST.get('age'),
-            nationality=request.POST.get('nationality'),
-            education=request.POST.get('education', ''),
-            course=request.POST.get('course'),
-            intake=request.POST.get('intake', ''),
-            experience=request.POST.get('experience', ''),
-        )
-        send_inquiry_notification(inquiry, 'student')
-        return JsonResponse({'success': True, 'message': 'Your student inquiry has been submitted successfully.'})
-    except Exception as e:
-        logger.error(f"Student inquiry error: {e}")
-        return JsonResponse({'success': False, 'message': 'Error submitting form.'}, status=400)
-
-
-@require_POST
-def inquiry_landowner(request):
-    try:
-        inquiry = LandownerInquiry.objects.create(
-            name=request.POST.get('name'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phone'),
-            organization=request.POST.get('organization', ''),
-            service=request.POST.get('service'),
-            property_size=request.POST.get('property_size') or None,
-            property_location=request.POST.get('property_location', ''),
-            concerns_poaching=bool(request.POST.get('concerns_poaching')),
-            concerns_human_wildlife=bool(request.POST.get('concerns_human_wildlife')),
-            concerns_livestock=bool(request.POST.get('concerns_livestock')),
-            concerns_trespassing=bool(request.POST.get('concerns_trespassing')),
-            details=request.POST.get('details', ''),
-        )
-        send_inquiry_notification(inquiry, 'landowner')
-        return JsonResponse({'success': True, 'message': 'Your landowner inquiry has been submitted successfully.'})
-    except Exception as e:
-        logger.error(f"Landowner inquiry error: {e}")
-        return JsonResponse({'success': False, 'message': 'Error submitting form.'}, status=400)
-
-
-@require_POST
-def inquiry_enthusiast(request):
-    try:
-        inquiry = EnthusiastInquiry.objects.create(
-            name=request.POST.get('name'),
-            email=request.POST.get('email'),
-            interest=request.POST.get('interest'),
-            background=request.POST.get('background', ''),
-            availability=request.POST.get('availability', ''),
-            message=request.POST.get('message', ''),
-        )
-        send_inquiry_notification(inquiry, 'enthusiast')
-        return JsonResponse({'success': True, 'message': 'Your enthusiast inquiry has been submitted successfully.'})
-    except Exception as e:
-        logger.error(f"Enthusiast inquiry error: {e}")
-        return JsonResponse({'success': False, 'message': 'Error submitting form.'}, status=400)
-
-
-@require_POST
-def inquiry_other(request):
-    try:
-        inquiry = OtherInquiry.objects.create(
-            name=request.POST.get('name'),
-            email=request.POST.get('email'),
-            phone=request.POST.get('phone', ''),
-            organization=request.POST.get('organization', ''),
-            category=request.POST.get('category'),
-            subject=request.POST.get('subject'),
-            message=request.POST.get('message'),
-            urgency=request.POST.get('urgency', 'normal'),
-        )
-        send_inquiry_notification(inquiry, 'other')
-        return JsonResponse({'success': True, 'message': 'Your inquiry has been submitted successfully.'})
-    except Exception as e:
-        logger.error(f"Other inquiry error: {e}")
-        return JsonResponse({'success': False, 'message': 'Error submitting form.'}, status=400)
-
 
 # =============================================================================
 # NEWSLETTER VIEWS
