@@ -430,9 +430,9 @@ class UserAdmin(admin.ModelAdmin):
 # ===== FIXED APPLICANTPROFILE ADMIN =====
 @admin.register(ApplicantProfile)
 class ApplicantProfileAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'email', 'city', 'nationality', 'created_at']  # NO 'phone' here
+    list_display = ['full_name', 'email', 'city', 'nationality', 'created_at']
     list_filter = ['gender', 'nationality', 'created_at']
-    search_fields = ['first_name', 'last_name', 'email']  # NO 'phone' here
+    search_fields = ['first_name', 'last_name', 'email']
     readonly_fields = ['created_at', 'updated_at', 'full_name']
     
     def full_name(self, obj):
@@ -464,6 +464,7 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at')
         }),
     )
+
 @admin.register(CourseApplication)
 class CourseApplicationAdmin(admin.ModelAdmin):
     list_display = ['applicant', 'course', 'status', 'application_date', 'payment_status']
