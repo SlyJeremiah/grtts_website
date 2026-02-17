@@ -157,17 +157,18 @@ else:
     # Media URL is not set - backend generates signed URLs
     MEDIA_URL = None
 # ========== END FILE STORAGE CONFIGURATION ==========
-# Static files configuration - use manifest storage since manifest is accessible
+
+# ========== FIXED STATIC FILES CONFIGURATION ==========
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Use manifest storage since we have the manifest file
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+# Use WhiteNoise for static files - more reliable on Vercel, no manifest needed
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-# Optional: Add this to help with debugging
+# For local development, use simpler storage
 if DEBUG:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 # ========== END STATIC FILES CONFIGURATION ==========
