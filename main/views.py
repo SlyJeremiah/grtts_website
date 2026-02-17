@@ -12,7 +12,6 @@ from django.utils import timezone
 import traceback
 import uuid
 import logging
-from .forms import ApplicantRegistrationForm, NewsletterSignupForm
 import json
 
 # Models imports
@@ -23,16 +22,13 @@ from .models import (
     UserDocument, ApplicantProfile, CourseApplication
 )
 
-# Utils and Forms
+# Utils and Forms - SINGLE IMPORT
 from .utils import send_contact_notification
-from .forms import CustomUserCreationForm, NewsletterSignupForm
+from .forms import ApplicantRegistrationForm, NewsletterSignupForm
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
-# =============================================================================
-# REGISTRATION VIEW (With File Uploads)
-# =============================================================================
 # =============================================================================
 # APPLICANT REGISTRATION VIEW (No User Account Created)
 # =============================================================================
@@ -56,6 +52,7 @@ def register(request):
         form = ApplicantRegistrationForm()
     
     return render(request, 'main/register.html', {'form': form})
+
 # =============================================================================
 # EMAIL NOTIFICATION HELPER FUNCTIONS
 # =============================================================================
