@@ -3,6 +3,7 @@ from django.core.validators import EmailValidator, RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 import uuid
+import os  # Add this import for os.path.basename
 
 class StudentInquiry(models.Model):
     """Student training inquiries"""
@@ -123,6 +124,7 @@ class OtherInquiry(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+
 class Course(models.Model):
     COURSE_TYPES = [
         ('BASIC', 'Basic Ranger Course'),
@@ -147,6 +149,7 @@ class Course(models.Model):
     class Meta:
         ordering = ['course_type', 'title']
 
+
 class Testimonial(models.Model):
     name = models.CharField(max_length=100)
     position = models.CharField(max_length=100, help_text="e.g., Game Ranger, Landowner")
@@ -157,6 +160,7 @@ class Testimonial(models.Model):
     
     def __str__(self):
         return f"{self.name} - {self.position}"
+
 
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
@@ -172,6 +176,7 @@ class ContactMessage(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+
 
 class DeploymentLocation(models.Model):
     name = models.CharField(max_length=100)
@@ -204,6 +209,7 @@ class DeploymentLocation(models.Model):
     class Meta:
         ordering = ['name']
 
+
 class LocationImage(models.Model):
     location = models.ForeignKey(DeploymentLocation, on_delete=models.CASCADE, related_name='gallery_images')
     image = models.ImageField(upload_to='locations/gallery/')
@@ -216,6 +222,7 @@ class LocationImage(models.Model):
     
     class Meta:
         ordering = ['-is_featured', '-uploaded_at']
+
 
 class FAQ(models.Model):
     question = models.CharField(max_length=300)
@@ -231,6 +238,7 @@ class FAQ(models.Model):
         ordering = ['order']
         verbose_name = "FAQ"
         verbose_name_plural = "FAQs"
+
 
 class PaymentMethod(models.Model):
     METHOD_TYPES = [
@@ -257,6 +265,7 @@ class PaymentMethod(models.Model):
     class Meta:
         verbose_name = "Payment Method"
         verbose_name_plural = "Payment Methods"
+
 
 class Donation(models.Model):
     DONATION_STATUS = [
@@ -290,6 +299,7 @@ class Donation(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+
 
 class CourseRegistration(models.Model):
     REGISTRATION_STATUS = [
@@ -334,6 +344,7 @@ class CourseRegistration(models.Model):
     
     class Meta:
         ordering = ['-registered_at']
+
 
 class Payment(models.Model):
     PAYMENT_TYPES = [
@@ -380,6 +391,7 @@ class Payment(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+
 class PaymentWebhook(models.Model):
     provider = models.CharField(max_length=50)
     event_type = models.CharField(max_length=100)
@@ -392,6 +404,7 @@ class PaymentWebhook(models.Model):
     
     class Meta:
         ordering = ['-created_at']
+
 
 class NewsletterSubscriber(models.Model):
     email = models.EmailField(unique=True)
@@ -409,6 +422,7 @@ class NewsletterSubscriber(models.Model):
     class Meta:
         ordering = ['-subscribed_at']
 
+
 class NewsletterCampaign(models.Model):
     title = models.CharField(max_length=200)
     subject = models.CharField(max_length=200)
@@ -422,6 +436,7 @@ class NewsletterCampaign(models.Model):
     def __str__(self):
         return self.title
 
+
 class NewsletterTracking(models.Model):
     campaign = models.ForeignKey(NewsletterCampaign, on_delete=models.CASCADE)
     subscriber = models.ForeignKey(NewsletterSubscriber, on_delete=models.CASCADE)
@@ -431,6 +446,7 @@ class NewsletterTracking(models.Model):
     
     class Meta:
         unique_together = ['campaign', 'subscriber']
+
 
 class User(AbstractUser):
     USER_TYPES = [
@@ -451,6 +467,7 @@ class User(AbstractUser):
     
     def __str__(self):
         return self.email
+
 
 class ApplicantProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='applicant_profile')
@@ -626,6 +643,7 @@ class Certificate(models.Model):
     class Meta:
         ordering = ['-issue_date']
 
+
 class CertificateVerificationLog(models.Model):
     certificate = models.ForeignKey(Certificate, on_delete=models.CASCADE)
     ip_address = models.GenericIPAddressField()
@@ -638,7 +656,13 @@ class CertificateVerificationLog(models.Model):
     
     class Meta:
         ordering = ['-verified_at']
-        class UserDocument(models.Model):
+
+
+# =============================================================================
+# USER DOCUMENT MODEL FOR FILE UPLOADS
+# =============================================================================
+
+class UserDocument(models.Model):
     """Model to store user-uploaded documents"""
     DOCUMENT_TYPES = [
         ('cv', 'CV/Resume'),
