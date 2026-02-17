@@ -672,7 +672,7 @@ class UserDocument(models.Model):
         ('other', 'Other Document'),
     ]
     
-    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='documents')
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='documents', null=True, blank=True)
     document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
     file = models.FileField(upload_to='user_documents/%Y/%m/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
@@ -682,7 +682,10 @@ class UserDocument(models.Model):
         ordering = ['-uploaded_at']
     
     def __str__(self):
-        return f"{self.user.username} - {self.get_document_type_display()}"
+        if self.user:
+            return f"{self.user.username} - {self.get_document_type_display()}"
+        else:
+            return f"Anonymous - {self.get_document_type_display()} - {self.uploaded_at}"
     
     def filename(self):
         return os.path.basename(self.file.name)
