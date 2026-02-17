@@ -709,3 +709,173 @@ def test_email(request):
     except Exception as e:
         logger.error(f"Test email error: {e}")
         return HttpResponse(f'Error sending email: {str(e)}')
+# =============================================================================
+# GIS APPLICATIONS PAGE
+# =============================================================================
+
+def gis_applications(request):
+    """GIS Applications in conservation page"""
+    context = {
+        'title': 'GIS Applications in Conservation',
+        'description': 'Learn how Geographic Information Systems (GIS) are used in wildlife conservation and anti-poaching efforts.',
+        'applications': [
+            {
+                'title': 'Wildlife Tracking',
+                'description': 'GPS collars and tracking devices help monitor animal movements and migration patterns.',
+                'icon': 'fa-map-marked-alt'
+            },
+            {
+                'title': 'Poaching Hotspot Mapping',
+                'description': 'Identify and predict poaching hotspots using historical data and terrain analysis.',
+                'icon': 'fa-chart-line'
+            },
+            {
+                'title': 'Habitat Analysis',
+                'description': 'Analyze habitat changes, deforestation, and human-wildlife conflict zones.',
+                'icon': 'fa-tree'
+            },
+            {
+                'title': 'Ranger Patrol Management',
+                'description': 'Optimize ranger patrol routes and monitor coverage areas in real-time.',
+                'icon': 'fa-route'
+            },
+            {
+                'title': 'Fire Monitoring',
+                'description': 'Track and predict wildfire risks using satellite data and weather patterns.',
+                'icon': 'fa-fire'
+            },
+            {
+                'title': 'Land Use Planning',
+                'description': 'Support conservation planning and protected area management.',
+                'icon': 'fa-draw-polygon'
+            },
+        ],
+        'software': [
+            'QGIS (Open Source)',
+            'ArcGIS',
+            'Google Earth Engine',
+            'GRASS GIS',
+            'MapBox',
+            'Leaflet'
+        ],
+        'training_available': True
+    }
+    return render(request, 'main/gis_applications.html', context)
+
+
+# =============================================================================
+# APPLY NOW PAGE
+# =============================================================================
+
+def apply_now(request):
+    """Main application portal page"""
+    context = {
+        'title': 'Apply to GRTTS',
+        'application_types': [
+            {
+                'name': 'Ranger Training',
+                'description': 'Apply for our comprehensive ranger training programs',
+                'url': 'courses',
+                'icon': 'fa-user-graduate',
+                'deadline': 'Rolling admissions'
+            },
+            {
+                'name': 'Conservation Jobs',
+                'description': 'Current job openings at GRTTS',
+                'url': 'careers',
+                'icon': 'fa-briefcase',
+                'deadline': 'Varies by position'
+            },
+            {
+                'name': 'Volunteer Program',
+                'description': 'Join us as a volunteer in conservation efforts',
+                'url': 'contact',
+                'icon': 'fa-hands-helping',
+                'deadline': 'Ongoing'
+            },
+            {
+                'name': 'Research Collaboration',
+                'description': 'Partner with us on conservation research',
+                'url': 'contact',
+                'icon': 'fa-flask',
+                'deadline': 'By agreement'
+            },
+        ],
+        'steps': [
+            'Complete the online application form',
+            'Submit required documents (CV, ID, certificates)',
+            'Initial screening and review',
+            'Interview with our selection committee',
+            'Physical fitness assessment (for ranger positions)',
+            'Background check',
+            'Final selection and offer'
+        ],
+        'requirements': [
+            'Minimum age 18 years',
+            'Valid ID or Passport',
+            'Grade 12 certificate or equivalent',
+            'Good physical health',
+            'No criminal record',
+            'Passion for conservation'
+        ]
+    }
+    return render(request, 'main/apply_now.html', context)
+
+
+# =============================================================================
+# CAREERS PAGE
+# =============================================================================
+
+def careers(request):
+    """Careers and job opportunities page"""
+    # You can later replace this with a Job model from database
+    context = {
+        'title': 'Careers at GRTTS',
+        'open_positions': [
+            {
+                'title': 'Field Ranger',
+                'location': 'Hwange National Park',
+                'type': 'Full-time',
+                'description': 'Join our frontline conservation team protecting wildlife in Hwange.',
+                'requirements': ['Fitness level 2', 'Tracker certificate', 'First aid certified'],
+                'deadline': '2026-03-15',
+                'icon': 'fa-shield-alt'
+            },
+            {
+                'title': 'GIS Specialist',
+                'location': 'Harare (with field visits)',
+                'type': 'Full-time',
+                'description': 'Manage our GIS systems and provide spatial analysis for conservation efforts.',
+                'requirements': ['GIS certification', 'Remote sensing experience', 'Data analysis skills'],
+                'deadline': '2026-03-30',
+                'icon': 'fa-map'
+            },
+            {
+                'title': 'Training Instructor',
+                'location': 'Gweru Training Camp',
+                'type': 'Full-time',
+                'description': 'Train the next generation of wildlife rangers.',
+                'requirements': ['5+ years ranger experience', 'Training certification', 'Track record'],
+                'deadline': '2026-04-01',
+                'icon': 'fa-chalkboard-teacher'
+            },
+            {
+                'title': 'Conservation Intern',
+                'location': 'Various Locations',
+                'type': 'Internship',
+                'description': '3-month paid internship for aspiring conservationists.',
+                'requirements': ['Recent graduate', 'Passion for conservation', 'Willing to learn'],
+                'deadline': '2026-04-15',
+                'icon': 'fa-seedling'
+            },
+        ],
+        'benefits': [
+            'Competitive salary packages',
+            'Accommodation provided at field stations',
+            'Medical insurance',
+            'Training and development opportunities',
+            'Meaningful work in conservation',
+            'Work with experienced professionals'
+        ]
+    }
+    return render(request, 'main/careers.html', context)
