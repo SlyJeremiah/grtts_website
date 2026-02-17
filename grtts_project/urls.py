@@ -9,7 +9,7 @@ def ping(request):
 
 urlpatterns = [
     path('ping/', ping, name='ping'),
-    path('admin/', admin.site.urls),  # Admin panel (for you only)
+    path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('blog/', include('blog.urls')),
 ]
