@@ -40,40 +40,85 @@
 <!-- Open Positions -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center text-success mb-5">Open Positions</h2>
+        <h2 class="text-center text-success mb-5">
+            {% if total_jobs > 0 %}
+                Open Positions ({{ total_jobs }})
+            {% else %}
+                Open Positions
+            {% endif %}
+        </h2>
         
-        {% if open_positions %}
-            <div class="row">
-                {% for job in open_positions %}
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <i class="fas {{ job.icon }} fa-2x text-success me-3"></i>
-                                <h4 class="card-title mb-0">{{ job.title }}</h4>
+        {% if jobs %}
+            {% if jobs_by_category %}
+                {% for category, category_jobs in jobs_by_category.items %}
+                    {% if category_jobs %}
+                        <h3 class="text-success mt-4 mb-3">{{ category }}</h3>
+                        <div class="row">
+                            {% for job in category_jobs %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <i class="fas {{ job.icon|default:'fa-briefcase' }} fa-2x text-success me-3"></i>
+                                            <h4 class="card-title mb-0">{{ job.title }}</h4>
+                                        </div>
+                                        <div class="mb-3">
+                                            <span class="badge bg-secondary me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
+                                            <span class="badge bg-info me-2"><i class="fas fa-clock me-1"></i>{{ job.get_job_type_display }}</span>
+                                            {% if job.deadline %}
+                                            <span class="badge bg-warning"><i class="fas fa-calendar me-1"></i>Deadline: {{ job.deadline|date:"M d, Y" }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <p class="card-text">{{ job.description|truncatewords:30 }}</p>
+                                        
+                                        {% if job.salary_range %}
+                                        <p class="text-success"><i class="fas fa-money-bill-wave me-1"></i> {{ job.salary_range }}</p>
+                                        {% endif %}
+                                        
+                                        <a href="{% url 'main:job_apply' job.id %}" class="btn btn-success mt-2">Apply Now</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <span class="badge bg-secondary me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
-                                <span class="badge bg-info me-2"><i class="fas fa-clock me-1"></i>{{ job.type }}</span>
-                                <span class="badge bg-warning"><i class="fas fa-calendar me-1"></i>Deadline: {{ job.deadline }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="row">
+                    {% for job in jobs %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas {{ job.icon|default:'fa-briefcase' }} fa-2x text-success me-3"></i>
+                                    <h4 class="card-title mb-0">{{ job.title }}</h4>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="badge bg-secondary me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
+                                    <span class="badge bg-info me-2"><i class="fas fa-clock me-1"></i>{{ job.get_job_type_display }}</span>
+                                    {% if job.deadline %}
+                                    <span class="badge bg-warning"><i class="fas fa-calendar me-1"></i>Deadline: {{ job.deadline|date:"M d, Y" }}</span>
+                                    {% endif %}
+                                </div>
+                                <p class="card-text">{{ job.description|truncatewords:30 }}</p>
+                                
+                                {% if job.salary_range %}
+                                <p class="text-success"><i class="fas fa-money-bill-wave me-1"></i> {{ job.salary_range }}</p>
+                                {% endif %}
+                                
+                                <a href="{% url 'main:job_apply' job.id %}" class="btn btn-success mt-2">Apply Now</a>
                             </div>
-                            <p class="card-text">{{ job.description }}</p>
-                            <h6 class="mt-3">Requirements:</h6>
-                            <ul class="list-unstyled">
-                                {% for req in job.requirements %}
-                                <li><i class="fas fa-check-circle text-success me-2 small"></i>{{ req }}</li>
-                                {% endfor %}
-                            </ul>
-                            <a href="{% url 'main:apply_now' %}" class="btn btn-success mt-3">Apply Now</a>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
+            {% endif %}
         {% else %}
-            <div class="alert alert-info text-center">
+            <div class="alert alert-info text-center py-5">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
                 <h4>No open positions at the moment</h4>
-                <p>Please check back later or register to receive notifications.</p>
+                <p>Please check back later or register to receive notifications when new positions are posted.</p>
+                <a href="{% url 'main:register' %}" class="btn btn-success mt-3">Register for Updates</a>
             </div>
         {% endif %}
     </div>
