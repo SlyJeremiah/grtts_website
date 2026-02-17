@@ -35,6 +35,7 @@ urlpatterns = [
 path('gis-applications/', views.gis_applications, name='gis_applications'),
 path('apply-now/', views.apply_now, name='apply_now'),
 path('careers/', views.careers, name='careers'),
+    path('job/<int:job_id>/apply/', views.job_apply, name='job_apply'),
     
     # Certificate URLs
     path('verify-certificate/', views.verify_certificate, name='verify_certificate'),
