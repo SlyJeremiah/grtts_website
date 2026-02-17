@@ -430,22 +430,27 @@ class UserAdmin(admin.ModelAdmin):
 # ===== FIXED APPLICANTPROFILE ADMIN =====
 @admin.register(ApplicantProfile)
 class ApplicantProfileAdmin(admin.ModelAdmin):
-    list_display = ['full_name', 'email', 'city', 'nationality', 'created_at']  # NO 'phone' here
+    list_display = ['id', 'user_email', 'get_full_name', 'phone', 'created_at']
     list_filter = ['gender', 'nationality', 'created_at']
-    search_fields = ['first_name', 'last_name', 'email']  # NO 'phone' here
-    readonly_fields = ['created_at', 'updated_at', 'full_name']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'phone']
+    readonly_fields = ['created_at', 'updated_at']
     
-    def full_name(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
-    full_name.short_description = "Full Name"
+    def user_email(self, obj):
+        return obj.user.email if obj.user else "No user"
+    user_email.short_description = "Email"
     
-    def email(self, obj):
-        return obj.email
-    email.short_description = "Email"
+    def get_full_name(self, obj):
+        if obj.user:
+            return f"{obj.user.first_name} {obj.user.last_name}"
+        return "No user"
+    get_full_name.short_description = "Full Name"
     
     fieldsets = (
-        ('Personal Information', {
-            'fields': ('first_name', 'last_name', 'email', 'date_of_birth', 'gender', 'nationality')
+        ('User Information', {
+            'fields': ('user',)
+        }),
+        ('Personal Details', {
+            'fields': ('date_of_birth', 'gender', 'nationality')
         }),
         ('Address', {
             'fields': ('address', 'city', 'province')
@@ -464,7 +469,6 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at')
         }),
     )
-
 @admin.register(CourseApplication)
 class CourseApplicationAdmin(admin.ModelAdmin):
     list_display = ['applicant', 'course', 'status', 'application_date', 'payment_status']
