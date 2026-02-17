@@ -565,3 +565,65 @@ class UserDocumentAdmin(admin.ModelAdmin):
             'fields': ('uploaded_at',)
         }),
     )
+# =============================================================================
+# CAREERS ADMIN
+# =============================================================================
+
+@admin.register(JobPost)
+class JobPostAdmin(admin.ModelAdmin):
+    list_display = ['title', 'location', 'job_type', 'is_active', 'deadline', 'created_at']
+    list_filter = ['is_active', 'job_type', 'category', 'location']
+    search_fields = ['title', 'description', 'location']
+    list_editable = ['is_active']
+    readonly_fields = ['created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('title', 'category', 'job_type', 'location', 'icon')
+        }),
+        ('Job Details', {
+            'fields': ('description', 'requirements', 'responsibilities')
+        }),
+        ('Additional Info', {
+            'fields': ('salary_range', 'deadline', 'is_active')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(JobApplication)
+class JobApplicationAdmin(admin.ModelAdmin):
+    list_display = ['full_name', 'email', 'phone', 'job', 'status', 'applied_at']
+    list_filter = ['status', 'job', 'applied_at']
+    search_fields = ['first_name', 'last_name', 'email', 'job__title']
+    readonly_fields = ['applied_at', 'updated_at', 'ip_address', 'user_agent']
+    
+    fieldsets = (
+        ('Job Applied For', {
+            'fields': ('job',)
+        }),
+        ('Applicant Information', {
+            'fields': ('first_name', 'last_name', 'email', 'phone')
+        }),
+        ('Application Details', {
+            'fields': ('cover_letter', 'experience_years', 'current_employer', 'current_position')
+        }),
+        ('Documents', {
+            'fields': ('cv', 'cover_letter_file', 'additional_docs'),
+            'classes': ('collapse',)
+        }),
+        ('Status', {
+            'fields': ('status', 'notes')
+        }),
+        ('Technical Info', {
+            'fields': ('ip_address', 'user_agent', 'applied_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    def full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+    full_name.short_description = "Name"
