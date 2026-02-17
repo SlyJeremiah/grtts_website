@@ -3,7 +3,7 @@ from django.core.validators import EmailValidator, RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 import uuid
-import os  # Add this import for os.path.basename
+import os
 
 class StudentInquiry(models.Model):
     """Student training inquiries"""
@@ -469,27 +469,48 @@ class User(AbstractUser):
         return self.email
 
 
+# =============================================================================
+# FIXED APPLICANTPROFILE MODEL - ALL FIELDS NOW OPTIONAL
+# =============================================================================
+
 class ApplicantProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='applicant_profile')
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')])
-    nationality = models.CharField(max_length=100)
-    address = models.TextField()
-    city = models.CharField(max_length=100)
-    province = models.CharField(max_length=100)
-    emergency_name = models.CharField(max_length=200)
-    emergency_phone = models.CharField(max_length=20)
-    emergency_relationship = models.CharField(max_length=50)
+    
+    # Personal Information - Now all optional
+    date_of_birth = models.DateField(null=True, blank=True)  # FIXED: Added null=True, blank=True
+    gender = models.CharField(
+        max_length=10, 
+        choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')], 
+        blank=True  # FIXED: Added blank=True
+    )
+    nationality = models.CharField(max_length=100, blank=True)  # FIXED: Added blank=True
+    address = models.TextField(blank=True)  # FIXED: Added blank=True
+    city = models.CharField(max_length=100, blank=True)  # FIXED: Added blank=True
+    province = models.CharField(max_length=100, blank=True)  # FIXED: Added blank=True
+    
+    # Emergency Contact - Now all optional
+    emergency_name = models.CharField(max_length=200, blank=True)  # FIXED: Added blank=True
+    emergency_phone = models.CharField(max_length=20, blank=True)  # FIXED: Added blank=True
+    emergency_relationship = models.CharField(max_length=50, blank=True)  # FIXED: Added blank=True
+    
+    # Health - Already optional
     medical_conditions = models.TextField(blank=True)
     dietary_requirements = models.TextField(blank=True)
+    
+    # Documents - Already optional
     id_document = models.FileField(upload_to='applicants/id/', blank=True)
     cv = models.FileField(upload_to='applicants/cv/', blank=True)
     certificates = models.FileField(upload_to='applicants/certificates/', blank=True)
+    
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.user.email}"
+    
+    def get_full_name(self):
+        return f"{self.user.first_name} {self.user.last_name}"
 
 
 # =============================================================================
