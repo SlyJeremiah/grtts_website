@@ -686,3 +686,117 @@ class UserDocument(models.Model):
     
     def filename(self):
         return os.path.basename(self.file.name)
+        # =============================================================================
+# CAREERS & JOB APPLICATIONS MODELS
+# =============================================================================
+
+class JobPost(models.Model):
+    """Job postings that can be managed in admin"""
+    JOB_TYPES = [
+        ('full_time', 'Full Time'),
+        ('part_time', 'Part Time'),
+        ('contract', 'Contract'),
+        ('internship', 'Internship'),
+        ('volunteer', 'Volunteer'),
+    ]
+    
+    JOB_CATEGORIES = [
+        ('ranger', 'Field Ranger'),
+        ('gis', 'GIS Specialist'),
+        ('training', 'Training Instructor'),
+        ('admin', 'Administration'),
+        ('research', 'Research'),
+        ('other', 'Other'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    category = models.CharField(max_length=50, choices=JOB_CATEGORIES, default='other')
+    job_type = models.CharField(max_length=50, choices=JOB_TYPES, default='full_time')
+    location = models.CharField(max_length=200)
+    
+    # Job details
+    description = models.TextField(help_text="Main job description")
+    requirements = models.TextField(help_text="List requirements (one per line)")
+    responsibilities = models.TextField(blank=True, help_text="List responsibilities (one per line)")
+    
+    # Meta info
+    salary_range = models.CharField(max_length=100, blank=True, help_text="e.g., $500-$1000/month")
+    deadline = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    
+    # Icons (for frontend display)
+    icon = models.CharField(max_length=50, default='fa-briefcase', 
+                           help_text="FontAwesome icon class (e.g., fa-shield-alt, fa-map)")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-is_active', 'deadline', 'title']
+    
+    def __str__(self):
+        return f"{self.title} - {self.location}"
+    
+    def get_requirements_list(self):
+        """Return requirements as a list"""
+        return [req.strip() for req in self.requirements.split('\n') if req.strip()]
+    
+    def get_responsibilities_list(self):
+        """Return responsibilities as a list"""
+        if not self.responsibilities:
+            return []
+        return [resp.strip() for resp in self.responsibilities.split('\n') if resp.strip()]
+
+
+class JobApplication(models.Model):
+    """Job applications submitted by users"""
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('reviewing', 'Under Review'),
+        ('interviewed', 'Interviewed'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+        ('withdrawn', 'Withdrawn'),
+    ]
+    
+    # Job details
+    job = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='applications')
+    
+    # Applicant info (from form)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    
+    # Professional info
+    cover_letter = models.TextField()
+    experience_years = models.IntegerField(default=0, help_text="Years of relevant experience")
+    current_employer = models.CharField(max_length=200, blank=True)
+    current_position = models.CharField(max_length=200, blank=True)
+    
+    # Documents
+    cv = models.FileField(upload_to='job_applications/cv/')
+    cover_letter_file = models.FileField(upload_to='job_applications/cover_letters/', blank=True, null=True)
+    additional_docs = models.FileField(upload_to='job_applications/additional/', blank=True, null=True)
+    
+    # Status
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    notes = models.TextField(blank=True, help_text="Admin notes about this application")
+    
+    # Tracking
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True)
+    
+    # Timestamps
+    applied_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-applied_at']
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.job.title}"
+    
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
