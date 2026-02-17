@@ -207,8 +207,8 @@ class ApplicantRegistrationForm(forms.ModelForm):
         applicant.emergency_name = self.cleaned_data['emergency_name']
         applicant.emergency_phone = self.cleaned_data['emergency_phone']
         applicant.emergency_relationship = self.cleaned_data['emergency_relationship']
-        applicant.medical_conditions = self.cleaned_data['medical_conditions']
-        applicant.dietary_requirements = self.cleaned_data['dietary_requirements']
+        applicant.medical_conditions = self.cleaned_data.get('medical_conditions', '')
+        applicant.dietary_requirements = self.cleaned_data.get('dietary_requirements', '')
         
         if commit:
             applicant.save()
@@ -225,7 +225,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
                 file = self.cleaned_data.get(field_name)
                 if file:
                     UserDocument.objects.create(
-                        user=None,  # No user since we're not creating User accounts
+                        user=None,
                         document_type=doc_type,
                         file=file,
                         description=f"{description} uploaded during registration for {applicant.email}"
