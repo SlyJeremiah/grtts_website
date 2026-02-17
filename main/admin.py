@@ -10,7 +10,6 @@ from .models import (
     UserDocument,
     JobPost, JobApplication  # Added these
 )
-
 class LocationImageInline(admin.TabularInline):
     model = LocationImage
     extra = 3
