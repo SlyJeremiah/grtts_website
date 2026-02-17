@@ -1,10 +1,11 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from .models import User  # Import your custom User model from main.models
 
 class CustomUserCreationForm(UserCreationForm):
     """
     Custom registration form with first name and last name fields
+    Using the custom User model from main.models
     """
     first_name = forms.CharField(
         max_length=30,
@@ -31,7 +32,7 @@ class CustomUserCreationForm(UserCreationForm):
     )
 
     class Meta:
-        model = User
+        model = User  # Use your custom User model, not django.contrib.auth.models.User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
