@@ -1,0 +1,86 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}GIS Applications - GRTTS{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(rgba(0, 40, 0, 0.8), rgba(0, 20, 0, 0.9)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; padding: 100px 0;">
+    <div class="container text-center text-white">
+        <h1 class="display-3 mb-4 animate__animated animate__fadeInDown">GIS Applications in Conservation</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Leveraging technology to protect wildlife and wildlands</p>
+    </div>
+</section>
+
+<!-- Introduction -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="text-success mb-4">What is GIS?</h2>
+                <p class="lead">Geographic Information Systems (GIS) are powerful tools that allow us to visualize, analyze, and interpret data to understand spatial relationships and patterns in conservation.</p>
+                <p>At GRTTS, we integrate GIS technology across all our operations - from tracking wildlife movements to optimizing ranger patrols and identifying poaching hotspots.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Applications Grid -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center text-success mb-5">Key Applications</h2>
+        <div class="row">
+            {% for app in applications %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <i class="fas {{ app.icon }} fa-3x text-success"></i>
+                        </div>
+                        <h4 class="card-title">{{ app.title }}</h4>
+                        <p class="card-text">{{ app.description }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Software & Tools -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="text-success mb-4">GIS Software We Use</h3>
+                <ul class="list-group list-group-flush">
+                    {% for item in software %}
+                    <li class="list-group-item bg-transparent">
+                        <i class="fas fa-check-circle text-success me-3"></i>{{ item }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-success text-white">
+                    <div class="card-body p-5">
+                        <h4 class="mb-4">Training Available</h4>
+                        <p class="lead mb-4">We offer specialized GIS training for conservation professionals.</p>
+                        <a href="{% url 'main:contact' %}" class="btn btn-light btn-lg">Inquire About Training</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5" style="background-color: #f8f9fa;">
+    <div class="container text-center">
+        <h3 class="mb-4">Ready to Apply GIS in Conservation?</h3>
+        <p class="lead mb-4">Join our team or collaborate with us on GIS projects.</p>
+        <a href="{% url 'main:careers' %}" class="btn btn-success btn-lg me-3">View Careers</a>
+        <a href="{% url 'main:contact' %}" class="btn btn-outline-success btn-lg">Contact Us</a>
+    </div>
+</section>
+{% endblock %}
