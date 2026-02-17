@@ -638,3 +638,27 @@ class CertificateVerificationLog(models.Model):
     
     class Meta:
         ordering = ['-verified_at']
+        class UserDocument(models.Model):
+    """Model to store user-uploaded documents"""
+    DOCUMENT_TYPES = [
+        ('cv', 'CV/Resume'),
+        ('id', 'ID Document'),
+        ('certificate', 'Certificate'),
+        ('photo', 'Profile Photo'),
+        ('other', 'Other Document'),
+    ]
+    
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='documents')
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES)
+    file = models.FileField(upload_to='user_documents/%Y/%m/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255, blank=True)
+    
+    class Meta:
+        ordering = ['-uploaded_at']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.get_document_type_display()}"
+    
+    def filename(self):
+        return os.path.basename(self.file.name)
