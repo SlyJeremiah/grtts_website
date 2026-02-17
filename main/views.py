@@ -821,54 +821,27 @@ def apply_now(request):
     }
     return render(request, 'main/apply_now.html', context)
 
-
 # =============================================================================
-# CAREERS PAGE
+# CAREERS PAGE (Dynamic from Database)
 # =============================================================================
 
 def careers(request):
-    """Careers and job opportunities page"""
-    # You can later replace this with a Job model from database
+    """Careers page showing active job posts from database"""
+    active_jobs = JobPost.objects.filter(is_active=True)
+    
+    # Group jobs by category for better display
+    jobs_by_category = {}
+    for job in active_jobs:
+        category = job.get_category_display()
+        if category not in jobs_by_category:
+            jobs_by_category[category] = []
+        jobs_by_category[category].append(job)
+    
     context = {
         'title': 'Careers at GRTTS',
-        'open_positions': [
-            {
-                'title': 'Field Ranger',
-                'location': 'Hwange National Park',
-                'type': 'Full-time',
-                'description': 'Join our frontline conservation team protecting wildlife in Hwange.',
-                'requirements': ['Fitness level 2', 'Tracker certificate', 'First aid certified'],
-                'deadline': '2026-03-15',
-                'icon': 'fa-shield-alt'
-            },
-            {
-                'title': 'GIS Specialist',
-                'location': 'Harare (with field visits)',
-                'type': 'Full-time',
-                'description': 'Manage our GIS systems and provide spatial analysis for conservation efforts.',
-                'requirements': ['GIS certification', 'Remote sensing experience', 'Data analysis skills'],
-                'deadline': '2026-03-30',
-                'icon': 'fa-map'
-            },
-            {
-                'title': 'Training Instructor',
-                'location': 'Gweru Training Camp',
-                'type': 'Full-time',
-                'description': 'Train the next generation of wildlife rangers.',
-                'requirements': ['5+ years ranger experience', 'Training certification', 'Track record'],
-                'deadline': '2026-04-01',
-                'icon': 'fa-chalkboard-teacher'
-            },
-            {
-                'title': 'Conservation Intern',
-                'location': 'Various Locations',
-                'type': 'Internship',
-                'description': '3-month paid internship for aspiring conservationists.',
-                'requirements': ['Recent graduate', 'Passion for conservation', 'Willing to learn'],
-                'deadline': '2026-04-15',
-                'icon': 'fa-seedling'
-            },
-        ],
+        'jobs': active_jobs,
+        'jobs_by_category': jobs_by_category,
+        'total_jobs': active_jobs.count(),
         'benefits': [
             'Competitive salary packages',
             'Accommodation provided at field stations',
@@ -879,3 +852,117 @@ def careers(request):
         ]
     }
     return render(request, 'main/careers.html', context)
+
+
+# =============================================================================
+# JOB APPLICATION FORM
+# =============================================================================
+
+from django.utils import timezone
+
+def job_apply(request, job_id):
+    """Apply for a specific job"""
+    job = get_object_or_404(JobPost, id=job_id, is_active=True)
+    
+    if request.method == 'POST':
+        # Process form submission
+        try:
+            # Get form data
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            phone = request.POST.get('phone')
+            cover_letter = request.POST.get('cover_letter')
+            experience_years = request.POST.get('experience_years', 0)
+            current_employer = request.POST.get('current_employer', '')
+            current_position = request.POST.get('current_position', '')
+            
+            # Check if CV is uploaded
+            if 'cv' not in request.FILES:
+                messages.error(request, 'Please upload your CV.')
+                return render(request, 'main/job_apply.html', {'job': job})
+            
+            # Create application
+            application = JobApplication(
+                job=job,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone=phone,
+                cover_letter=cover_letter,
+                experience_years=experience_years,
+                current_employer=current_employer,
+                current_position=current_position,
+                cv=request.FILES['cv'],
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            )
+            
+            # Optional files
+            if 'cover_letter_file' in request.FILES:
+                application.cover_letter_file = request.FILES['cover_letter_file']
+            if 'additional_docs' in request.FILES:
+                application.additional_docs = request.FILES['additional_docs']
+            
+            application.save()
+            
+            # Send confirmation email
+            try:
+                subject = f"Application Received: {job.title}"
+                message = f"""
+Dear {first_name},
+
+Thank you for applying for the {job.title} position at GRTTS.
+
+We have received your application and it is now under review. Our hiring team will contact you within 5-7 business days regarding the next steps.
+
+Application Details:
+- Position: {job.title}
+- Location: {job.location}
+- Applied: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+
+Best regards,
+GRTTS HR Team
+                """
+                send_mail(
+                    subject,
+                    message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                logger.error(f"Job application email failed: {e}")
+            
+            # Notify admin
+            try:
+                admin_subject = f"New Job Application: {job.title}"
+                admin_message = f"""
+New application received for {job.title}
+
+Applicant: {first_name} {last_name}
+Email: {email}
+Phone: {phone}
+
+Check admin panel for full details and documents.
+                """
+                send_mail(
+                    admin_subject,
+                    admin_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    ['shanyaslym19@gmail.com'],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                logger.error(f"Admin notification failed: {e}")
+            
+            messages.success(request, f'Thank you for applying for {job.title}! We will review your application and contact you soon.')
+            return redirect('main:careers')
+            
+        except Exception as e:
+            logger.error(f"Job application error: {e}")
+            messages.error(request, 'There was an error submitting your application. Please try again.')
+            return render(request, 'main/job_apply.html', {'job': job})
+    
+    # GET request - show form
+    return render(request, 'main/job_apply.html', {'job': job})
