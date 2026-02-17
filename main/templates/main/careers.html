@@ -129,7 +129,10 @@
     <div class="container text-center">
         <h3 class="mb-4">Don't see the right fit?</h3>
         <p class="lead mb-4">We're always looking for passionate individuals. Send us your CV for future opportunities.</p>
-        <a href="{% url 'main:contact' %}" class="btn btn-success btn-lg">Contact Our HR Team</a>
+        <!-- UPDATED: Added type=careers parameter -->
+        <a href="{% url 'main:contact' %}?type=careers" class="btn btn-success btn-lg">
+            <i class="fas fa-paper-plane"></i> Contact Our HR Team
+        </a>
     </div>
 </section>
 {% endblock %}
