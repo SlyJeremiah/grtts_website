@@ -469,29 +469,25 @@ class User(AbstractUser):
         return self.email
 
 
-# =============================================================================
-# FIXED APPLICANTPROFILE MODEL - ALL FIELDS NOW OPTIONAL
-# =============================================================================
-
 class ApplicantProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='applicant_profile')
     
     # Personal Information - Now all optional
-    date_of_birth = models.DateField(null=True, blank=True)  # FIXED: Added null=True, blank=True
+    date_of_birth = models.DateField(null=True, blank=True)
     gender = models.CharField(
         max_length=10, 
         choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')], 
-        blank=True  # FIXED: Added blank=True
+        blank=True
     )
-    nationality = models.CharField(max_length=100, blank=True)  # FIXED: Added blank=True
-    address = models.TextField(blank=True)  # FIXED: Added blank=True
-    city = models.CharField(max_length=100, blank=True)  # FIXED: Added blank=True
-    province = models.CharField(max_length=100, blank=True)  # FIXED: Added blank=True
+    nationality = models.CharField(max_length=100, blank=True)
+    address = models.TextField(blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    province = models.CharField(max_length=100, blank=True)
     
     # Emergency Contact - Now all optional
-    emergency_name = models.CharField(max_length=200, blank=True)  # FIXED: Added blank=True
-    emergency_phone = models.CharField(max_length=20, blank=True)  # FIXED: Added blank=True
-    emergency_relationship = models.CharField(max_length=50, blank=True)  # FIXED: Added blank=True
+    emergency_name = models.CharField(max_length=200, blank=True)
+    emergency_phone = models.CharField(max_length=20, blank=True)
+    emergency_relationship = models.CharField(max_length=50, blank=True)
     
     # Health - Already optional
     medical_conditions = models.TextField(blank=True)
@@ -513,10 +509,6 @@ class ApplicantProfile(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-# =============================================================================
-# ENHANCED COURSE APPLICATION MODEL WITH COMPREHENSIVE FILE UPLOADS
-# =============================================================================
-
 class CourseApplication(models.Model):
     """Comprehensive course application with file uploads and tracking"""
     
@@ -531,22 +523,18 @@ class CourseApplication(models.Model):
         ('completed', 'Completed'),
     ]
     
-    # ===== RELATIONSHIPS =====
     applicant = models.ForeignKey(ApplicantProfile, on_delete=models.CASCADE, related_name='course_applications')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='applications')
     
-    # ===== APPLICATION STATUS =====
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     application_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
     application_date = models.DateTimeField(auto_now_add=True)
     
-    # ===== TEXT FIELDS (from applicant, can override profile) =====
     motivation_text = models.TextField(blank=True, help_text="Why you want to take this course")
     previous_experience = models.TextField(blank=True, help_text="Relevant experience in conservation, military, security, etc.")
     medical_conditions = models.TextField(blank=True, help_text="Any medical conditions we should be aware of")
     dietary_requirements = models.TextField(blank=True)
     
-    # ===== COMPREHENSIVE FILE UPLOADS =====
     profile_photo = models.ImageField(
         upload_to='applications/photos/',
         blank=True,
@@ -584,12 +572,10 @@ class CourseApplication(models.Model):
         help_text="Any other supporting documents"
     )
     
-    # ===== INTERVIEW DETAILS =====
     interview_date = models.DateTimeField(blank=True, null=True)
     interview_notes = models.TextField(blank=True)
     interview_score = models.IntegerField(blank=True, null=True)
     
-    # ===== PAYMENT INFORMATION =====
     payment_required = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     payment_made = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     payment_status = models.CharField(max_length=20, choices=[
@@ -598,12 +584,10 @@ class CourseApplication(models.Model):
         ('paid', 'Paid'),
     ], default='pending')
     
-    # ===== ADMIN FIELDS =====
     reviewed_date = models.DateTimeField(blank=True, null=True)
     reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_applications')
     admin_notes = models.TextField(blank=True)
     
-    # ===== TIMESTAMPS =====
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -615,7 +599,6 @@ class CourseApplication(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.application_number:
-            # Generate a unique application number: APP-2026-0001
             year = timezone.now().year
             last_app = CourseApplication.objects.filter(
                 application_number__startswith=f"APP-{year}"
@@ -630,9 +613,6 @@ class CourseApplication(models.Model):
             self.application_number = f"APP-{year}-{new_num:04d}"
         
         super().save(*args, **kwargs)
-    
-    def get_status_display(self):
-        return dict(self.STATUS_CHOICES).get(self.status, self.status)
 
 
 class Certificate(models.Model):
@@ -678,10 +658,6 @@ class CertificateVerificationLog(models.Model):
     class Meta:
         ordering = ['-verified_at']
 
-
-# =============================================================================
-# USER DOCUMENT MODEL FOR FILE UPLOADS
-# =============================================================================
 
 class UserDocument(models.Model):
     """Model to store user-uploaded documents"""
