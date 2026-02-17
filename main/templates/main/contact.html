@@ -1,1019 +1,216 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}Inquiries - Game Ranger and Tracker Training Specialist{% endblock %}
-
-{% block extra_css %}
-<style>
-    :root {
-        --primary: #1a472a;
-        --secondary: #2d5a27;
-        --accent: #d4af37;
-        --light: #f5f5f5;
-        --dark: #0c1f14;
-        --student: #3498db;
-        --landowner: #27ae60;
-        --enthusiast: #9b59b6;
-        --other: #e74c3c;
-    }
-
-    .inquiries-container {
-        padding: 40px 0;
-    }
-
-    .page-title {
-        text-align: center;
-        margin-bottom: 40px;
-        color: var(--primary);
-    }
-
-    .page-title h1 {
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-
-    .page-title p {
-        font-size: 18px;
-        color: #666;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    /* Django Messages */
-    .django-messages {
-        margin-bottom: 30px;
-    }
-
-    .alert {
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 10px;
-        animation: slideIn 0.3s ease;
-    }
-
-    .alert-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .alert-error, .alert-danger {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-
-    .alert-info {
-        background-color: #d1ecf1;
-        color: #0c5460;
-        border: 1px solid #bee5eb;
-    }
-
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Inquiry Tabs */
-    .inquiry-tabs {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 15px;
-        margin-bottom: 40px;
-    }
-
-    .inquiry-tab {
-        padding: 15px 30px;
-        background-color: #e9e9e9;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #555;
-    }
-
-    .inquiry-tab:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .inquiry-tab.active {
-        color: white;
-    }
-
-    .inquiry-tab.student.active {
-        background-color: var(--student);
-    }
-
-    .inquiry-tab.landowner.active {
-        background-color: var(--landowner);
-    }
-
-    .inquiry-tab.enthusiast.active {
-        background-color: var(--enthusiast);
-    }
-
-    .inquiry-tab.other.active {
-        background-color: var(--other);
-    }
-
-    .inquiry-tab i {
-        font-size: 20px;
-    }
-
-    /* Form Sections */
-    .form-section {
-        display: none;
-        background-color: white;
-        border-radius: 10px;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        margin-bottom: 40px;
-        animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    .form-section.active {
-        display: block;
-    }
-
-    .form-header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #eee;
-    }
-
-    .form-header h2 {
-        font-size: 28px;
-        margin-bottom: 10px;
-        color: var(--primary);
-    }
-
-    .form-header p {
-        color: #666;
-        font-size: 16px;
-    }
-
-    .form-group {
-        margin-bottom: 25px;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #444;
-    }
-
-    .required {
-        color: #e74c3c;
-    }
-
-    input, select, textarea {
-        width: 100%;
-        padding: 14px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 16px;
-        transition: border 0.3s, box-shadow 0.3s;
-        font-family: inherit;
-    }
-
-    input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(26, 71, 42, 0.1);
-    }
-
-    .checkbox-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .checkbox-group input {
-        width: auto;
-    }
-
-    .checkbox-group label {
-        margin-bottom: 0;
-        font-weight: normal;
-    }
-
-    .form-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-    }
-
-    .submit-btn {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        padding: 15px 40px;
-        border-radius: 6px;
-        font-weight: 700;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .submit-btn:hover {
-        background-color: var(--secondary);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .reset-btn {
-        background-color: #eee;
-        color: #666;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .reset-btn:hover {
-        background-color: #ddd;
-    }
-
-    /* Course, Service, Interest Options */
-    .course-options, .service-options, .interest-options {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .option-card {
-        border: 2px solid #eee;
-        border-radius: 8px;
-        padding: 15px;
-        cursor: pointer;
-        transition: all 0.3s;
-        text-align: center;
-    }
-
-    .option-card:hover {
-        border-color: var(--primary);
-        background-color: #f9f9f9;
-    }
-
-    .option-card.selected {
-        border-color: var(--primary);
-        background-color: rgba(26, 71, 42, 0.05);
-    }
-
-    .option-card i {
-        font-size: 24px;
-        margin-bottom: 10px;
-        display: block;
-        color: var(--primary);
-    }
-
-    .radio-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin-top: 10px;
-    }
-
-    .radio-option {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    /* Form Status */
-    .form-status {
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 20px;
-        display: none;
-    }
-
-    .status-sending {
-        background-color: #d1ecf1;
-        color: #0c5460;
-        border: 1px solid #bee5eb;
-    }
-
-    /* Loading Spinner */
-    .spinner {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(255,255,255,.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    /* Footer Note */
-    .form-footer-note {
-        text-align: center;
-        margin-top: 40px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-        color: #666;
-        font-size: 14px;
-    }
-
-    .form-footer-note a {
-        color: var(--primary);
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .form-footer-note a:hover {
-        text-decoration: underline;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .page-title h1 {
-            font-size: 28px;
-        }
-        
-        .inquiry-tab {
-            padding: 12px 20px;
-            font-size: 14px;
-        }
-        
-        .form-section {
-            padding: 25px;
-        }
-        
-        .form-header h2 {
-            font-size: 24px;
-        }
-        
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-        
-        .form-footer {
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .submit-btn, .reset-btn {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .inquiry-tabs {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .course-options, 
-        .service-options, 
-        .interest-options {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
-{% endblock %}
+{% block title %}Contact Us - GRTTS{% endblock %}
 
 {% block content %}
-<div class="container inquiries-container">
-    <div class="page-title">
-        <h1>Submit Your Inquiry</h1>
-        <p>Please select the category that best describes you and fill out the appropriate form. Our team will respond within 48 hours.</p>
-    </div>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        {% if inquiry_type == 'course' %}
+                            Course Inquiry
+                        {% elif inquiry_type == 'job' %}
+                            Job Application Inquiry
+                        {% elif inquiry_type == 'location' %}
+                            Location Inquiry
+                        {% elif inquiry_type == 'gis' %}
+                            GIS Training Inquiry
+                        {% else %}
+                            Contact GRTTS
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <!-- Dynamic Header Message -->
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle"></i>
+                        {% if course_param %}
+                            You're inquiring about a <strong>course</strong>. Please fill out the form below and our training team will respond within 48 hours.
+                        {% elif job_param %}
+                            You're inquiring about a <strong>job opportunity</strong>. Please fill out the form below and our HR team will respond within 48 hours.
+                        {% elif location_param %}
+                            You're inquiring about <strong>{{ location_param|title }} location</strong>. Please fill out the form below.
+                        {% elif inquiry_type == 'gis' %}
+                            You're inquiring about <strong>GIS Applications training</strong>. Please fill out the form below.
+                        {% else %}
+                            Please fill out the form below and we'll get back to you within 48 hours.
+                        {% endif %}
+                    </div>
 
-    <!-- Django Messages -->
-    {% if messages %}
-    <div class="django-messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <!-- Display Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Contact Form -->
+                    <form method="post" action="{% url 'main:contact' %}">
+                        {% csrf_token %}
+                        
+                        <!-- Hidden fields to preserve parameters -->
+                        {% if course_param %}
+                            <input type="hidden" name="course_param" value="{{ course_param }}">
+                        {% endif %}
+                        {% if job_param %}
+                            <input type="hidden" name="job_param" value="{{ job_param }}">
+                        {% endif %}
+                        {% if location_param %}
+                            <input type="hidden" name="location_param" value="{{ location_param }}">
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+263 123 456 789">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject *</label>
+                            <input type="text" class="form-control" id="subject" name="subject" value="{{ initial_subject }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message *</label>
+                            <textarea class="form-control" id="message" name="message" rows="6" required>
+{% if course_param %}I'm interested in learning more about the {% if course_param == 'basic' %}Basic Ranger Course{% elif course_param == 'specialist' %}Specialist Courses{% elif course_param == 'advanced' %}Advanced Ranger Course{% elif course_param == 'tracking' %}Tracking Course{% endif %}. Please send me more information about course dates, requirements, and pricing.{% elif job_param %}I'm interested in the job opportunity at GRTTS. Please provide more information about the application process.{% elif location_param %}I'd like to know more about your operations in {{ location_param|title }}.{% else %}I'd like to get more information about GRTTS and your programs.{% endif %}
+                            </textarea>
+                        </div>
+                        
+                        <!-- Job-specific fields (shown only for job inquiries) -->
+                        {% if job_param %}
+                        <div class="card mb-3 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Job Application Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="cv" class="form-label">Upload CV (Optional)</label>
+                                    <input type="file" class="form-control" id="cv" name="cv" accept=".pdf,.doc,.docx">
+                                    <small class="text-muted">PDF, DOC, DOCX format. Max 5MB.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cover_letter" class="form-label">Cover Letter (Optional)</label>
+                                    <textarea class="form-control" id="cover_letter" name="cover_letter" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Course-specific fields (shown only for course inquiries) -->
+                        {% if course_param %}
+                        <div class="card mb-3 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Course Interest Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="preferred_date" class="form-label">Preferred Start Date</label>
+                                        <input type="date" class="form-control" id="preferred_date" name="preferred_date">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="experience_level" class="form-label">Experience Level</label>
+                                        <select class="form-control" id="experience_level" name="experience_level">
+                                            <option value="">Select...</option>
+                                            <option value="beginner">Beginner (No experience)</option>
+                                            <option value="intermediate">Intermediate (Some experience)</option>
+                                            <option value="advanced">Advanced (Experienced)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        {% endfor %}
+    </div>
+    
+    <!-- Contact Information -->
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 bg-light text-center">
+                <div class="card-body">
+                    <i class="fas fa-map-marker-alt fa-3x text-success mb-3"></i>
+                    <h5>Visit Us</h5>
+                    <p class="mb-0">Plot 72, Mityana Farm<br>Makonde, Zimbabwe</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 bg-light text-center">
+                <div class="card-body">
+                    <i class="fas fa-phone-alt fa-3x text-success mb-3"></i>
+                    <h5>Call Us</h5>
+                    <p class="mb-0">+263 781 603 802<br>+263 788 661 234</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 bg-light text-center">
+                <div class="card-body">
+                    <i class="fas fa-envelope fa-3x text-success mb-3"></i>
+                    <h5>Email Us</h5>
+                    <p class="mb-0">info@grtts.co.zw<br>grttsrangers@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    {% if faqs %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Frequently Asked Questions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="faqAccordion">
+                        {% for faq in faqs %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
+                                    {{ faq.question }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    {{ faq.answer|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     {% endif %}
-
-    <!-- Inquiry Tabs -->
-    <div class="inquiry-tabs">
-        <button class="inquiry-tab student active" data-tab="student">
-            <i class="fas fa-user-graduate"></i>
-            Student Inquiry
-        </button>
-        <button class="inquiry-tab landowner" data-tab="landowner">
-            <i class="fas fa-landmark"></i>
-            Landowner Inquiry
-        </button>
-        <button class="inquiry-tab enthusiast" data-tab="enthusiast">
-            <i class="fas fa-binoculars"></i>
-            Enthusiast Inquiry
-        </button>
-        <button class="inquiry-tab other" data-tab="other">
-            <i class="fas fa-users"></i>
-            Other Inquiry
-        </button>
-    </div>
-
-    <!-- Student Form -->
-    <div class="form-section active" id="student-form">
-        <div class="form-header">
-            <h2>Student Training Inquiry</h2>
-            <p>Interested in becoming a wildlife ranger? Tell us about yourself and your training interests.</p>
-        </div>
-        
-        <!-- Form Status Messages (for AJAX) -->
-        <div class="form-status" id="studentStatus"></div>
-        
-        <form id="studentForm" method="post" action="{% url 'main:inquiry_student' %}">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="studentName">Full Name <span class="required">*</span></label>
-                    <input type="text" id="studentName" name="name" required placeholder="Enter your full name" value="{{ form_data.name|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="studentEmailInput">Email Address <span class="required">*</span></label>
-                    <input type="email" id="studentEmailInput" name="email" required placeholder="your.email@example.com" value="{{ form_data.email|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="studentPhone">Phone Number <span class="required">*</span></label>
-                    <input type="tel" id="studentPhone" name="phone" required placeholder="+263 78 123 4567" value="{{ form_data.phone|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="studentAge">Age <span class="required">*</span></label>
-                    <input type="number" id="studentAge" name="age" required min="18" max="65" placeholder="e.g., 22" value="{{ form_data.age|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="studentNationality">Nationality <span class="required">*</span></label>
-                    <input type="text" id="studentNationality" name="nationality" required placeholder="e.g., Zimbabwean" value="{{ form_data.nationality|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="studentEducation">Highest Education Level</label>
-                    <select id="studentEducation" name="education">
-                        <option value="">Select education level</option>
-                        <option value="high-school" {% if form_data.education == 'high-school' %}selected{% endif %}>High School / O-Levels</option>
-                        <option value="diploma" {% if form_data.education == 'diploma' %}selected{% endif %}>Diploma</option>
-                        <option value="bachelors" {% if form_data.education == 'bachelors' %}selected{% endif %}>Bachelor's Degree</option>
-                        <option value="masters" {% if form_data.education == 'masters' %}selected{% endif %}>Master's Degree</option>
-                        <option value="other" {% if form_data.education == 'other' %}selected{% endif %}>Other</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Interested Training Course <span class="required">*</span></label>
-                <div class="course-options">
-                    <div class="option-card" data-value="basic">
-                        <i class="fas fa-graduation-cap"></i>
-                        <h4>Basic Ranger Course</h4>
-                        <p>6 weeks - Conservation Guardianship</p>
-                    </div>
-                    <div class="option-card" data-value="specialist">
-                        <i class="fas fa-certificate"></i>
-                        <h4>Specialist Courses</h4>
-                        <p>Tracking, Tactics, K9 Handling</p>
-                    </div>
-                    <div class="option-card" data-value="advanced">
-                        <i class="fas fa-medal"></i>
-                        <h4>Advanced Ranger</h4>
-                        <p>2 weeks - Leadership Training</p>
-                    </div>
-                    <div class="option-card" data-value="unsure">
-                        <i class="fas fa-question-circle"></i>
-                        <h4>Not Sure</h4>
-                        <p>Need guidance on which course</p>
-                    </div>
-                </div>
-                <input type="hidden" id="studentCourse" name="course" value="{{ form_data.course|default:'' }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="studentIntake">Preferred Intake Month</label>
-                <select id="studentIntake" name="intake">
-                    <option value="">Select preferred intake</option>
-                    <option value="january" {% if form_data.intake == 'january' %}selected{% endif %}>January</option>
-                    <option value="june" {% if form_data.intake == 'june' %}selected{% endif %}>June</option>
-                    <option value="october" {% if form_data.intake == 'october' %}selected{% endif %}>October</option>
-                    <option value="march" {% if form_data.intake == 'march' %}selected{% endif %}>March (Advanced only)</option>
-                    <option value="november" {% if form_data.intake == 'november' %}selected{% endif %}>November (Advanced only)</option>
-                    <option value="flexible" {% if form_data.intake == 'flexible' %}selected{% endif %}>Flexible</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="studentExperience">Previous Experience (if any)</label>
-                <textarea id="studentExperience" name="experience" rows="4" placeholder="Describe any relevant experience in wildlife, security, military, or conservation...">{{ form_data.experience|default:'' }}</textarea>
-            </div>
-            
-            <div class="form-group">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="studentTerms" name="terms" required {% if form_data.terms %}checked{% endif %}>
-                    <label for="studentTerms">I agree to the terms and conditions and understand that this inquiry does not guarantee admission.</label>
-                </div>
-            </div>
-            
-            <div class="form-footer">
-                <button type="button" class="reset-btn" onclick="resetForm('studentForm')">Reset Form</button>
-                <button type="submit" class="submit-btn" id="studentSubmit">
-                    <i class="fas fa-paper-plane"></i>
-                    <span id="studentSubmitText">Submit Student Inquiry</span>
-                    <div class="spinner" id="studentSpinner" style="display:none;"></div>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Landowner Form -->
-    <div class="form-section" id="landowner-form">
-        <div class="form-header">
-            <h2>Landowner & Conservation Project Inquiry</h2>
-            <p>Need ranger services for your land or conservation project? Tell us about your requirements.</p>
-        </div>
-        
-        <div class="form-status" id="landownerStatus"></div>
-        
-        <form id="landownerForm" method="post" action="{% url 'main:inquiry_landowner' %}">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="landownerName">Full Name <span class="required">*</span></label>
-                    <input type="text" id="landownerName" name="name" required placeholder="Enter your full name" value="{{ form_data.name|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="landownerEmailInput">Email Address <span class="required">*</span></label>
-                    <input type="email" id="landownerEmailInput" name="email" required placeholder="your.email@example.com" value="{{ form_data.email|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="landownerPhone">Phone Number <span class="required">*</span></label>
-                    <input type="tel" id="landownerPhone" name="phone" required placeholder="+263 78 123 4567" value="{{ form_data.phone|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="landownerOrganization">Organization / Property Name</label>
-                    <input type="text" id="landownerOrganization" name="organization" placeholder="Name of your organization or property" value="{{ form_data.organization|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Type of Service Needed <span class="required">*</span></label>
-                <div class="service-options">
-                    <div class="option-card" data-value="deployment">
-                        <i class="fas fa-users"></i>
-                        <h4>Ranger Deployment</h4>
-                        <p>Deploy trained rangers to your property</p>
-                    </div>
-                    <div class="option-card" data-value="training">
-                        <i class="fas fa-graduation-cap"></i>
-                        <h4>Staff Training</h4>
-                        <p>Train your existing staff as rangers</p>
-                    </div>
-                    <div class="option-card" data-value="management">
-                        <i class="fas fa-handshake"></i>
-                        <h4>Ranger Management</h4>
-                        <p>Full management of your ranger team</p>
-                    </div>
-                    <div class="option-card" data-value="consultation">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h4>Consultation</h4>
-                        <p>Security assessment and planning</p>
-                    </div>
-                </div>
-                <input type="hidden" id="landownerService" name="service" value="{{ form_data.service|default:'' }}" required>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="propertySize">Property Size (hectares)</label>
-                    <input type="number" id="propertySize" name="property_size" placeholder="Approximate size in hectares" value="{{ form_data.property_size|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="propertyLocation">Property Location</label>
-                    <input type="text" id="propertyLocation" name="property_location" placeholder="Nearest town or GPS coordinates" value="{{ form_data.property_location|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Primary Wildlife Concerns</label>
-                <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="checkbox" id="concernPoaching" name="concerns_poaching" value="poaching" {% if form_data.concerns_poaching %}checked{% endif %}>
-                        <label for="concernPoaching">Poaching</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="checkbox" id="concernHumanWildlife" name="concerns_human_wildlife" value="human-wildlife" {% if form_data.concerns_human_wildlife %}checked{% endif %}>
-                        <label for="concernHumanWildlife">Human-Wildlife Conflict</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="checkbox" id="concernLivestock" name="concerns_livestock" value="livestock" {% if form_data.concerns_livestock %}checked{% endif %}>
-                        <label for="concernLivestock">Livestock Predation</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="checkbox" id="concernTrespassing" name="concerns_trespassing" value="trespassing" {% if form_data.concerns_trespassing %}checked{% endif %}>
-                        <label for="concernTrespassing">Illegal Trespassing</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="landownerDetails">Additional Details & Requirements</label>
-                <textarea id="landownerDetails" name="details" rows="4" placeholder="Tell us more about your property, current challenges, and specific requirements...">{{ form_data.details|default:'' }}</textarea>
-            </div>
-            
-            <div class="form-footer">
-                <button type="button" class="reset-btn" onclick="resetForm('landownerForm')">Reset Form</button>
-                <button type="submit" class="submit-btn" id="landownerSubmit">
-                    <i class="fas fa-paper-plane"></i>
-                    <span id="landownerSubmitText">Submit Landowner Inquiry</span>
-                    <div class="spinner" id="landownerSpinner" style="display:none;"></div>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Enthusiast Form -->
-    <div class="form-section" id="enthusiast-form">
-        <div class="form-header">
-            <h2>Wildlife Enthusiast Inquiry</h2>
-            <p>Interested in supporting conservation efforts? Tell us how you'd like to get involved.</p>
-        </div>
-        
-        <div class="form-status" id="enthusiastStatus"></div>
-        
-        <form id="enthusiastForm" method="post" action="{% url 'main:inquiry_enthusiast' %}">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="enthusiastName">Full Name <span class="required">*</span></label>
-                    <input type="text" id="enthusiastName" name="name" required placeholder="Enter your full name" value="{{ form_data.name|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="enthusiastEmailInput">Email Address <span class="required">*</span></label>
-                    <input type="email" id="enthusiastEmailInput" name="email" required placeholder="your.email@example.com" value="{{ form_data.email|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>How would you like to be involved? <span class="required">*</span></label>
-                <div class="interest-options">
-                    <div class="option-card" data-value="volunteer">
-                        <i class="fas fa-hands-helping"></i>
-                        <h4>Volunteer</h4>
-                        <p>Offer time and skills</p>
-                    </div>
-                    <div class="option-card" data-value="donate">
-                        <i class="fas fa-donate"></i>
-                        <h4>Donate</h4>
-                        <p>Financial support</p>
-                    </div>
-                    <div class="option-card" data-value="advocate">
-                        <i class="fas fa-bullhorn"></i>
-                        <h4>Advocate</h4>
-                        <p>Spread awareness</p>
-                    </div>
-                    <div class="option-card" data-value="visit">
-                        <i class="fas fa-camera"></i>
-                        <h4>Visit</h4>
-                        <p>Tour/visit facilities</p>
-                    </div>
-                </div>
-                <input type="hidden" id="enthusiastInterest" name="interest" value="{{ form_data.interest|default:'' }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="enthusiastBackground">Your Background / Skills</label>
-                <textarea id="enthusiastBackground" name="background" rows="4" placeholder="Tell us about your background, skills, or profession that might be relevant...">{{ form_data.background|default:'' }}</textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="enthusiastAvailability">Availability / Time Commitment</label>
-                <select id="enthusiastAvailability" name="availability">
-                    <option value="">Select availability</option>
-                    <option value="weekends" {% if form_data.availability == 'weekends' %}selected{% endif %}>Weekends only</option>
-                    <option value="part-time" {% if form_data.availability == 'part-time' %}selected{% endif %}>Part-time (few hours weekly)</option>
-                    <option value="full-time" {% if form_data.availability == 'full-time' %}selected{% endif %}>Full-time (for limited periods)</option>
-                    <option value="remote" {% if form_data.availability == 'remote' %}selected{% endif %}>Remote/online support</option>
-                    <option value="flexible" {% if form_data.availability == 'flexible' %}selected{% endif %}>Flexible based on needs</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="enthusiastMessage">Message to Our Team</label>
-                <textarea id="enthusiastMessage" name="message" rows="4" placeholder="What motivates you to support wildlife conservation? Any specific questions?...">{{ form_data.message|default:'' }}</textarea>
-            </div>
-            
-            <div class="form-footer">
-                <button type="button" class="reset-btn" onclick="resetForm('enthusiastForm')">Reset Form</button>
-                <button type="submit" class="submit-btn" id="enthusiastSubmit">
-                    <i class="fas fa-paper-plane"></i>
-                    <span id="enthusiastSubmitText">Submit Enthusiast Inquiry</span>
-                    <div class="spinner" id="enthusiastSpinner" style="display:none;"></div>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Other Form -->
-    <div class="form-section" id="other-form">
-        <div class="form-header">
-            <h2>General Inquiry</h2>
-            <p>For media, partnerships, research, or any other inquiries not covered above.</p>
-        </div>
-        
-        <div class="form-status" id="otherStatus"></div>
-        
-        <form id="otherForm" method="post" action="{% url 'main:inquiry_other' %}">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="otherName">Full Name <span class="required">*</span></label>
-                    <input type="text" id="otherName" name="name" required placeholder="Enter your full name" value="{{ form_data.name|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="otherEmailInput">Email Address <span class="required">*</span></label>
-                    <input type="email" id="otherEmailInput" name="email" required placeholder="your.email@example.com" value="{{ form_data.email|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="otherPhone">Phone Number</label>
-                    <input type="tel" id="otherPhone" name="phone" placeholder="+263 78 123 4567" value="{{ form_data.phone|default:'' }}">
-                </div>
-                <div class="form-group">
-                    <label for="otherOrganization">Organization (if applicable)</label>
-                    <input type="text" id="otherOrganization" name="organization" placeholder="Your organization or company" value="{{ form_data.organization|default:'' }}">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="otherCategory">Inquiry Category <span class="required">*</span></label>
-                <select id="otherCategory" name="category" required>
-                    <option value="">Select category</option>
-                    <option value="media" {% if form_data.category == 'media' %}selected{% endif %}>Media / Press</option>
-                    <option value="partnership" {% if form_data.category == 'partnership' %}selected{% endif %}>Partnership / Collaboration</option>
-                    <option value="research" {% if form_data.category == 'research' %}selected{% endif %}>Research / Academic</option>
-                    <option value="employment" {% if form_data.category == 'employment' %}selected{% endif %}>Employment Opportunities</option>
-                    <option value="supplier" {% if form_data.category == 'supplier' %}selected{% endif %}>Supplier / Vendor</option>
-                    <option value="general" {% if form_data.category == 'general' %}selected{% endif %}>General Information</option>
-                    <option value="other" {% if form_data.category == 'other' %}selected{% endif %}>Other</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="otherSubject">Subject <span class="required">*</span></label>
-                <input type="text" id="otherSubject" name="subject" required placeholder="Brief subject of your inquiry" value="{{ form_data.subject|default:'' }}">
-            </div>
-            
-            <div class="form-group">
-                <label for="otherMessage">Detailed Message <span class="required">*</span></label>
-                <textarea id="otherMessage" name="message" rows="6" required placeholder="Please provide detailed information about your inquiry...">{{ form_data.message|default:'' }}</textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="otherUrgency">Urgency Level</label>
-                <select id="otherUrgency" name="urgency">
-                    <option value="normal" {% if form_data.urgency == 'normal' %}selected{% endif %}>Normal - Response within 3-5 days</option>
-                    <option value="urgent" {% if form_data.urgency == 'urgent' %}selected{% endif %}>Urgent - Require prompt attention</option>
-                    <option value="routine" {% if form_data.urgency == 'routine' %}selected{% endif %}>Routine - No specific timeframe</option>
-                </select>
-            </div>
-            
-            <div class="form-footer">
-                <button type="button" class="reset-btn" onclick="resetForm('otherForm')">Reset Form</button>
-                <button type="submit" class="submit-btn" id="otherSubmit">
-                    <i class="fas fa-paper-plane"></i>
-                    <span id="otherSubmitText">Submit Inquiry</span>
-                    <div class="spinner" id="otherSpinner" style="display:none;"></div>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Footer Note -->
-    <div class="form-footer-note">
-        <p>If you experience any issues with the forms, please contact us directly at <a href="mailto:grttsrangers@gmail.com">grttsrangers@gmail.com</a> or call <a href="tel:+263781603802">+263 781 603 802</a></p>
-    </div>
 </div>
-
-<script>
-    // Tab Switching
-    const inquiryTabs = document.querySelectorAll('.inquiry-tab');
-    const formSections = document.querySelectorAll('.form-section');
-
-    inquiryTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs and forms
-            inquiryTabs.forEach(t => t.classList.remove('active'));
-            formSections.forEach(form => form.classList.remove('active'));
-            
-            // Add active class to clicked tab
-            tab.classList.add('active');
-            
-            // Show corresponding form
-            const tabId = tab.getAttribute('data-tab');
-            document.getElementById(`${tabId}-form`).classList.add('active');
-        });
-    });
-
-    // Option Card Selection
-    document.querySelectorAll('.option-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const container = card.closest('.form-group');
-            const hiddenInput = container.querySelector('input[type="hidden"]');
-            
-            // Remove selected class from all cards in this group
-            container.querySelectorAll('.option-card').forEach(c => {
-                c.classList.remove('selected');
-            });
-            
-            // Add selected class to clicked card
-            card.classList.add('selected');
-            
-            // Set hidden input value
-            hiddenInput.value = card.getAttribute('data-value');
-        });
-    });
-
-    // Form Submission with AJAX
-    document.getElementById('studentForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitForm(this, 'student', '{% url 'main:inquiry_student' %}');
-    });
-
-    document.getElementById('landownerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitForm(this, 'landowner', '{% url 'main:inquiry_landowner' %}');
-    });
-
-    document.getElementById('enthusiastForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitForm(this, 'enthusiast', '{% url 'main:inquiry_enthusiast' %}');
-    });
-
-    document.getElementById('otherForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitForm(this, 'other', '{% url 'main:inquiry_other' %}');
-    });
-
-    function submitForm(form, type, url) {
-        const statusDiv = document.getElementById(`${type}Status`);
-        const submitBtn = document.getElementById(`${type}Submit`);
-        const submitText = document.getElementById(`${type}SubmitText`);
-        const spinner = document.getElementById(`${type}Spinner`);
-        
-        // Show sending status
-        statusDiv.innerHTML = `
-            <div class="status-sending">
-                <i class="fas fa-spinner fa-spin"></i> Sending your inquiry...
-            </div>
-        `;
-        statusDiv.style.display = 'block';
-        
-        // Disable submit button and show spinner
-        submitBtn.disabled = true;
-        submitText.style.display = 'none';
-        spinner.style.display = 'inline-block';
-        
-        // Collect form data
-        const formData = new FormData(form);
-        
-        // Send to Django backend
-        fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Show success message
-                statusDiv.innerHTML = `
-                    <div class="status-sending" style="background-color: #d4edda; color: #155724; border-color: #c3e6cb;">
-                        <i class="fas fa-check-circle"></i> 
-                        <strong>Thank you!</strong> ${data.message}
-                    </div>
-                `;
-                
-                // Reset form
-                resetForm(`${type}Form`);
-            } else {
-                // Show error message
-                statusDiv.innerHTML = `
-                    <div class="status-sending" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;">
-                        <i class="fas fa-exclamation-circle"></i> 
-                        <strong>Error!</strong> ${data.message}
-                    </div>
-                `;
-            }
-        })
-        .catch(error => {
-            // Show error message
-            statusDiv.innerHTML = `
-                <div class="status-sending" style="background-color: #f8d7da; color: #721c24; border-color: #f5c6cb;">
-                    <i class="fas fa-exclamation-circle"></i> 
-                    <strong>Network Error!</strong> Please check your internet connection and try again.
-                </div>
-            `;
-        })
-        .finally(() => {
-            // Re-enable submit button
-            submitBtn.disabled = false;
-            submitText.style.display = 'inline';
-            spinner.style.display = 'none';
-            
-            // Scroll to status message
-            statusDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            
-            // Hide status message after 10 seconds
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 10000);
-        });
-    }
-
-    function resetForm(formId) {
-        const form = document.getElementById(formId);
-        form.reset();
-        
-        // Reset option cards
-        form.querySelectorAll('.option-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        
-        // Reset hidden inputs
-        form.querySelectorAll('input[type="hidden"]').forEach(input => {
-            if (input.id && !input.id.includes('csrf')) {
-                input.value = '';
-            }
-        });
-        
-        // Clear status messages
-        const statusDiv = document.querySelector(`#${formId} .form-status`);
-        if (statusDiv) {
-            statusDiv.style.display = 'none';
-            statusDiv.innerHTML = '';
-        }
-    }
-
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        // Check if there's an active tab from previous submission
-        const urlParams = new URLSearchParams(window.location.search);
-        const activeTab = urlParams.get('tab');
-        
-        if (activeTab) {
-            const tabToActivate = document.querySelector(`.inquiry-tab[data-tab="${activeTab}"]`);
-            if (tabToActivate) {
-                tabToActivate.click();
-            }
-        }
-    });
-</script>
 {% endblock %}
