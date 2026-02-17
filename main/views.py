@@ -33,6 +33,9 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 # REGISTRATION VIEW (With File Uploads)
 # =============================================================================
+# =============================================================================
+# APPLICANT REGISTRATION VIEW (No User Account Created)
+# =============================================================================
 
 def register(request):
     """Applicant registration view - creates ApplicantProfile only, no User account"""
@@ -53,7 +56,6 @@ def register(request):
         form = ApplicantRegistrationForm()
     
     return render(request, 'main/register.html', {'form': form})
-
 # =============================================================================
 # EMAIL NOTIFICATION HELPER FUNCTIONS
 # =============================================================================
