@@ -58,3 +58,20 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+# ===== ADD THIS MISSING FORM =====
+class NewsletterSignupForm(forms.Form):
+    """Form for newsletter subscription"""
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Your email address',
+            'aria-label': 'Email address'
+        })
+    )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        # Additional validation if needed
+        return email
