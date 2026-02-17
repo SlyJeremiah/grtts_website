@@ -1,0 +1,90 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Careers - GRTTS{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(rgba(0, 40, 0, 0.8), rgba(0, 20, 0, 0.9)), url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; padding: 100px 0;">
+    <div class="container text-center text-white">
+        <h1 class="display-3 mb-4 animate__animated animate__fadeInDown">Careers at GRTTS</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Make a difference in conservation</p>
+    </div>
+</section>
+
+<!-- Why Join Us -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="text-success mb-4">Why Work With Us?</h2>
+                <p class="lead">At GRTTS, you're not just taking a job - you're joining a mission to protect Zimbabwe's natural heritage for future generations.</p>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            {% for benefit in benefits %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 bg-light">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                        <p class="mb-0">{{ benefit }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Open Positions -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center text-success mb-5">Open Positions</h2>
+        
+        {% if open_positions %}
+            <div class="row">
+                {% for job in open_positions %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas {{ job.icon }} fa-2x text-success me-3"></i>
+                                <h4 class="card-title mb-0">{{ job.title }}</h4>
+                            </div>
+                            <div class="mb-3">
+                                <span class="badge bg-secondary me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
+                                <span class="badge bg-info me-2"><i class="fas fa-clock me-1"></i>{{ job.type }}</span>
+                                <span class="badge bg-warning"><i class="fas fa-calendar me-1"></i>Deadline: {{ job.deadline }}</span>
+                            </div>
+                            <p class="card-text">{{ job.description }}</p>
+                            <h6 class="mt-3">Requirements:</h6>
+                            <ul class="list-unstyled">
+                                {% for req in job.requirements %}
+                                <li><i class="fas fa-check-circle text-success me-2 small"></i>{{ req }}</li>
+                                {% endfor %}
+                            </ul>
+                            <a href="{% url 'main:apply_now' %}" class="btn btn-success mt-3">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <h4>No open positions at the moment</h4>
+                <p>Please check back later or register to receive notifications.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Not Finding What You're Looking For? -->
+<section class="py-5">
+    <div class="container text-center">
+        <h3 class="mb-4">Don't see the right fit?</h3>
+        <p class="lead mb-4">We're always looking for passionate individuals. Send us your CV for future opportunities.</p>
+        <a href="{% url 'main:contact' %}" class="btn btn-success btn-lg">Contact Our HR Team</a>
+    </div>
+</section>
+{% endblock %}
