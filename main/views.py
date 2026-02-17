@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.auth.models import User
 import traceback
 import uuid
 import logging
@@ -22,7 +23,7 @@ from .models import (
     UserDocument, ApplicantProfile, CourseApplication
 )
 
-# Utils and Forms - SINGLE IMPORT
+# Utils and Forms
 from .utils import send_contact_notification
 from .forms import ApplicantRegistrationForm, NewsletterSignupForm
 
@@ -30,34 +31,83 @@ from .forms import ApplicantRegistrationForm, NewsletterSignupForm
 logger = logging.getLogger(__name__)
 
 # =============================================================================
-# APPLICANT REGISTRATION VIEW (No User Account Created)
+# APPLICANT REGISTRATION VIEW (Creates User + ApplicantProfile)
 # =============================================================================
 
 def register(request):
-    """Applicant registration view - creates ApplicantProfile only, no User account"""
+    """Applicant registration view - creates User and ApplicantProfile"""
     if request.method == 'POST':
-        print("="*50)
-        print("POST DATA RECEIVED:")
-        for key, value in request.POST.items():
-            print(f"{key}: {value}")
-        print("="*50)
-        print("FILES RECEIVED:")
-        for key, value in request.FILES.items():
-            print(f"{key}: {value}")
-        print("="*50)
-        
         form = ApplicantRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            applicant = form.save()
+            # Get cleaned data
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            phone = form.cleaned_data['phone']
+            
+            # Create username from email (use first part of email)
+            username = email.split('@')[0]
+            
+            # Check if user already exists
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'A user with this email already exists.')
+                return render(request, 'main/register.html', {'form': form})
+            
+            # Create the User
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=None,
+                first_name=first_name,
+                last_name=last_name
+            )
+            user.set_unusable_password()  # Mark as user without password
+            user.save()
+            
+            # Create the ApplicantProfile
+            applicant = ApplicantProfile.objects.create(
+                user=user,
+                date_of_birth=form.cleaned_data.get('date_of_birth'),
+                gender=form.cleaned_data.get('gender'),
+                nationality=form.cleaned_data.get('nationality', ''),
+                address=form.cleaned_data.get('address', ''),
+                city=form.cleaned_data.get('city', ''),
+                province=form.cleaned_data.get('province', ''),
+                emergency_name=form.cleaned_data.get('emergency_name', ''),
+                emergency_phone=form.cleaned_data.get('emergency_phone', ''),
+                emergency_relationship=form.cleaned_data.get('emergency_relationship', ''),
+                medical_conditions=form.cleaned_data.get('medical_conditions', ''),
+                dietary_requirements=form.cleaned_data.get('dietary_requirements', '')
+            )
+            
+            # Save uploaded files as UserDocument objects
+            file_mappings = [
+                ('profile_photo', 'photo', 'Profile photo'),
+                ('id_document', 'id', 'ID document'),
+                ('cv', 'cv', 'CV/Resume'),
+                ('certificates', 'certificate', 'Certificate'),
+            ]
+            
+            for field_name, doc_type, description in file_mappings:
+                file = form.cleaned_data.get(field_name)
+                if file:
+                    UserDocument.objects.create(
+                        user=user,
+                        document_type=doc_type,
+                        file=file,
+                        description=f"{description} uploaded during registration for {email}"
+                    )
+            
             messages.success(
                 request, 
-                f'Thank you for registering, {applicant.first_name}! Your information has been saved.'
+                f'Thank you for registering, {first_name}! Your information has been saved.'
             )
             return redirect('main:home')
         else:
+            # Form errors will be displayed in the template
             print("FORM ERRORS:")
             print(form.errors)
-            # Form errors will be displayed in the template
+            logger.error(f"Registration form errors: {form.errors}")
     else:
         form = ApplicantRegistrationForm()
     
@@ -802,40 +852,6 @@ def certificate_detail(request, cert_number):
     )
     
     return render(request, 'main/certificate_detail.html', {'certificate': certificate})
-
-
-# =============================================================================
-# COURSE APPLICATION VIEWS (If you want to keep them)
-# =============================================================================
-
-# Note: These views require login and may not be needed if you're simplifying
-# If you want to keep them, uncomment them. Otherwise, you can delete this section.
-
-"""
-@login_required
-def create_profile(request):
-    # ... existing code ...
-
-@login_required
-def edit_profile(request):
-    # ... existing code ...
-
-@login_required
-def apply_for_course(request, course_id):
-    # ... existing code ...
-
-@login_required
-def edit_application(request, application_id):
-    # ... existing code ...
-
-@login_required
-def my_applications(request):
-    # ... existing code ...
-
-@login_required
-def application_detail(request, application_id):
-    # ... existing code ...
-"""
 
 
 # =============================================================================
