@@ -5,17 +5,11 @@ from .models import (
     LocationImage, FAQ, PaymentMethod, Donation, CourseRegistration,
     Payment, PaymentWebhook, NewsletterSubscriber, NewsletterCampaign,
     NewsletterTracking, User, ApplicantProfile, CourseApplication,
-    Certificate, CertificateVerificationLog
-)
-
-from .models import (
-    Course, Testimonial, ContactMessage, DeploymentLocation, 
-    LocationImage, FAQ, PaymentMethod, Donation, CourseRegistration,
-    Payment, PaymentWebhook, NewsletterSubscriber, NewsletterCampaign,
-    NewsletterTracking, User, ApplicantProfile, CourseApplication,
     Certificate, CertificateVerificationLog,
     # Add the new inquiry models here
-    StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
+    StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry,
+    # Add UserDocument model
+    UserDocument
 )
 
 class LocationImageInline(admin.TabularInline):
@@ -439,17 +433,25 @@ class UserAdmin(admin.ModelAdmin):
         }),
     )
 
+# ===== FIXED APPLICANTPROFILE ADMIN =====
 @admin.register(ApplicantProfile)
 class ApplicantProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'nationality', 'city', 'created_at']
-    list_filter = ['nationality', 'city']
-    search_fields = ['user__email', 'user__first_name', 'user__last_name']
+    list_display = ['full_name', 'email', 'phone', 'nationality', 'created_at']
+    list_filter = ['gender', 'nationality', 'created_at']
+    search_fields = ['first_name', 'last_name', 'email', 'phone']
+    readonly_fields = ['created_at', 'updated_at', 'full_name']
+    
+    def full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+    full_name.short_description = "Full Name"
+    
+    def email(self, obj):
+        return obj.email
+    email.short_description = "Email"
+    
     fieldsets = (
-        ('User', {
-            'fields': ('user',)
-        }),
-        ('Personal', {
-            'fields': ('date_of_birth', 'gender', 'nationality')
+        ('Personal Information', {
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'date_of_birth', 'gender', 'nationality')
         }),
         ('Address', {
             'fields': ('address', 'city', 'province')
@@ -457,9 +459,8 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
         ('Emergency Contact', {
             'fields': ('emergency_name', 'emergency_phone', 'emergency_relationship')
         }),
-        ('Medical', {
-            'fields': ('medical_conditions', 'dietary_requirements'),
-            'classes': ('collapse',)
+        ('Health', {
+            'fields': ('medical_conditions', 'dietary_requirements')
         }),
         ('Documents', {
             'fields': ('id_document', 'cv', 'certificates'),
@@ -469,7 +470,7 @@ class ApplicantProfileAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at')
         }),
     )
-    readonly_fields = ['created_at', 'updated_at']
+
 
 @admin.register(CourseApplication)
 class CourseApplicationAdmin(admin.ModelAdmin):
@@ -500,6 +501,7 @@ class CourseApplicationAdmin(admin.ModelAdmin):
     )
     readonly_fields = ['application_date']
 
+
 @admin.register(Certificate)
 class CertificateAdmin(admin.ModelAdmin):
     list_display = ['certificate_number', 'full_name', 'course_name', 'is_valid', 'issue_date', 'view_count']
@@ -528,9 +530,40 @@ class CertificateAdmin(admin.ModelAdmin):
         }),
     )
 
+
 @admin.register(CertificateVerificationLog)
 class CertificateVerificationLogAdmin(admin.ModelAdmin):
     list_display = ['certificate', 'ip_address', 'successful', 'verified_at']
     list_filter = ['successful', 'verified_at']
     search_fields = ['certificate__certificate_number', 'ip_address']
     readonly_fields = ['certificate', 'ip_address', 'user_agent', 'verified_at', 'successful']
+
+
+# ===== NEW: Register UserDocument Model =====
+@admin.register(UserDocument)
+class UserDocumentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user_display', 'document_type', 'file_link', 'uploaded_at']
+    list_filter = ['document_type', 'uploaded_at']
+    search_fields = ['user__email', 'description']
+    readonly_fields = ['uploaded_at']
+    
+    def user_display(self, obj):
+        if obj.user:
+            return obj.user.email
+        return "Anonymous"
+    user_display.short_description = "User"
+    
+    def file_link(self, obj):
+        if obj.file:
+            return format_html('<a href="{}" target="_blank">View File</a>', obj.file.url)
+        return "No file"
+    file_link.short_description = "File"
+    
+    fieldsets = (
+        ('Document Info', {
+            'fields': ('user', 'document_type', 'file', 'description')
+        }),
+        ('Timestamps', {
+            'fields': ('uploaded_at',)
+        }),
+    )
