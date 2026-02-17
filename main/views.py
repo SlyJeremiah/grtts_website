@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import CustomUserCreationForm
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
 from django.core.validators import validate_email
@@ -13,17 +12,18 @@ from django.utils import timezone
 import traceback
 import uuid
 import logging
-from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
-from django.views.decorators.http import require_POST
 import json
 
+# Models imports
 from .models import (
+    StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry,
     Course, Testimonial, DeploymentLocation, FAQ, ContactMessage,
     NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog,
-    # Removed: ApplicantProfile, CourseApplication (login-required models)
 )
+
+# Utils and Forms - SINGLE IMPORT
 from .utils import send_contact_notification
-from .forms import NewsletterSignupForm  # Keep only forms that don't require login
+from .forms import CustomUserCreationForm, NewsletterSignupForm
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -354,7 +354,6 @@ def course_detail(request, course_id):
     """Individual course detail"""
     course = get_object_or_404(Course, id=course_id, is_active=True)
     
-    # Removed login-required application check
     context = {
         'course': course,
     }
@@ -811,45 +810,3 @@ def test_email(request):
     except Exception as e:
         logger.error(f"Test email error: {e}")
         return HttpResponse(f'Error sending email: {str(e)}')
-
-
-# =============================================================================
-# PAYMENT VIEWS (COMMENTED OUT)
-# =============================================================================
-
-"""
-def donation_page(request):
-    # Donation page with payment options
-    payment_methods = PaymentMethod.objects.filter(is_active=True)
-    
-    context = {
-        'payment_methods': payment_methods,
-        'donation_amounts': [10, 20, 50, 100, 500, 1000],
-    }
-    return render(request, 'main/donation.html', context)
-
-def process_donation(request):
-    # Process donation payment
-    if request.method == 'POST':
-        amount = request.POST.get('amount')
-        payment_method_id = request.POST.get('payment_method')
-        donor_name = request.POST.get('donor_name')
-        donor_email = request.POST.get('donor_email')
-        donor_phone = request.POST.get('donor_phone')
-        
-        # Create donation record
-        donation = Donation.objects.create(
-            transaction_id=str(uuid.uuid4()),
-            amount=amount,
-            payment_method_id=payment_method_id,
-            donor_name=donor_name,
-            donor_email=donor_email,
-            donor_phone=donor_phone,
-            status='pending'
-        )
-        
-        messages.success(request, 'Thank you for your donation! You will receive a confirmation soon.')
-        return redirect('donation')
-    
-    return redirect('donation_page')
-"""
