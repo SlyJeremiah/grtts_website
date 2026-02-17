@@ -193,6 +193,26 @@ class ApplicantRegistrationForm(forms.ModelForm):
                 raise forms.ValidationError("Certificate size cannot exceed 10MB.")
         return cert
 
+    def clean(self):
+        """Additional cross-field validation"""
+        cleaned_data = super().clean()
+        
+        # Ensure that if emergency contact info is partially filled, all required parts are filled
+        emergency_name = cleaned_data.get('emergency_name')
+        emergency_phone = cleaned_data.get('emergency_phone')
+        emergency_relationship = cleaned_data.get('emergency_relationship')
+        
+        # If any emergency field is provided, all should be provided
+        if emergency_name or emergency_phone or emergency_relationship:
+            if not emergency_name:
+                self.add_error('emergency_name', 'Please provide emergency contact name')
+            if not emergency_phone:
+                self.add_error('emergency_phone', 'Please provide emergency contact phone')
+            if not emergency_relationship:
+                self.add_error('emergency_relationship', 'Please provide relationship to emergency contact')
+        
+        return cleaned_data
+
     def save(self, commit=True):
         # This form doesn't save directly to ApplicantProfile
         # It's used to collect data that will be used to create both User and ApplicantProfile
