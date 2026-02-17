@@ -5,6 +5,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
     """
     Registration form for applicants - creates ApplicantProfile only, not User
     """
+    # Required fields
     first_name = forms.CharField(
         max_length=30,
         required=True,
@@ -36,28 +37,30 @@ class ApplicantRegistrationForm(forms.ModelForm):
             'placeholder': '+263 123 456 789'
         })
     )
+    
+    # Optional fields (all made not required)
     date_of_birth = forms.DateField(
-        required=True,
+        required=False,
         widget=forms.DateInput(attrs={
             'class': 'form-control',
             'type': 'date'
         })
     )
     gender = forms.ChoiceField(
-        choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')],
-        required=True,
+        choices=[('', 'Select Gender'), ('M', 'Male'), ('F', 'Female'), ('O', 'Other')],
+        required=False,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     nationality = forms.CharField(
         max_length=100,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'e.g., Zimbabwean'
         })
     )
     address = forms.CharField(
-        required=True,
+        required=False,
         widget=forms.Textarea(attrs={
             'class': 'form-control',
             'rows': 2,
@@ -66,7 +69,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
     )
     city = forms.CharField(
         max_length=100,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'City/Town'
@@ -74,7 +77,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
     )
     province = forms.CharField(
         max_length=100,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Province'
@@ -82,7 +85,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
     )
     emergency_name = forms.CharField(
         max_length=200,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Emergency contact full name'
@@ -90,7 +93,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
     )
     emergency_phone = forms.CharField(
         max_length=20,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Emergency contact phone'
@@ -98,7 +101,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
     )
     emergency_relationship = forms.CharField(
         max_length=50,
-        required=True,
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Relationship to contact'
@@ -121,7 +124,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
         })
     )
     
-    # File upload fields
+    # File upload fields (already optional)
     profile_photo = forms.ImageField(
         required=False,
         widget=forms.FileInput(attrs={
@@ -191,47 +194,10 @@ class ApplicantRegistrationForm(forms.ModelForm):
         return cert
 
     def save(self, commit=True):
-        applicant = super().save(commit=False)
-        
-        # Set all the fields from cleaned_data
-        applicant.first_name = self.cleaned_data['first_name']
-        applicant.last_name = self.cleaned_data['last_name']
-        applicant.email = self.cleaned_data['email']
-        applicant.phone = self.cleaned_data['phone']
-        applicant.date_of_birth = self.cleaned_data['date_of_birth']
-        applicant.gender = self.cleaned_data['gender']
-        applicant.nationality = self.cleaned_data['nationality']
-        applicant.address = self.cleaned_data['address']
-        applicant.city = self.cleaned_data['city']
-        applicant.province = self.cleaned_data['province']
-        applicant.emergency_name = self.cleaned_data['emergency_name']
-        applicant.emergency_phone = self.cleaned_data['emergency_phone']
-        applicant.emergency_relationship = self.cleaned_data['emergency_relationship']
-        applicant.medical_conditions = self.cleaned_data.get('medical_conditions', '')
-        applicant.dietary_requirements = self.cleaned_data.get('dietary_requirements', '')
-        
-        if commit:
-            applicant.save()
-            
-            # Save uploaded files as UserDocument objects
-            file_mappings = [
-                ('profile_photo', 'photo', 'Profile photo'),
-                ('id_document', 'id', 'ID document'),
-                ('cv', 'cv', 'CV/Resume'),
-                ('certificates', 'certificate', 'Certificate'),
-            ]
-            
-            for field_name, doc_type, description in file_mappings:
-                file = self.cleaned_data.get(field_name)
-                if file:
-                    UserDocument.objects.create(
-                        user=None,
-                        document_type=doc_type,
-                        file=file,
-                        description=f"{description} uploaded during registration for {applicant.email}"
-                    )
-        
-        return applicant
+        # This form doesn't save directly to ApplicantProfile
+        # It's used to collect data that will be used to create both User and ApplicantProfile
+        # The actual saving happens in the view
+        pass
 
 
 class NewsletterSignupForm(forms.Form):
