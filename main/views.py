@@ -12,6 +12,7 @@ from django.utils import timezone
 import traceback
 import uuid
 import logging
+from .forms import ApplicantRegistrationForm, NewsletterSignupForm
 import json
 
 # Models imports
@@ -34,22 +35,22 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 def register(request):
-    """User registration view with file uploads"""
+    """Applicant registration view - creates ApplicantProfile only, no User account"""
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST, request.FILES)
+        form = ApplicantRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save()
+            applicant = form.save()
             
             messages.success(
                 request, 
-                f'Thank you for registering, {user.first_name}! Your documents have been uploaded successfully.'
+                f'Thank you for registering, {applicant.first_name}! Your information has been saved.'
             )
             return redirect('main:home')
         else:
             # Form errors will be displayed in the template
             print(form.errors)  # For debugging
     else:
-        form = CustomUserCreationForm()
+        form = ApplicantRegistrationForm()
     
     return render(request, 'main/register.html', {'form': form})
 
