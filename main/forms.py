@@ -1,10 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from .models import User, UserDocument
+from .models import ApplicantProfile, UserDocument
 
-class CustomUserCreationForm(UserCreationForm):
+class ApplicantRegistrationForm(forms.ModelForm):
     """
-    Custom registration form with first name, last name, and file uploads
+    Registration form for applicants - creates ApplicantProfile only, not User
     """
     first_name = forms.CharField(
         max_length=30,
@@ -27,6 +26,98 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
             'placeholder': 'your.email@example.com'
+        })
+    )
+    phone = forms.CharField(
+        max_length=20,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': '+263 123 456 789'
+        })
+    )
+    date_of_birth = forms.DateField(
+        required=True,
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date'
+        })
+    )
+    gender = forms.ChoiceField(
+        choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')],
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    nationality = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g., Zimbabwean'
+        })
+    )
+    address = forms.CharField(
+        required=True,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 2,
+            'placeholder': 'Your physical address'
+        })
+    )
+    city = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'City/Town'
+        })
+    )
+    province = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Province'
+        })
+    )
+    emergency_name = forms.CharField(
+        max_length=200,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Emergency contact full name'
+        })
+    )
+    emergency_phone = forms.CharField(
+        max_length=20,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Emergency contact phone'
+        })
+    )
+    emergency_relationship = forms.CharField(
+        max_length=50,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Relationship to contact'
+        })
+    )
+    medical_conditions = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 2,
+            'placeholder': 'Any medical conditions we should know about'
+        })
+    )
+    dietary_requirements = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 2,
+            'placeholder': 'Any dietary requirements'
         })
     )
     
@@ -68,24 +159,8 @@ class CustomUserCreationForm(UserCreationForm):
     )
 
     class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Add Bootstrap classes to default fields
-        self.fields['username'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Choose a username'
-        })
-        self.fields['password1'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Create a password'
-        })
-        self.fields['password2'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Confirm your password'
-        })
+        model = ApplicantProfile
+        fields = []  # We're handling all fields manually above
 
     def clean_profile_photo(self):
         photo = self.cleaned_data.get('profile_photo')
@@ -116,13 +191,27 @@ class CustomUserCreationForm(UserCreationForm):
         return cert
 
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.email = self.cleaned_data['email']
+        applicant = super().save(commit=False)
+        
+        # Set all the fields from cleaned_data
+        applicant.first_name = self.cleaned_data['first_name']
+        applicant.last_name = self.cleaned_data['last_name']
+        applicant.email = self.cleaned_data['email']
+        applicant.phone = self.cleaned_data['phone']
+        applicant.date_of_birth = self.cleaned_data['date_of_birth']
+        applicant.gender = self.cleaned_data['gender']
+        applicant.nationality = self.cleaned_data['nationality']
+        applicant.address = self.cleaned_data['address']
+        applicant.city = self.cleaned_data['city']
+        applicant.province = self.cleaned_data['province']
+        applicant.emergency_name = self.cleaned_data['emergency_name']
+        applicant.emergency_phone = self.cleaned_data['emergency_phone']
+        applicant.emergency_relationship = self.cleaned_data['emergency_relationship']
+        applicant.medical_conditions = self.cleaned_data['medical_conditions']
+        applicant.dietary_requirements = self.cleaned_data['dietary_requirements']
         
         if commit:
-            user.save()
+            applicant.save()
             
             # Save uploaded files as UserDocument objects
             file_mappings = [
@@ -136,13 +225,13 @@ class CustomUserCreationForm(UserCreationForm):
                 file = self.cleaned_data.get(field_name)
                 if file:
                     UserDocument.objects.create(
-                        user=user,
+                        user=None,  # No user since we're not creating User accounts
                         document_type=doc_type,
                         file=file,
-                        description=f"{description} uploaded during registration"
+                        description=f"{description} uploaded during registration for {applicant.email}"
                     )
         
-        return user
+        return applicant
 
 
 class NewsletterSignupForm(forms.Form):
