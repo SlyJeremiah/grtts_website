@@ -14,12 +14,13 @@ import uuid
 import logging
 import json
 
-# Models imports - Use custom User model
+# Models imports
 from .models import (
     StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry,
     Course, Testimonial, DeploymentLocation, FAQ, ContactMessage,
     NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog,
-    UserDocument, ApplicantProfile, CourseApplication, User  # Import custom User
+    UserDocument, ApplicantProfile, CourseApplication, User,
+    JobPost, JobApplication  # ADD THESE TWO
 )
 
 # Utils and Forms
