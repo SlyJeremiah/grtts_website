@@ -7,7 +7,8 @@ from .models import (
     NewsletterTracking, User, ApplicantProfile, CourseApplication,
     Certificate, CertificateVerificationLog,
     StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry,
-    UserDocument
+    UserDocument,
+    JobPost, JobApplication  # Added these
 )
 
 class LocationImageInline(admin.TabularInline):
