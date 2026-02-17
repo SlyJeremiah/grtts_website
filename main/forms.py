@@ -60,7 +60,6 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-# ===== ADD THIS MISSING FORM =====
 class NewsletterSignupForm(forms.Form):
     """Form for newsletter subscription"""
     email = forms.EmailField(
