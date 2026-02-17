@@ -3,7 +3,7 @@ from .models import ApplicantProfile, UserDocument
 
 class ApplicantRegistrationForm(forms.ModelForm):
     """
-    Registration form for applicants - creates ApplicantProfile only, not User
+    Registration form for applicants - creates User and ApplicantProfile
     """
     # Required fields
     first_name = forms.CharField(
@@ -38,7 +38,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
         })
     )
     
-    # Optional fields (all made not required)
+    # Optional fields
     date_of_birth = forms.DateField(
         required=False,
         widget=forms.DateInput(attrs={
@@ -124,7 +124,7 @@ class ApplicantRegistrationForm(forms.ModelForm):
         })
     )
     
-    # File upload fields (already optional)
+    # File upload fields
     profile_photo = forms.ImageField(
         required=False,
         widget=forms.FileInput(attrs={
@@ -163,61 +163,35 @@ class ApplicantRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = ApplicantProfile
-        fields = []  # We're handling all fields manually above
+        fields = []
 
     def clean_profile_photo(self):
         photo = self.cleaned_data.get('profile_photo')
         if photo:
-            if photo.size > 5 * 1024 * 1024:  # 5MB limit
+            if photo.size > 5 * 1024 * 1024:
                 raise forms.ValidationError("Profile photo size cannot exceed 5MB.")
         return photo
 
     def clean_id_document(self):
         doc = self.cleaned_data.get('id_document')
         if doc:
-            if doc.size > 10 * 1024 * 1024:  # 10MB limit
+            if doc.size > 10 * 1024 * 1024:
                 raise forms.ValidationError("ID document size cannot exceed 10MB.")
         return doc
 
     def clean_cv(self):
         cv = self.cleaned_data.get('cv')
         if cv:
-            if cv.size > 10 * 1024 * 1024:  # 10MB limit
+            if cv.size > 10 * 1024 * 1024:
                 raise forms.ValidationError("CV size cannot exceed 10MB.")
         return cv
 
     def clean_certificates(self):
         cert = self.cleaned_data.get('certificates')
         if cert:
-            if cert.size > 10 * 1024 * 1024:  # 10MB limit
+            if cert.size > 10 * 1024 * 1024:
                 raise forms.ValidationError("Certificate size cannot exceed 10MB.")
         return cert
-
-    def clean(self):
-        """Additional cross-field validation"""
-        cleaned_data = super().clean()
-        
-        # Ensure that if emergency contact info is partially filled, all required parts are filled
-        emergency_name = cleaned_data.get('emergency_name')
-        emergency_phone = cleaned_data.get('emergency_phone')
-        emergency_relationship = cleaned_data.get('emergency_relationship')
-        
-        # If any emergency field is provided, all should be provided
-        if emergency_name or emergency_phone or emergency_relationship:
-            if not emergency_name:
-                self.add_error('emergency_name', 'Please provide emergency contact name')
-            if not emergency_phone:
-                self.add_error('emergency_phone', 'Please provide emergency contact phone')
-            if not emergency_relationship:
-                self.add_error('emergency_relationship', 'Please provide relationship to emergency contact')
-        
-        return cleaned_data
-
-    def save(self, commit=True):
-        # This form doesn't save directly to ApplicantProfile
-        # It's used to collect data that will be used to create both User and ApplicantProfile
-        # The actual saving happens in the view
-        pass
 
 
 class NewsletterSignupForm(forms.Form):
