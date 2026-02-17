@@ -36,18 +36,28 @@ logger = logging.getLogger(__name__)
 def register(request):
     """Applicant registration view - creates ApplicantProfile only, no User account"""
     if request.method == 'POST':
+        print("="*50)
+        print("POST DATA RECEIVED:")
+        for key, value in request.POST.items():
+            print(f"{key}: {value}")
+        print("="*50)
+        print("FILES RECEIVED:")
+        for key, value in request.FILES.items():
+            print(f"{key}: {value}")
+        print("="*50)
+        
         form = ApplicantRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             applicant = form.save()
-            
             messages.success(
                 request, 
                 f'Thank you for registering, {applicant.first_name}! Your information has been saved.'
             )
             return redirect('main:home')
         else:
+            print("FORM ERRORS:")
+            print(form.errors)
             # Form errors will be displayed in the template
-            print(form.errors)  # For debugging
     else:
         form = ApplicantRegistrationForm()
     
