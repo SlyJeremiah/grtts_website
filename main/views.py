@@ -13,6 +13,7 @@ import traceback
 import uuid
 import logging
 import json
+from .forms import CustomUserCreationForm, NewsletterSignupForm
 
 # Models imports
 from .models import (
