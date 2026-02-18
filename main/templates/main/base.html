@@ -339,13 +339,13 @@
             <span class="btn-label">Call</span>
         </a>
 
-        <!-- Email Button -->
-        <a href="mailto:info@grtts.co.zw?subject=Inquiry%20from%20Website"
-           class="floating-btn email"
-           title="Send Email">
-            <i class="fas fa-envelope"></i>
-            <span class="btn-label">Email</span>
-        </a>
+    <!-- Email/Contact Button - UPDATED -->
+<a href="{% url 'main:contact' %}?type=general"
+   class="floating-btn email"
+   title="Contact Us">
+    <i class="fas fa-envelope"></i>
+    <span class="btn-label">Contact</span>
+</a>   
     </div>
 
     <!-- Messages/Alerts -->
