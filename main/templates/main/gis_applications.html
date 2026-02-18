@@ -82,11 +82,22 @@
     <div class="container text-center">
         <h3 class="mb-4">Ready to Apply GIS in Conservation?</h3>
         <p class="lead mb-4">Join our team or collaborate with us on GIS projects.</p>
-        <a href="{% url 'main:careers' %}" class="btn btn-success btn-lg me-3">View Careers</a>
-        <!-- UPDATED: Added type=gis parameter -->
-        <a href="{% url 'main:contact' %}?type=gis" class="btn btn-outline-success btn-lg">
-            <i class="fas fa-envelope"></i> Contact GIS Team
-        </a>
+        
+        <!-- Button Group -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'main:careers' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-briefcase"></i> View Careers
+            </a>
+            
+            <!-- NEW: Portfolio Button -->
+            <a href="{% url 'blog:post_detail' 'my-portfolio' %}" class="btn btn-outline-success btn-lg">
+                <i class="fas fa-user"></i> View My Portfolio
+            </a>
+            
+            <a href="{% url 'main:contact' %}?type=gis" class="btn btn-outline-success btn-lg">
+                <i class="fas fa-envelope"></i> Contact GIS Team
+            </a>
+        </div>
     </div>
 </section>
 <!-- Floating Button for Portfolio Blog Post -->
