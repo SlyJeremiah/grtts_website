@@ -81,7 +81,8 @@
                 <h3 class="mb-4">Ready to Start Your Journey?</h3>
                 <p class="lead mb-4">Begin your application by registering as an applicant.</p>
                 <a href="{% url 'main:register' %}" class="btn btn-success btn-lg">Register Now</a>
-                <p class="mt-3 text-muted">Already registered? <a href="{% url 'main:contact' %}">Contact us</a> for application status.</p>
+                <!-- UPDATED: Added type=application parameter -->
+                <p class="mt-3 text-muted">Already registered? <a href="{% url 'main:contact' %}?type=application">Contact us</a> for application status.</p>
             </div>
         </div>
     </div>
