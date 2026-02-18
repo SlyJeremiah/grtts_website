@@ -17,9 +17,9 @@ urlpatterns = [
     path('locations/', views.locations, name='locations'),
     path('locations/<int:location_id>/', views.location_detail, name='location_detail'),
     
-    # Contact & Inquiry URLs
+       # Contact & Inquiry URLs
     path('contact/', views.contact, name='contact'),
-    path('inquiry/', views.inquiry_page, name='inquiry_page'),
+    # path('inquiry/', views.inquiry_page, name='inquiry_page'),  # Commented out
     path('inquiry/student/', views.inquiry_student, name='inquiry_student'),
     path('inquiry/landowner/', views.inquiry_landowner, name='inquiry_landowner'),
     path('inquiry/enthusiast/', views.inquiry_enthusiast, name='inquiry_enthusiast'),
