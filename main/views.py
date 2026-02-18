@@ -11,6 +11,9 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import traceback
 import uuid
+from django.views.decorators.http import require_POST
+from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
+
 import logging
 import json
 
