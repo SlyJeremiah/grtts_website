@@ -20,7 +20,7 @@ def post_list(request):
     # Category filter
     category_slug = request.GET.get('category')
     if category_slug:
-        posts = posts.filter(categories__slug=category_slug)
+        posts = posts.filter(category__slug=category_slug)
     
     # Tag filter
     tag_slug = request.GET.get('tag')
@@ -63,13 +63,13 @@ def post_detail(request, slug):
     post.views += 1
     post.save()
     
-    # Get related posts (same categories)
+    # Get related posts (same category)
     related_posts = Post.objects.filter(
-        categories__in=post.categories.all(),
+        category=post.category,
         status='published'
     ).exclude(id=post.id).distinct()[:3]
     
-    # Get comments
+    # Get approved comments
     comments = post.comments.filter(approved=True).order_by('-created_at')
     
     # Handle comment submission
@@ -96,7 +96,10 @@ def post_detail(request, slug):
 def category_list(request, slug):
     """Display posts by category"""
     category = get_object_or_404(Category, slug=slug)
-    posts = Post.objects.filter(categories=category, status='published').order_by('-published_date')
+    posts = Post.objects.filter(
+        category=category, 
+        status='published'
+    ).order_by('-published_date')
     
     paginator = Paginator(posts, 6)
     page_number = request.GET.get('page')
@@ -113,7 +116,10 @@ def category_list(request, slug):
 def tag_list(request, slug):
     """Display posts by tag"""
     tag = get_object_or_404(Tag, slug=slug)
-    posts = Post.objects.filter(tags=tag, status='published').order_by('-published_date')
+    posts = Post.objects.filter(
+        tags=tag, 
+        status='published'
+    ).order_by('-published_date')
     
     paginator = Paginator(posts, 6)
     page_number = request.GET.get('page')
