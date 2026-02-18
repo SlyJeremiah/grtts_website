@@ -66,7 +66,10 @@
                     <div class="card-body p-5">
                         <h4 class="mb-4">Training Available</h4>
                         <p class="lead mb-4">We offer specialized GIS training for conservation professionals.</p>
-                        <a href="{% url 'main:contact' %}" class="btn btn-light btn-lg">Inquire About Training</a>
+                        <!-- UPDATED: Added type=gis parameter -->
+                        <a href="{% url 'main:contact' %}?type=gis" class="btn btn-light btn-lg">
+                            <i class="fas fa-graduation-cap"></i> Inquire About GIS Training
+                        </a>
                     </div>
                 </div>
             </div>
@@ -80,7 +83,10 @@
         <h3 class="mb-4">Ready to Apply GIS in Conservation?</h3>
         <p class="lead mb-4">Join our team or collaborate with us on GIS projects.</p>
         <a href="{% url 'main:careers' %}" class="btn btn-success btn-lg me-3">View Careers</a>
-        <a href="{% url 'main:contact' %}" class="btn btn-outline-success btn-lg">Contact Us</a>
+        <!-- UPDATED: Added type=gis parameter -->
+        <a href="{% url 'main:contact' %}?type=gis" class="btn btn-outline-success btn-lg">
+            <i class="fas fa-envelope"></i> Contact GIS Team
+        </a>
     </div>
 </section>
 {% endblock %}
