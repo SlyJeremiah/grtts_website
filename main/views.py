@@ -115,6 +115,137 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 # =============================================================================
+# INQUIRY VIEWS
+# =============================================================================
+
+def inquiry_page(request):
+    """Main inquiry page with all forms"""
+    return render(request, 'main/inquiry.html')
+
+
+@require_POST
+def inquiry_student(request):
+    """Process student inquiry"""
+    try:
+        inquiry = StudentInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phone'),
+            age=request.POST.get('age'),
+            nationality=request.POST.get('nationality'),
+            education=request.POST.get('education', ''),
+            course=request.POST.get('course'),
+            intake=request.POST.get('intake', ''),
+            experience=request.POST.get('experience', ''),
+        )
+        
+        # Send email notification
+        send_inquiry_notification(inquiry, 'student')
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your student inquiry has been submitted successfully. We will contact you within 48 hours.'
+        })
+    except Exception as e:
+        logger.error(f"Student inquiry error: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error submitting form. Please try again.'
+        }, status=400)
+
+
+@require_POST
+def inquiry_landowner(request):
+    """Process landowner inquiry"""
+    try:
+        inquiry = LandownerInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phone'),
+            organization=request.POST.get('organization', ''),
+            service=request.POST.get('service'),
+            property_size=request.POST.get('property_size') or None,
+            property_location=request.POST.get('property_location', ''),
+            concerns_poaching=bool(request.POST.get('concerns_poaching')),
+            concerns_human_wildlife=bool(request.POST.get('concerns_human_wildlife')),
+            concerns_livestock=bool(request.POST.get('concerns_livestock')),
+            concerns_trespassing=bool(request.POST.get('concerns_trespassing')),
+            details=request.POST.get('details', ''),
+        )
+        
+        # Send email notification
+        send_inquiry_notification(inquiry, 'landowner')
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your landowner inquiry has been submitted successfully. We will contact you within 48 hours.'
+        })
+    except Exception as e:
+        logger.error(f"Landowner inquiry error: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error submitting form. Please try again.'
+        }, status=400)
+
+
+@require_POST
+def inquiry_enthusiast(request):
+    """Process enthusiast inquiry"""
+    try:
+        inquiry = EnthusiastInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            interest=request.POST.get('interest'),
+            background=request.POST.get('background', ''),
+            availability=request.POST.get('availability', ''),
+            message=request.POST.get('message', ''),
+        )
+        
+        # Send email notification
+        send_inquiry_notification(inquiry, 'enthusiast')
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your enthusiast inquiry has been submitted successfully. We will contact you within 48 hours.'
+        })
+    except Exception as e:
+        logger.error(f"Enthusiast inquiry error: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error submitting form. Please try again.'
+        }, status=400)
+
+
+@require_POST
+def inquiry_other(request):
+    """Process general inquiry"""
+    try:
+        inquiry = OtherInquiry.objects.create(
+            name=request.POST.get('name'),
+            email=request.POST.get('email'),
+            phone=request.POST.get('phone', ''),
+            organization=request.POST.get('organization', ''),
+            category=request.POST.get('category'),
+            subject=request.POST.get('subject'),
+            message=request.POST.get('message'),
+            urgency=request.POST.get('urgency', 'normal'),
+        )
+        
+        # Send email notification
+        send_inquiry_notification(inquiry, 'other')
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Your inquiry has been submitted successfully. We will respond within 48 hours.'
+        })
+    except Exception as e:
+        logger.error(f"Other inquiry error: {e}")
+        return JsonResponse({
+            'success': False,
+            'message': 'Error submitting form. Please try again.'
+        }, status=400)
+
+# =============================================================================
 # EMAIL NOTIFICATION HELPER FUNCTIONS
 # =============================================================================
 
