@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ME8PVJ2M57"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-ME8PVJ2M57');
+    </script>
+    
     <title>{% block title %}GRTTS - Game Ranger & Tracker Training Specialist{% endblock %}</title>
 
     <!-- ===== FAVICON - Using Logo ===== -->
@@ -304,13 +314,19 @@
                         <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
                     </li>
 
-                   <!-- ===== REGISTRATION ONLY ===== -->
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'main:register' %}">
-        <i class="fas fa-user-plus"></i> Register
-    </a>
-</li>
+                    <!-- ===== REGISTRATION ONLY ===== -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:register' %}">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </li>
 
+                    <!-- Admin link (only visible to you) -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">
+                            <i class="fas fa-lock"></i> Admin
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -339,13 +355,13 @@
             <span class="btn-label">Call</span>
         </a>
 
-    <!-- Email/Contact Button - UPDATED -->
-<a href="{% url 'main:contact' %}?type=general"
-   class="floating-btn email"
-   title="Contact Us">
-    <i class="fas fa-envelope"></i>
-    <span class="btn-label">Contact</span>
-</a>   
+        <!-- Email Button -->
+        <a href="{% url 'main:contact' %}?type=general"
+           class="floating-btn email"
+           title="Contact Us">
+            <i class="fas fa-envelope"></i>
+            <span class="btn-label">Contact</span>
+        </a>
     </div>
 
     <!-- Messages/Alerts -->
@@ -380,15 +396,15 @@
                 </div>
                 <div class="col-md-4">
                     <h5>Quick Links</h5>
-                 <ul class="list-unstyled">
-    <li><a href="{% url 'main:courses' %}" class="text-white-50 text-decoration-none">Training Programs</a></li>
-    <li><a href="{% url 'main:locations' %}" class="text-white-50 text-decoration-none">Deployment Locations</a></li>
-    <li><a href="{% url 'main:gis_applications' %}" class="text-white-50 text-decoration-none">GIS Applications</a></li>
-    <li><a href="{% url 'main:apply_now' %}" class="text-white-50 text-decoration-none">Apply Now</a></li>
-    <li><a href="{% url 'main:careers' %}" class="text-white-50 text-decoration-none">Careers</a></li>
-    <li><a href="{% url 'main:faq' %}" class="text-white-50 text-decoration-none">FAQ</a></li>
-    <li><a href="{% url 'blog:post_list' %}" class="text-white-50 text-decoration-none">News & Updates</a></li>
-</ul>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'main:courses' %}" class="text-white-50 text-decoration-none">Training Programs</a></li>
+                        <li><a href="{% url 'main:locations' %}" class="text-white-50 text-decoration-none">Deployment Locations</a></li>
+                        <li><a href="{% url 'main:gis_applications' %}" class="text-white-50 text-decoration-none">GIS Applications</a></li>
+                        <li><a href="{% url 'main:apply_now' %}" class="text-white-50 text-decoration-none">Apply Now</a></li>
+                        <li><a href="{% url 'main:careers' %}" class="text-white-50 text-decoration-none">Careers</a></li>
+                        <li><a href="{% url 'main:faq' %}" class="text-white-50 text-decoration-none">FAQ</a></li>
+                        <li><a href="{% url 'blog:post_list' %}" class="text-white-50 text-decoration-none">News & Updates</a></li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
                     <h5>Contact Info</h5>
