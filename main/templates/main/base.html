@@ -17,12 +17,12 @@
     
     <title>{% block title %}GRTTS - Game Ranger & Tracker Training Specialist{% endblock %}</title>
 
-    <!-- ===== FAVICON - Using Logo ===== -->
     {% load static %}
-    <link rel="icon" type="image/png" href="{% static 'images/logo.a76307707669.png' %}">
-    <link rel="shortcut icon" href="{% static 'images/logo.a76307707669.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'images/logo.a76307707669.png' %}">
-    <!-- ================================ -->
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <link rel="shortcut icon" href="{% static 'images/logo.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}">
+    <!-- =================== -->
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,11 +31,10 @@
     <!-- Animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <style>
-        /* Logo and Brand Styles */
+        /* ===== LOGO & BRAND ===== */
         .navbar-brand {
             display: flex;
             align-items: center;
@@ -95,7 +94,7 @@
             font-size: 20px;
         }
 
-        /* Floating Action Button Styles */
+        /* ===== FLOATING BUTTONS ===== */
         .floating-buttons {
             position: fixed;
             bottom: 30px;
@@ -153,116 +152,127 @@
             right: 80px;
         }
 
-        /* Different colors for each button */
-        .floating-btn.location {
-            background-color: #2196F3;
-        }
-        .floating-btn.whatsapp {
-            background-color: #25D366;
-        }
-        .floating-btn.call {
-            background-color: #4CAF50;
-        }
-        .floating-btn.email {
-            background-color: #FF5722;
-        }
+        .floating-btn.location { background-color: #2196F3; }
+        .floating-btn.whatsapp { background-color: #25D366; }
+        .floating-btn.call     { background-color: #4CAF50; }
+        .floating-btn.email    { background-color: #FF5722; }
 
-        /* Pulse animation */
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(45, 90, 59, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(45, 90, 59, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(45, 90, 59, 0);
-            }
+            0%   { box-shadow: 0 0 0 0 rgba(45, 90, 59, 0.7); }
+            70%  { box-shadow: 0 0 0 15px rgba(45, 90, 59, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(45, 90, 59, 0); }
         }
 
-        /* Hide floating buttons on scroll */
         .floating-buttons.hide {
             transform: translateX(100px);
             transition: transform 0.3s ease;
-        }
-
-        /* Mobile adjustments */
-        @media (max-width: 768px) {
-            .logo-image {
-                width: 40px;
-                height: 40px;
-            }
-
-            .brand-main {
-                font-size: 1.2rem;
-            }
-
-            .brand-motto {
-                font-size: 0.7rem;
-            }
-
-            .floating-buttons {
-                bottom: 20px;
-                right: 20px;
-                gap: 12px;
-            }
-
-            .floating-btn {
-                width: 50px;
-                height: 50px;
-            }
-
-            .floating-btn i {
-                font-size: 20px;
-            }
-
-            .floating-btn .btn-label {
-                display: none;
-            }
-        }
-
-        /* Small mobile devices */
-        @media (max-width: 480px) {
-            .floating-buttons {
-                bottom: 15px;
-                right: 15px;
-                gap: 10px;
-            }
-
-            .floating-btn {
-                width: 45px;
-                height: 45px;
-            }
-
-            .floating-btn i {
-                font-size: 18px;
-            }
         }
 
         body {
             margin-bottom: 0;
             padding-bottom: 0;
         }
+
+        /* ===== TABLET (max 768px) ===== */
+        @media (max-width: 768px) {
+            .logo-image {
+                width: 38px;
+                height: 38px;
+            }
+            .brand-main {
+                font-size: 1.1rem;
+            }
+            .brand-motto {
+                font-size: 0.65rem;
+            }
+            .navbar-brand {
+                gap: 8px;
+            }
+            .navbar-nav .nav-link {
+                font-size: 0.9rem;
+                padding: 6px 10px;
+            }
+            .floating-buttons {
+                bottom: 20px;
+                right: 20px;
+                gap: 10px;
+            }
+            .floating-btn {
+                width: 48px;
+                height: 48px;
+            }
+            .floating-btn i {
+                font-size: 18px;
+            }
+            .floating-btn .btn-label {
+                display: none;
+            }
+            footer h5 {
+                font-size: 0.95rem;
+                margin-top: 1rem;
+            }
+            footer p, footer a {
+                font-size: 0.82rem;
+            }
+        }
+
+        /* ===== SMALL MOBILE (max 480px) ===== */
+        @media (max-width: 480px) {
+            body {
+                font-size: 0.9rem;
+            }
+            .brand-main {
+                font-size: 1rem;
+            }
+            .brand-motto {
+                font-size: 0.6rem;
+            }
+            .logo-image {
+                width: 34px;
+                height: 34px;
+            }
+            .navbar-brand {
+                gap: 6px;
+            }
+            .navbar-nav .nav-link {
+                font-size: 0.85rem;
+                padding: 5px 8px;
+            }
+            .floating-buttons {
+                bottom: 15px;
+                right: 15px;
+                gap: 8px;
+            }
+            .floating-btn {
+                width: 42px;
+                height: 42px;
+            }
+            .floating-btn i {
+                font-size: 16px;
+            }
+            footer h5 {
+                font-size: 0.9rem;
+            }
+            footer p, footer a {
+                font-size: 0.78rem;
+                line-height: 1.6;
+            }
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation with Logo -->
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2d5a3b;">
         <div class="container">
             <a class="navbar-brand" href="{% url 'main:home' %}">
                 <div class="logo-container">
-                    <!-- Logo Image -->
-                    {% load static %}
-                    <img src="{% static 'images/logo.a76307707669.png' %}" alt="GRTTS Logo" class="logo-image"
+                    <img src="{% static 'images/logo.png' %}" alt="GRTTS Logo" class="logo-image"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <!-- Fallback if logo doesn't exist -->
                     <div class="logo-fallback" style="display: none;">
                         <span>GR</span>
                     </div>
-
-                    <!-- Brand Text -->
                     <div class="brand-text">
                         <span class="brand-main">GRTTS</span>
                         <span class="brand-motto">Training That Saves Lives</span>
@@ -315,15 +325,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
                     </li>
-
-                    <!-- ===== REGISTRATION ONLY ===== -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:register' %}">
                             <i class="fas fa-user-plus"></i> Register
                         </a>
                     </li>
-
-                    <!-- Admin link (only visible to you) -->
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin:index' %}">
                             <i class="fas fa-lock"></i> Admin
@@ -336,31 +342,20 @@
 
     <!-- Floating Action Buttons -->
     <div class="floating-buttons animate__animated animate__fadeInRight">
-        <!-- Location Button -->
         <a href="{% url 'main:locations' %}" class="floating-btn location" title="Our Locations">
             <i class="fas fa-map-marker-alt"></i>
             <span class="btn-label">Locations</span>
         </a>
-
-        <!-- WhatsApp Button -->
         <a href="https://wa.me/263781603802?text=Hello%20GRTTS%2C%20I'm%20interested%20in%20your%20training%20programs"
-           class="floating-btn whatsapp"
-           target="_blank"
-           title="Chat on WhatsApp">
+           class="floating-btn whatsapp" target="_blank" title="Chat on WhatsApp">
             <i class="fab fa-whatsapp"></i>
             <span class="btn-label">WhatsApp</span>
         </a>
-
-        <!-- Call Button -->
         <a href="tel:+263781603802" class="floating-btn call" title="Call Us">
             <i class="fas fa-phone-alt"></i>
             <span class="btn-label">Call</span>
         </a>
-
-        <!-- Email Button -->
-        <a href="{% url 'main:contact' %}?type=general"
-           class="floating-btn email"
-           title="Contact Us">
+        <a href="{% url 'main:contact' %}?type=general" class="floating-btn email" title="Contact Us">
             <i class="fas fa-envelope"></i>
             <span class="btn-label">Contact</span>
         </a>
@@ -389,8 +384,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="d-flex align-items-center mb-3">
-                        {% load static %}
-                        <img src="{% static 'images/logo.a76307707669.png' %}" alt="GRTTS Logo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;"
+                        <img src="{% static 'images/logo.png' %}" alt="GRTTS Logo"
+                             style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;"
                              onerror="this.style.display='none';">
                         <h5 class="mb-0">GRTTS</h5>
                     </div>
@@ -419,23 +414,23 @@
                     </p>
                 </div>
 
-                <!-- Newsletter Signup -->
+                <!-- Newsletter -->
                 <div class="col-md-4">
                     <h5>Subscribe to Newsletter</h5>
                     <p class="text-white-50 small">Get updates on courses and conservation news</p>
-
                     <div id="newsletter-status"></div>
-
                     <form id="newsletter-form" method="post" action="{% url 'main:newsletter_signup' %}">
                         {% csrf_token %}
                         <div class="input-group mb-2">
-                            <input type="email" name="email" class="form-control form-control-sm" placeholder="Your email address" required>
+                            <input type="email" name="email" class="form-control form-control-sm"
+                                   placeholder="Your email address" required>
                             <button class="btn btn-sm" type="submit" style="background-color: #ffd966; color: #2d5a3b;">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="consent" id="newsletter_consent" required>
+                            <input class="form-check-input" type="checkbox" name="consent"
+                                   id="newsletter_consent" required>
                             <label class="form-check-label text-white-50 small" for="newsletter_consent">
                                 I agree to receive newsletters from GRTTS
                             </label>
@@ -445,62 +440,51 @@
             </div>
             <hr class="bg-light">
             <div class="text-center">
-                <p class="text-white-50">&copy; 2026 GRTTS. All rights reserved. | <a href="https://www.grtts.co.zw" class="text-white-50">www.grtts.co.zw</a></p>
+                <p class="text-white-50">&copy; 2026 GRTTS. All rights reserved. |
+                    <a href="https://www.grtts.co.zw" class="text-white-50">www.grtts.co.zw</a>
+                </p>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-        // Smooth scroll and button interactions
+        // Floating button click feedback
         document.querySelectorAll('.floating-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                // Add click feedback
+            btn.addEventListener('click', function() {
                 this.style.transform = 'scale(0.9)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 200);
+                setTimeout(() => { this.style.transform = ''; }, 200);
             });
         });
 
         // Hide floating buttons on scroll down, show on scroll up
         let lastScroll = 0;
         const floatingButtons = document.querySelector('.floating-buttons');
-
         if (floatingButtons) {
             window.addEventListener('scroll', () => {
                 const currentScroll = window.pageYOffset;
-
                 if (currentScroll <= 0) {
                     floatingButtons.classList.remove('hide');
                     return;
                 }
-
                 if (currentScroll > lastScroll && !floatingButtons.classList.contains('hide')) {
-                    // Scroll down - hide
                     floatingButtons.classList.add('hide');
                 } else if (currentScroll < lastScroll && floatingButtons.classList.contains('hide')) {
-                    // Scroll up - show
                     floatingButtons.classList.remove('hide');
                 }
-
                 lastScroll = currentScroll;
             });
         }
 
-        // Newsletter form handling
+        // Newsletter form AJAX
         const newsletterForm = document.getElementById('newsletter-form');
         if (newsletterForm) {
             newsletterForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-
                 const form = this;
                 const formData = new FormData(form);
                 const statusDiv = document.getElementById('newsletter-status');
-
-                // Show loading state
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
@@ -509,9 +493,7 @@
                 fetch(form.action, {
                     method: 'POST',
                     body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -532,8 +514,7 @@
                             '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
+                .catch(() => {
                     statusDiv.innerHTML = '<div class="alert alert-danger alert-dismissible fade show py-2 small" role="alert">' +
                         'Network error. Please try again.' +
                         '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
