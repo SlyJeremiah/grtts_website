@@ -19,9 +19,9 @@
 
     {% load static %}
     <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
     <link rel="shortcut icon" href="{% static 'images/logo.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}">
     <!-- =================== -->
 
     <!-- Bootstrap 5 CSS -->
@@ -58,6 +58,24 @@
 
         .logo-image:hover {
             transform: scale(1.1);
+        }
+
+        /* Fallback when image fails to load */
+        .logo-fallback {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffd966;
+        }
+
+        .logo-fallback span {
+            color: #ffd966;
+            font-weight: bold;
+            font-size: 20px;
         }
 
         .brand-text {
@@ -157,7 +175,6 @@
             padding-bottom: 0;
         }
 
-        /* Footer Admin & Register Links */
         .footer-admin-link, .footer-register-link {
             transition: color 0.3s ease;
         }
@@ -165,9 +182,8 @@
             color: #ffd966 !important;
         }
 
-        /* ===== TABLET (max 768px) ===== */
         @media (max-width: 768px) {
-            .logo-image {
+            .logo-image, .logo-fallback {
                 width: 38px;
                 height: 38px;
             }
@@ -208,7 +224,6 @@
             }
         }
 
-        /* ===== SMALL MOBILE (max 480px) ===== */
         @media (max-width: 480px) {
             body {
                 font-size: 0.9rem;
@@ -219,9 +234,12 @@
             .brand-motto {
                 font-size: 0.6rem;
             }
-            .logo-image {
+            .logo-image, .logo-fallback {
                 width: 34px;
                 height: 34px;
+            }
+            .logo-fallback span {
+                font-size: 16px;
             }
             .navbar-brand {
                 gap: 6px;
@@ -260,7 +278,14 @@
         <div class="container">
             <a class="navbar-brand" href="{% url 'main:home' %}">
                 <div class="logo-container">
-                    <img src="{% static 'images/logo.png' %}" alt="GRTTS Logo" class="logo-image">
+                    <!-- Logo image with fallback -->
+                    <img src="{% static 'images/logo.png' %}" 
+                         alt="GRTTS Logo" 
+                         class="logo-image"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-fallback" style="display: none;">
+                        <span>GR</span>
+                    </div>
                     <div class="brand-text">
                         <span class="brand-main">GRTTS</span>
                         <span class="brand-motto">Training That Saves Lives</span>
@@ -363,7 +388,8 @@
                 <div class="col-md-4">
                     <div class="d-flex align-items-center mb-3">
                         <img src="{% static 'images/logo.png' %}" alt="GRTTS Logo"
-                             style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;">
+                             style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;"
+                             onerror="this.style.display='none';">
                         <h5 class="mb-0">GRTTS</h5>
                     </div>
                     <p class="text-white-50">Leading Zimbabwean company dedicated to training, deploying and managing anti-poaching rangers across the country.</p>
@@ -433,7 +459,6 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Floating button click feedback
         document.querySelectorAll('.floating-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 this.style.transform = 'scale(0.9)';
@@ -441,7 +466,6 @@
             });
         });
 
-        // Hide floating buttons on scroll down, show on scroll up
         let lastScroll = 0;
         const floatingButtons = document.querySelector('.floating-buttons');
         if (floatingButtons) {
@@ -460,7 +484,6 @@
             });
         }
 
-        // Newsletter form AJAX
         const newsletterForm = document.getElementById('newsletter-form');
         if (newsletterForm) {
             newsletterForm.addEventListener('submit', function(e) {
