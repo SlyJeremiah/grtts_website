@@ -48,6 +48,10 @@ INSTALLED_APPS = [
     # For file storage (storages app)
     'storages',
 ]
+# Admin customization
+ADMIN_SITE_HEADER = "GRTTS Administration"
+ADMIN_SITE_TITLE = "GRTTS Admin Portal"
+ADMIN_INDEX_TITLE = "Dashboard - GRTTS Management"
 
 # UPDATED MIDDLEWARE CONFIGURATION - WhiteNoise must be near the top
 MIDDLEWARE = [

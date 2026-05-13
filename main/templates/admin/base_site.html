@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block branding %}
+<div style="display: flex; align-items: center; gap: 15px; padding: 10px 0;">
+    <img src="{% static 'images/logo.a76307707669.png' %}" alt="GRTTS Logo" style="height: 45px; width: 45px; border-radius: 50%; object-fit: cover; border: 2px solid #ffd966;">
+    <div>
+        <h1 id="site-name" style="margin: 0; font-size: 1.8rem; font-weight: bold; color: #2d5a3b;">
+            GRTTS Admin Portal
+        </h1>
+        <p style="margin: 0; font-size: 0.85rem; color: #ffd966;">Game Ranger & Tracker Training Specialist</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div style="background-color: #2d5a3b; padding: 8px 15px; margin: -10px -40px 0 -40px; display: flex; gap: 20px;">
+    <a href="/" style="color: white; text-decoration: none; padding: 5px 10px;">← Back to Website</a>
+    <a href="/admin/" style="color: #ffd966; text-decoration: none; padding: 5px 10px; border-bottom: 2px solid #ffd966;">Dashboard</a>
+    <a href="/admin/main/course/" style="color: white; text-decoration: none; padding: 5px 10px;">Courses</a>
+    <a href="/admin/main/jobpost/" style="color: white; text-decoration: none; padding: 5px 10px;">Jobs</a>
+    <a href="/admin/blog/post/" style="color: white; text-decoration: none; padding: 5px 10px;">Blog</a>
+    <a href="/admin/main/deploymentlocation/" style="color: white; text-decoration: none; padding: 5px 10px;">Locations</a>
+</div>
+{% endblock %}

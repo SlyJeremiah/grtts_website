@@ -1,0 +1,10 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block content %}
+<div style="margin-bottom: 20px; padding: 15px; background-color: #f4f7f2; border-radius: 10px; border-left: 4px solid #ffd966;">
+    <h2 style="margin: 0; color: #2d5a3b;">Welcome to GRTTS Admin Portal</h2>
+    <p style="margin: 5px 0 0; color: #666;">Manage courses, job postings, blog content, and applicant information</p>
+</div>
+{{ block.super }}
+{% endblock %}

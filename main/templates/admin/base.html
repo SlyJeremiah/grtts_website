@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.a76307707669.png' %}">
+    <style>
+        /* Global admin styling */
+        :root {
+            --primary: #2d5a3b;
+            --secondary: #1e3c2c;
+            --accent: #ffd966;
+            --link-fg: #2d5a3b;
+            --link-hover-fg: #ffd966;
+            --button-bg: #2d5a3b;
+            --button-hover-bg: #1e3c2c;
+            --default-button-bg: #ffd966;
+            --default-button-hover-bg: #e6c34f;
+        }
+        
+        #header {
+            background-color: #1e3c2c;
+            border-bottom: 3px solid #ffd966;
+        }
+        
+        #branding h1 {
+            color: white;
+        }
+        
+        #branding h1 a {
+            color: white;
+        }
+        
+        #user-tools a {
+            color: #ffd966;
+        }
+        
+        #user-tools a:hover {
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block userlinks %}
+    <a href="/" style="margin-right: 15px; color: #ffd966;">View Site</a> /
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,141 @@
+/* GRTTS Custom Admin CSS */
+
+/* Sidebar styling */
+#nav-sidebar {
+    background-color: #1e3c2c;
+}
+
+#nav-sidebar .item a {
+    color: #f4f7f2;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+#nav-sidebar .item a:hover {
+    background-color: #2d5a3b;
+    color: #ffd966;
+}
+
+#nav-sidebar .current-model a {
+    background-color: #2d5a3b;
+    color: #ffd966;
+    font-weight: bold;
+}
+
+/* Module headers */
+.module h2 {
+    background-color: #2d5a3b;
+    color: white;
+}
+
+.module h2 a {
+    color: #ffd966;
+}
+
+/* Buttons */
+.button,
+input[type="submit"],
+.submit-row input {
+    background-color: #2d5a3b;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 8px 16px;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+.submit-row input:hover {
+    background-color: #1e3c2c;
+}
+
+.button.default,
+input[type="submit"].default {
+    background-color: #ffd966;
+    color: #2d5a3b;
+    font-weight: bold;
+}
+
+.button.default:hover {
+    background-color: #e6c34f;
+}
+
+/* Links */
+a {
+    color: #2d5a3b;
+}
+
+a:hover {
+    color: #ffd966;
+}
+
+/* Dashboard module styling */
+.dashboard .module table th {
+    background-color: #f4f7f2;
+    color: #2d5a3b;
+}
+
+/* Login page */
+.login .form-row label {
+    color: #2d5a3b;
+    font-weight: bold;
+}
+
+.login .submit-row input {
+    background-color: #2d5a3b;
+    width: 100%;
+}
+
+.login .submit-row input:hover {
+    background-color: #1e3c2c;
+}
+
+/* Breadcrumbs */
+div.breadcrumbs {
+    background-color: #2d5a3b;
+    color: white;
+}
+
+div.breadcrumbs a {
+    color: #ffd966;
+}
+
+/* Pagination */
+.paginator a {
+    color: #2d5a3b;
+}
+
+.paginator a:hover {
+    color: #ffd966;
+}
+
+.paginator .this-page {
+    background-color: #2d5a3b;
+    color: white;
+}
+
+/* Object tools */
+.object-tools a {
+    background-color: #ffd966;
+    color: #2d5a3b;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.object-tools a:hover {
+    background-color: #e6c34f;
+}
+
+/* Changelist filters */
+#changelist-filter h2 {
+    background-color: #2d5a3b;
+    color: white;
+}
+
+#changelist-filter a {
+    color: #2d5a3b;
+}
+
+#changelist-filter a:hover {
+    color: #ffd966;
+}
