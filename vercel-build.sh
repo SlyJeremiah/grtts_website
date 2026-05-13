@@ -1,27 +1,20 @@
 #!/bin/bash
 set -e
-echo "=== VERCEL BUILD START ==="
-echo "Current directory: $(pwd)"
 
-echo "=== Installing dependencies ==="
+echo "=== Starting Vercel Build ==="
+
+# Install dependencies
 pip install -r requirements.txt
 
-echo "=== Running collectstatic ==="
+# Run migrations
+python manage.py migrate --no-input
+
+# Collect static files (this is critical for admin CSS)
+echo "=== Collecting static files ==="
 python manage.py collectstatic --no-input --clear
 
-echo "=== CHECKING GENERATED FILES ==="
-echo "Staticfiles directory contents:"
-ls -la staticfiles/
-echo -e "\nCSS directory contents (with hashes):"
-ls -la staticfiles/css/ || echo "No css directory"
-echo -e "\nImages directory contents (with hashes):"
-ls -la staticfiles/images/ || echo "No images directory"
+# Show what was collected
+echo "=== Static files collected ==="
+ls -la staticfiles/admin/css/ | head -20
 
-echo -e "\n=== FIRST 10 LINES OF MANIFEST ==="
-if [ -f staticfiles/staticfiles.json ]; then
-    head -20 staticfiles/staticfiles.json
-else
-    echo "❌ No manifest file found!"
-fi
-
-echo "=== Build complete ==="
+echo "=== Build Complete ==="
