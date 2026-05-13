@@ -158,14 +158,14 @@ else:
     MEDIA_URL = None
 # ========== END FILE STORAGE CONFIGURATION ==========
 
-# ========== FIXED STATIC FILES CONFIGURATION ==========
+# ========== STATIC FILES CONFIGURATION ==========
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "main/static",
+    os.path.join(BASE_DIR, 'main/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Use WhiteNoise for static files - more reliable on Vercel, no manifest needed
+# Use WhiteNoise for static files in production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # For local development, use simpler storage
@@ -178,7 +178,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 
 # Allowed file types
-ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
 ALLOWED_FILE_TYPES = [
     'application/pdf',
     'application/msword',
