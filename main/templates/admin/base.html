@@ -1,47 +1,35 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block extrahead %}
-    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
-    <link rel="icon" type="image/png" href="{% static 'images/logo.a76307707669.png' %}">
+{% block extrastyle %}
     <style>
-        /* Global admin styling */
-        :root {
-            --primary: #2d5a3b;
-            --secondary: #1e3c2c;
-            --accent: #ffd966;
-            --link-fg: #2d5a3b;
-            --link-hover-fg: #ffd966;
-            --button-bg: #2d5a3b;
-            --button-hover-bg: #1e3c2c;
-            --default-button-bg: #ffd966;
-            --default-button-hover-bg: #e6c34f;
-        }
-        
+        /* Inline styles to ensure branding works */
         #header {
-            background-color: #1e3c2c;
-            border-bottom: 3px solid #ffd966;
+            background-color: #1e3c2c !important;
+            border-bottom: 3px solid #ffd966 !important;
         }
-        
-        #branding h1 {
-            color: white;
+        #branding h1, #branding h1 a {
+            color: white !important;
         }
-        
-        #branding h1 a {
-            color: white;
-        }
-        
         #user-tools a {
-            color: #ffd966;
+            color: #ffd966 !important;
         }
-        
-        #user-tools a:hover {
-            color: white;
+        .module h2 {
+            background-color: #2d5a3b !important;
+        }
+        .button, input[type="submit"], .submit-row input {
+            background-color: #2d5a3b !important;
         }
     </style>
 {% endblock %}
 
-{% block userlinks %}
-    <a href="/" style="margin-right: 15px; color: #ffd966;">View Site</a> /
-    {{ block.super }}
+{% block branding %}
+<div style="display: flex; align-items: center; gap: 15px;">
+    <img src="{% static 'images/logo.a76307707669.png' %}" alt="GRTTS Logo" 
+         style="height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #ffd966;"
+         onerror="this.style.display='none'">
+    <div>
+        <h1 style="margin: 0; color: white;">GRTTS Admin</h1>
+    </div>
+</div>
 {% endblock %}
