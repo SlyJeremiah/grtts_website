@@ -4,38 +4,37 @@
 {% block title %}GRTTS - Game Ranger & Tracker Training Specialist{% endblock %}
 
 {% block content %}
-<!-- Hero Section with Enhanced Effects -->
-<section class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1549366021-9f761d450615?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; height: 600px; display: flex; align-items: center; text-align: center; color: white; position: relative; overflow: hidden;">
+<!-- Hero Section with Parallax Effect -->
+<section class="hero-section parallax-bg" style="background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1549366021-9f761d450615?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; background-attachment: fixed; height: 600px; display: flex; align-items: center; text-align: center; color: white; position: relative; overflow: hidden;">
     
     <!-- Animated Background Overlay -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(255,217,102,0.1) 0%, transparent 50%); animation: pulse-bg 4s ease-in-out infinite;"></div>
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(255,217,102,0.15) 0%, transparent 70%); animation: pulse-bg 4s ease-in-out infinite;"></div>
     
     <div class="container" style="position: relative; z-index: 2;">
-        <h1 class="gradient-text" style="font-size: 4rem; margin-bottom: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; animation: fadeInDown 1s ease;">
-            GAME RANGER AND TRACKER<br>TRAINING SPECIALIST
+        <h1 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 1rem; font-weight: 650; text-transform: uppercase; letter-spacing: 2px; animation: fadeInDown 1s ease;">
+            GAME RANGER AND TRACKER TRAINING SPECIALIST
         </h1>
         <p class="neon-text" style="font-size: 2.5rem; margin-bottom: 2rem; font-weight: 300; animation: fadeInUp 1s ease 0.3s both;">
             Training That Saves Lives
         </p>
         <p class="shine-text" style="background-color: rgba(45, 90, 59, 0.95); display: inline-block; padding: 1rem 3rem; border-radius: 50px; font-size: 1.3rem; border: 2px solid #ffd966; animation: fadeIn 1s ease 0.6s both;">
-            <i class="fas fa-star" style="color: #ffd966; margin-right: 10px;"></i>
+            <i class="fas fa-star" style="color: #ffd966; margin-right: 8px;"></i>
             Over a Septennium of Excellence
-            <i class="fas fa-star" style="color: #ffd966; margin-left: 10px;"></i>
+            <i class="fas fa-star" style="color: #ffd966; margin-left: 9px;"></i>
         </p>
     </div>
 </section>
 
-<!-- Stats Section - Removed circular pulse effect -->
+<!-- Stats Section with Counter Animation -->
 <section class="py-5" style="background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%); color: white; position: relative; overflow: hidden;">
     
-    <!-- Background Pattern -->
     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffd966' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
     <div class="container" style="position: relative; z-index: 2;">
         <div class="row text-center">
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">500+</div>
+                    <div class="counter" data-target="500+" style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">0</div>
                     <i class="fas fa-users" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">RANGERS TRAINED</h4>
                     <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Professionally equipped and field-ready</p>
@@ -43,7 +42,7 @@
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">45,000</div>
+                    <div class="counter" data-target="45000+" style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">0</div>
                     <i class="fas fa-tree" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">HECTARES PROTECTED</h4>
                     <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Private & community wildlife areas</p>
@@ -51,15 +50,15 @@
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">2017</div>
+                    <div class="counter" data-target="2017" style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">0</div>
                     <i class="fas fa-calendar-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">YEAR FOUNDED</h4>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Over 7 years of excellence</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 9px;">Over 7 years of excellence</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">8</div>
+                    <div class="counter" data-target="8" style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">0</div>
                     <i class="fas fa-map-marker-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">DEPLOYMENT LOCATIONS</h4>
                     <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Across Zimbabwe's prime wildlife areas</p>
@@ -70,12 +69,12 @@
 </section>
 
 <!-- Who We Are -->
-<section class="py-5">
+<section class="py-5 reveal-on-scroll">
     <div class="container">
         <h2 class="text-center mb-5 text-3d" style="font-size: 3rem; font-weight: 800;">
-            <i class="fas fa-paw" style="color: #ffd966; margin-right: 15px;"></i>
+            <i class="fas fa-paw" style="color: #ffd966; margin-right: 12px;"></i>
             WHO ARE WE?
-            <i class="fas fa-paw" style="color: #ffd966; margin-left: 15px;"></i>
+            <i class="fas fa-paw" style="color: #ffd966; margin-left: 12px;"></i>
         </h2>
         <div class="row">
             <div class="col-lg-8 mx-auto">
@@ -96,7 +95,7 @@
         </h2>
         <div class="row">
             <div class="col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; transition: all 0.3s ease;">
+                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 20px; transition: all 0.3s ease;">
                     <div class="card-body text-center p-5">
                         <i class="fas fa-shield-alt fa-4x mb-3" style="color: #2d5a3b;"></i>
                         <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: #2d5a3b; font-weight: 600;">Ranger Training Programs</h4>
@@ -105,7 +104,7 @@
                 </div>
             </div>
             <div class="col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; transition: all 0.3s ease;">
+                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 20px; transition: all 0.3s ease;">
                     <div class="card-body text-center p-5">
                         <i class="fas fa-users fa-4x mb-3" style="color: #2d5a3b;"></i>
                         <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: #2d5a3b; font-weight: 600;">Anti-Poaching Deployment</h4>
@@ -115,25 +114,24 @@
             </div>
         </div>
         
-        <!-- Core Services - Removed color change effect -->
         <div class="row mt-5">
             <div class="col-12">
                 <h3 class="text-center mb-5" style="font-size: 2rem; font-weight: 700; color: #2d5a3b;">OUR CORE SERVICES</h3>
             </div>
             <div class="col-md-4 mb-3">
-                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div class="card border-0 bg-white p-4 text-center hover-scale" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
                     <i class="fas fa-graduation-cap fa-3x mb-3" style="color: #ffd966;"></i>
                     <h5 style="color: #2d5a3b; font-weight: 600;">Ranger Training Programs</h5>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
-                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div class="card border-0 bg-white p-4 text-center hover-scale" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
                     <i class="fas fa-tree fa-3x mb-3" style="color: #ffd966;"></i>
                     <h5 style="color: #2d5a3b; font-weight: 600;">Anti-Poaching Deployment</h5>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
-                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div class="card border-0 bg-white p-4 text-center hover-scale" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
                     <i class="fas fa-hand-holding-heart fa-3x mb-3" style="color: #ffd966;"></i>
                     <h5 style="color: #2d5a3b; font-weight: 600;">Ranger Management & Conservation</h5>
                 </div>
@@ -152,7 +150,7 @@
         </div>
         <div class="row mt-5">
             <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 15px; overflow: hidden;">
                     <div style="height: 10px; background: linear-gradient(90deg, #2d5a3b, #ffd966);"></div>
                     <div class="card-body p-4">
                         <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">BASIC RANGER COURSE</h4>
@@ -164,7 +162,7 @@
                 </div>
             </div>
             <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 15px; overflow: hidden;">
                     <div style="height: 10px; background: linear-gradient(90deg, #ffd966, #2d5a3b);"></div>
                     <div class="card-body p-4">
                         <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">SPECIALIST COURSES</h4>
@@ -178,7 +176,7 @@
                 </div>
             </div>
             <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                <div class="card h-100 border-0 shadow-sm hover-lift" style="border-radius: 15px; overflow: hidden;">
                     <div style="height: 10px; background: linear-gradient(90deg, #2d5a3b, #ffd966, #2d5a3b);"></div>
                     <div class="card-body p-4">
                         <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">ADVANCED RANGER</h4>
@@ -206,7 +204,6 @@
             <span style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 100px; height: 4px; background: #ffd966; animation: underline-grow 2s infinite;"></span>
         </h2>
         
-        <!-- Testimonials Carousel -->
         <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for testimonial in testimonials %}
@@ -261,7 +258,7 @@
 </section>
 {% endif %}
 
-<!-- Locations - Added back float effect -->
+<!-- Locations -->
 <section class="py-5">
     <div class="container">
         <h2 class="text-center mb-5" style="font-size: 2.5rem; font-weight: 800; color: #2d5a3b;">
@@ -329,65 +326,155 @@
     </div>
 </section>
 
-<!-- Add all animations -->
+<!-- Add all animations and new effects -->
 <style>
+    /* Existing animations (keep as is) */
     @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-    
     @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-    
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
     }
-    
     @keyframes pulse-bg {
         0%, 100% { opacity: 0.3; }
         50% { opacity: 0.6; }
     }
-    
     @keyframes underline-grow {
         0% { width: 50px; opacity: 0.5; }
         50% { width: 150px; opacity: 1; }
         100% { width: 50px; opacity: 0.5; }
     }
-    
     @keyframes float {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-5px); }
         100% { transform: translateY(0px); }
     }
     
-    .float-number {
-        animation: float 3s ease-in-out infinite;
+    /* New animations */
+    @keyframes glow-pulse {
+        0% { text-shadow: 0 0 5px #ffd966; }
+        50% { text-shadow: 0 0 20px #ffd966, 0 0 30px #2d5a3b; }
+        100% { text-shadow: 0 0 5px #ffd966; }
+    }
+    @keyframes slide-in-left {
+        from { opacity: 0; transform: translateX(-50px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slide-in-right {
+        from { opacity: 0; transform: translateX(50px); }
+        to { opacity: 1; transform: translateX(0); }
     }
     
+    .glow-text {
+        animation: glow-pulse 2s infinite;
+    }
+    .slide-left {
+        animation: slide-in-left 0.8s ease forwards;
+    }
+    .slide-right {
+        animation: slide-in-right 0.8s ease forwards;
+    }
+    
+    /* Hover effects */
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(0,0,0,0.15) !important;
+    }
+    .hover-scale {
+        transition: transform 0.3s ease;
+    }
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
+    
+    /* Parallax effect */
+    .parallax-bg {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    
+    /* Reveal on scroll */
+    .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal-on-scroll.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    /* Counter number styling */
+    .counter {
+        font-size: 4rem;
+        font-weight: bold;
+        color: #ffd966;
+        text-shadow: 2px 2px 0 #1e3c2c;
+    }
+    
+    /* Existing hover effects */
     .stat-card:hover {
         transform: translateY(-5px) !important;
         box-shadow: 0 15px 25px rgba(0,0,0,0.2) !important;
         border-color: #ffd966 !important;
     }
-    
     .card:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
     }
+    .float-number {
+        animation: float 3s ease-in-out infinite;
+    }
 </style>
+
+<!-- Counter Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Counter animation
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+        
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const count = parseInt(counter.innerText);
+                const increment = Math.ceil(target / speed);
+                
+                if (count < target) {
+                    counter.innerText = count + increment;
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCount();
+        });
+        
+        // Reveal on scroll
+        const revealElements = document.querySelectorAll('.reveal-on-scroll');
+        const revealOnScroll = () => {
+            for (let i = 0; i < revealElements.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = revealElements[i].getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    revealElements[i].classList.add('revealed');
+                }
+            }
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger once on load
+    });
+</script>
 {% endblock %}
