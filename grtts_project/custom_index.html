@@ -1,0 +1,24 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="background: linear-gradient(135deg, #2d5a3b, #1e3c2c); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3 style="margin: 0; font-size: 2rem;">{{ course_count|default:"0" }}</h3>
+        <p style="margin: 5px 0 0;">Training Courses</p>
+    </div>
+    <div style="background: linear-gradient(135deg, #ffd966, #e6c34f); color: #2d5a3b; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3 style="margin: 0; font-size: 2rem;">{{ job_count|default:"0" }}</h3>
+        <p style="margin: 5px 0 0;">Open Positions</p>
+    </div>
+    <div style="background: linear-gradient(135deg, #2d5a3b, #1e3c2c); color: white; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3 style="margin: 0; font-size: 2rem;">{{ blog_count|default:"0" }}</h3>
+        <p style="margin: 5px 0 0;">Blog Posts</p>
+    </div>
+    <div style="background: linear-gradient(135deg, #ffd966, #e6c34f); color: #2d5a3b; padding: 20px; border-radius: 10px; text-align: center;">
+        <h3 style="margin: 0; font-size: 2rem;">{{ applicant_count|default:"0" }}</h3>
+        <p style="margin: 5px 0 0;">Registered Applicants</p>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

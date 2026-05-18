@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block title %}Login - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h4><i class="fas fa-sign-in-alt"></i> Login to GRTTS</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'account_login' %}">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="id_login" class="form-label">Email address</label>
+                            <input type="email" name="login" id="id_login" class="form-control" required autofocus>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" name="password" id="id_password" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="remember" id="id_remember" class="form-check-input">
+                            <label class="form-check-label" for="id_remember">Remember me</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Login</button>
+                    </form>
+
+                    <hr>
+
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-danger w-100 mt-2">
+                        <i class="fab fa-google"></i> Login with Google
+                    </a>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'account_reset_password' %}">Forgot your password?</a>
+                        &nbsp;|&nbsp;
+                        <a href="{% url 'account_signup' %}">Create an account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

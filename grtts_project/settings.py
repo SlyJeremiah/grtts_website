@@ -40,6 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+      'django.contrib.sites',
+    'allauth',                       
+    'allauth.account',              
+    'allauth.socialaccount',         
+    'allauth.socialaccount.providers.google',  
 
     # Your apps
     'main',
@@ -56,11 +61,12 @@ ADMIN_INDEX_TITLE = "Dashboard - GRTTS Management"
 # UPDATED MIDDLEWARE CONFIGURATION - WhiteNoise must be near the top
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Critical: Must be here after SecurityMiddleware
+    #'whitenoise.middleware.WhiteNoiseMiddleware',  # Critical: Must be here after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -73,6 +79,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'main/templates'),
+            os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'blog/templates'),
         ],
         'APP_DIRS': True,
@@ -107,6 +114,46 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Custom user model
 AUTH_USER_MODEL = 'main.User'
+# ========== ALLAUTH CONFIGURATION ==========
+# Sites framework
+SITE_ID = 1
+
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Login/Logout URLs
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Allauth core settings (new syntax)
+ACCOUNT_LOGIN_METHODS = {'email'}          # replaces ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'   # or 'optional' for testing
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']  # replaces EMAIL_REQUIRED, USERNAME_REQUIRED, etc.
+ACCOUNT_EMAIL_SUBJECT_PREFIX = '[GRTTS] '
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_UNIQUE_EMAIL = True
+
+# Google OAuth2
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('GOOGLE_CLIENT_ID', default=''),
+            'secret': env('GOOGLE_SECRET', default=''),
+            'key': ''
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'VERIFIED_EMAIL': True,
+    }
+}
+SOCIALACCOUNT_EMAIL_VERIFICATION = True
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+# ========== END ALLAUTH ==========
 
 # Login/Logout URLs
 LOGIN_URL = 'login'

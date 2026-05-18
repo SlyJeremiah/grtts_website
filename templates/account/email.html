@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load account %}
+
+{% block title %}Manage email addresses - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="fas fa-envelope"></i> Email addresses</h4>
+                </div>
+                <div class="card-body">
+                    {% if user.emailaddress_set.all %}
+                        <form action="{% url 'account_email' %}" method="post">
+                            {% csrf_token %}
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr><th>Email</th><th>Primary</th><th>Verified</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    {% for emailaddress in user.emailaddress_set.all %}
+                                    <tr>
+                                        <td>{{ emailaddress.email }}</td>
+                                        <td>{% if emailaddress.primary %}<i class="fas fa-check-circle text-success"></i>{% else %}<input type="radio" name="primary" value="{{ emailaddress.id }}">{% endif %}</td>
+                                        <td>{% if emailaddress.verified %}<span class="badge bg-success">Verified</span>{% else %}<span class="badge bg-warning">Unverified</span>{% endif %}</td>
+                                        <td>
+                                            {% if not emailaddress.primary %}
+                                                <button type="submit" name="action_remove" value="{{ emailaddress.id }}" class="btn btn-sm btn-danger">Remove</button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <div class="mt-3">
+                                <button type="submit" name="action_primary" class="btn btn-sm btn-success">Make primary</button>
+                                <button type="submit" name="action_send" class="btn btn-sm btn-warning">Re‑send verification</button>
+                                <button type="submit" name="action_remove" class="btn btn-sm btn-danger">Remove selected</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <p>No email addresses associated with your account.</p>
+                    {% endif %}
+
+                    <hr>
+                    <h5>Add new email address</h5>
+                    <form method="post" action="{% url 'account_email' %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="email" name="email" class="form-control" placeholder="new@example.com" required>
+                            <button class="btn btn-primary" type="submit" name="action_add">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

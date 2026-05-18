@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Account inactive - GRTTS{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow border-warning">
+                <div class="card-body text-center">
+                    <i class="fas fa-ban fa-4x text-warning mb-3"></i>
+                    <h4>Account inactive</h4>
+                    <p>Your account has been disabled. Please contact support for assistance.</p>
+                    <a href="{% url 'home' %}" class="btn btn-primary">Return to homepage</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,23 +4,15 @@
     {
       "src": "grtts_project/wsgi.py",
       "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.11"
-      }
+      "config": { "runtime": "python3.12" }
     },
     {
-      "src": "staticfiles/**/*",
+      "src": "static/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "grtts_project/wsgi.py"
-    }
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/(.*)", "dest": "grtts_project/wsgi.py" }
   ]
 }
