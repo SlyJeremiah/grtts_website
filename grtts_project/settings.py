@@ -1,18 +1,10 @@
 import os
-import dj_database_url
 from pathlib import Path
-import environ
-import pymysql
-pymysql.install_as_MySQLdb()
 
-env = environ.Env(DEBUG=(bool, False))
 BASE_DIR = Path(__file__).resolve().parent.parent
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-SECRET_KEY = env('SECRET_KEY', default='your-secret-key-here')
-DEBUG = env('DEBUG', default=False)
-
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh', 'localhost', '127.0.0.1', 'grtts.co.zw', 'www.grtts.co.zw']
+SECRET_KEY = 'django-insecure-abc123def456'   # temporary
+DEBUG = True   # show errors
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,7 +15,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'blog',
-    'storages',
 ]
 
 MIDDLEWARE = [
@@ -56,71 +47,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'grtts_project.wsgi.application'
 
-DATABASES = {'default': dj_database_url.config(default=env('DATABASE_URL', default='sqlite:///db.sqlite3'), conn_max_age=600)}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-]
-
-AUTH_USER_MODEL = 'main.User'   # keep your custom user model
-
+AUTH_PASSWORD_VALIDATORS = []
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Africa/Harare'
+TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
-# File storage (Backblaze B2)
-if DEBUG:
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    os.makedirs(MEDIA_ROOT, exist_ok=True)
-else:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    AWS_ACCESS_KEY_ID = env('B2_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = env('B2_APPLICATION_KEY')
-    AWS_STORAGE_BUCKET_NAME = env('B2_BUCKET_NAME', default='grtts-media')
-    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='https://s3.us-east-005.backblazeb2.com')
-    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-east-005')
-    AWS_S3_SIGNATURE_VERSION = 's3v4'
-    AWS_S3_ADDRESSING_STYLE = 'virtual'
-    AWS_QUERYSTRING_AUTH = True
-    AWS_QUERYSTRING_EXPIRE = 3600
-    AWS_DEFAULT_ACL = None
-    AWS_S3_FILE_OVERWRITE = False
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
-    MEDIA_URL = None
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'main/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Email configuration (only if you need contact forms etc.)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = f'GRTTS <{EMAIL_HOST_USER}>'
-
-ADMIN_EMAILS = ['shanyaslym19@gmail.com']
-SITE_URL = env('SITE_URL', default='https://grtts-website.vercel.app')
-
-if os.environ.get('VERCEL'):
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
-    CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app', 'https://*.now.sh', 'https://grtts.co.zw', 'https://www.grtts.co.zw']
-else:
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'DEBUG = True
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
