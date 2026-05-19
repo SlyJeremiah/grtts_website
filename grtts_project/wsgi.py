@@ -8,7 +8,7 @@ For Vercel, we also need to expose it as `app`.
 import os
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'grtts_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'grtts_project.settings_clean')
 
 application = get_wsgi_application()
 
