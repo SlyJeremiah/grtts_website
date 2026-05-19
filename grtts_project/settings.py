@@ -123,4 +123,4 @@ else:
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'DEBUG = True
