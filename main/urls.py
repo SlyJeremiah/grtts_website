@@ -33,7 +33,6 @@ urlpatterns = [
     path('newsletter/track/<uuid:tracking_id>/', views.track_newsletter_open, name='track_newsletter_open'),
     # Add these with your other URL patterns
     path('gis-applications/', views.gis_applications, name='gis_applications'),
-    path('accounts/', include('allauth.urls')),
     path('apply-now/', views.apply_now, name='apply_now'),
     path('careers/', views.careers, name='careers'),
     path('job/<int:job_id>/apply/', views.job_apply, name='job_apply'),
