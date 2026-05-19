@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "python manage.py migrate --noinput",
   "builds": [
     {
       "src": "grtts_project/wsgi.py",
       "use": "@vercel/python",
       "config": { "runtime": "python3.12" }
+    },
+    {
+      "src": "static/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
