@@ -133,7 +133,7 @@ else:
     AWS_S3_FILE_OVERWRITE = False
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
     MEDIA_URL = None
-#statwe
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'main/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -163,4 +163,4 @@ else:
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'# cache-buster
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
