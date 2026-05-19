@@ -20,3 +20,11 @@ urllib3==2.2.3
 psycopg2-binary==2.9.10
 django-allauth==0.63.3
 pyjwt==2.8.0
+Django>=4.2
+gunicorn
+psycopg2-binary
+dj-database-url
+Django>=4.2
+gunicorn
+psycopg2-binary
+dj-database-url
