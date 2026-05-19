@@ -47,4 +47,5 @@ urlpatterns = [
 
     # Email test (debug)
     path('test-email/', views.test_email, name='test_email'),
+    path('debug-media/', views.debug_media, name='debug_media'),
 ]

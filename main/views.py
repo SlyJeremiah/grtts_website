@@ -531,7 +531,12 @@ def course_detail(request, course_id):
     context = {'course': course}
     return render(request, 'main/course_detail.html', context)
 
-
+def debug_media(request):
+    from main.models import Course
+    course = Course.objects.first()
+    if course and course.image:
+        return HttpResponse(f"Image URL: {course.image.url}")
+    return HttpResponse("No image found")
 # =============================================================================
 # LOCATION VIEWS
 # =============================================================================
