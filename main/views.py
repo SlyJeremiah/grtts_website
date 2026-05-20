@@ -11,7 +11,6 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import traceback
 import uuid
-from django.views.decorators.http import require_POST
 from .models import StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry
 
 import logging
@@ -23,7 +22,7 @@ from .models import (
     Course, Testimonial, DeploymentLocation, FAQ, ContactMessage,
     NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog,
     UserDocument, ApplicantProfile, CourseApplication, User,
-    JobPost, JobApplication  # ADD THESE TWO
+    JobPost, JobApplication
 )
 
 # Utils and Forms
@@ -253,11 +252,17 @@ def inquiry_other(request):
 # =============================================================================
 
 def send_inquiry_notification(inquiry, inquiry_type):
-    """Send email notification for any inquiry type and auto-reply to user"""
-    try:
-        if inquiry_type == 'student':
-            subject = f"New Student Inquiry: {inquiry.name}"
-            body = f"""
+    """
+    Send two emails:
+    1. Detailed notification to admin (shanyaslym19@gmail.com)
+    2. Auto-reply summary to the user (client)
+    
+    Returns True if both succeed, False if any fails (but logs errors).
+    """
+    # --- 1. Prepare admin email content ---
+    if inquiry_type == 'student':
+        subject = f"New Student Inquiry: {inquiry.name}"
+        body = f"""
 NEW STUDENT INQUIRY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -275,9 +280,9 @@ Experience: {inquiry.experience or 'Not specified'}
 Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-        elif inquiry_type == 'landowner':
-            subject = f"New Landowner Inquiry: {inquiry.name}"
-            body = f"""
+    elif inquiry_type == 'landowner':
+        subject = f"New Landowner Inquiry: {inquiry.name}"
+        body = f"""
 NEW LANDOWNER INQUIRY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -301,9 +306,9 @@ Details: {inquiry.details or 'No additional details'}
 Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-        elif inquiry_type == 'enthusiast':
-            subject = f"New Enthusiast Inquiry: {inquiry.name}"
-            body = f"""
+    elif inquiry_type == 'enthusiast':
+        subject = f"New Enthusiast Inquiry: {inquiry.name}"
+        body = f"""
 NEW ENTHUSIAST INQUIRY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -319,9 +324,9 @@ Message: {inquiry.message or 'No message'}
 Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-        elif inquiry_type == 'other':
-            subject = f"New General Inquiry: {inquiry.name}"
-            body = f"""
+    elif inquiry_type == 'other':
+        subject = f"New General Inquiry: {inquiry.name}"
+        body = f"""
 NEW GENERAL INQUIRY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -340,10 +345,13 @@ Message:
 Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-        else:
-            subject = f"New {inquiry_type.title()} Inquiry"
-            body = f"New inquiry received. Check admin panel for details."
+    else:
+        subject = f"New {inquiry_type.title()} Inquiry"
+        body = f"New inquiry received. Check admin panel for details."
 
+    # --- 2. Send admin notification (fail loudly) ---
+    admin_sent = False
+    try:
         send_mail(
             subject,
             body,
@@ -352,9 +360,15 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
             fail_silently=False,
         )
         logger.info(f"Admin notification sent for {inquiry_type} inquiry from {inquiry.name}")
-        
-        auto_reply_subject = f"Thank You for Contacting GRTTS"
-        auto_reply_body = f"""
+        admin_sent = True
+    except Exception as e:
+        logger.error(f"Admin notification FAILED for {inquiry_type} inquiry: {e}")
+        # We'll still try to send the auto-reply even if admin fails
+
+    # --- 3. Send auto-reply to client (with improved error handling) ---
+    client_sent = False
+    auto_reply_subject = "Thank You for Contacting GRTTS"
+    auto_reply_body = f"""
 Dear {inquiry.name},
 
 Thank you for reaching out to GRTTS.
@@ -375,21 +389,28 @@ Best regards,
 The GRTTS Team
 www.grtts.co.zw
 """
-        
+
+    # Check if client email exists (avoid empty recipient)
+    client_email = getattr(inquiry, 'email', None)
+    if not client_email:
+        logger.error(f"Auto-reply FAILED: No email address for inquiry (id={inquiry.id})")
+        return admin_sent  # No point trying to send without recipient
+
+    try:
         send_mail(
             auto_reply_subject,
             auto_reply_body,
             settings.DEFAULT_FROM_EMAIL,
-            [inquiry.email],
+            [client_email],
             fail_silently=False,
         )
-        logger.info(f"Auto-reply sent to {inquiry.email}")
-        
-        return True
-        
+        logger.info(f"Auto-reply sent to {client_email}")
+        client_sent = True
     except Exception as e:
-        logger.error(f"Failed to send email for {inquiry_type} inquiry: {e}")
-        return False
+        logger.error(f"Auto-reply FAILED for {client_email}: {e}")
+        logger.error(traceback.format_exc())
+
+    return admin_sent or client_sent
 
 
 def send_contact_notification(contact):
@@ -427,7 +448,7 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 
 
 def send_newsletter_notification(email):
-    """Send notification when someone subscribes to newsletter"""
+    """Send notification to admin when someone subscribes"""
     try:
         subject = "New Newsletter Subscriber"
         body = f"""
@@ -446,11 +467,43 @@ Time: {timezone.now().strftime('%Y-%m-%d %H:%M')}
             ['shanyaslym19@gmail.com'],
             fail_silently=False,
         )
-        logger.info(f"Email notification sent for newsletter subscriber: {email}")
+        logger.info(f"Admin notification sent for newsletter subscriber: {email}")
         return True
     except Exception as e:
         logger.error(f"Failed to send newsletter notification: {e}")
         return False
+
+
+def send_newsletter_autoreply(email):
+    """Send a confirmation email to the newsletter subscriber"""
+    try:
+        subject = "Welcome to the GRTTS Newsletter"
+        body = f"""
+Dear Subscriber,
+
+Thank you for subscribing to the GRTTS newsletter!
+
+You will now receive updates about our training programs, conservation news, and upcoming events.
+
+If you did not sign up for this newsletter, please ignore this email.
+
+To unsubscribe at any time, click the link below:
+https://www.grtts.co.zw/newsletter/unsubscribe/{email}
+
+Best regards,
+The GRTTS Team
+www.grtts.co.zw
+"""
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+        )
+        logger.info(f"Newsletter auto-reply sent to {email}")
+    except Exception as e:
+        logger.error(f"Newsletter auto-reply failed for {email}: {e}")
 
 
 # =============================================================================
@@ -531,12 +584,14 @@ def course_detail(request, course_id):
     context = {'course': course}
     return render(request, 'main/course_detail.html', context)
 
+
 def debug_media(request):
     from main.models import Course
     course = Course.objects.first()
     if course and course.image:
         return HttpResponse(f"Image URL: {course.image.url}")
     return HttpResponse("No image found")
+
 # =============================================================================
 # LOCATION VIEWS
 # =============================================================================
@@ -680,7 +735,10 @@ def newsletter_signup(request):
         
         if created:
             message = 'Thank you for subscribing to our newsletter!'
+            # Send admin notification
             send_newsletter_notification(email)
+            # Send auto-reply to the subscriber
+            send_newsletter_autoreply(email)
         else:
             if not subscriber.is_active:
                 subscriber.is_active = True
@@ -688,6 +746,7 @@ def newsletter_signup(request):
                 subscriber.save()
                 message = 'Your subscription has been reactivated!'
                 send_newsletter_notification(email)
+                send_newsletter_autoreply(email)
             else:
                 return JsonResponse({'success': False, 'message': 'This email is already subscribed.'}, status=400)
         
@@ -794,6 +853,7 @@ def test_email(request):
     except Exception as e:
         logger.error(f"Test email error: {e}")
         return HttpResponse(f'Error sending email: {str(e)}')
+
 # =============================================================================
 # GIS APPLICATIONS PAGE
 # =============================================================================
@@ -942,8 +1002,6 @@ def careers(request):
 # =============================================================================
 # JOB APPLICATION FORM
 # =============================================================================
-
-from django.utils import timezone
 
 def job_apply(request, job_id):
     """Apply for a specific job"""
