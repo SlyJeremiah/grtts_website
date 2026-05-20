@@ -1,57 +1,54 @@
-{% extends 'main/base.html' %}
+{% extends "main/base.html" %}
 {% load static %}
 
 {% block title %}Login - GRTTS{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-md-5 mx-auto">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Login to Your Account</h3>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h4 class="mb-0"><i class="fas fa-sign-in-alt"></i> Login to GRTTS</h4>
                 </div>
                 <div class="card-body">
-                    {% if form.errors %}
-                        <div class="alert alert-danger">
-                            <strong>Invalid username or password.</strong> Please try again.
-                        </div>
-                    {% endif %}
-                    
-                    {% if next %}
-                        <div class="alert alert-info">
-                            Please login to access this page.
-                        </div>
-                    {% endif %}
-                    
-                    <form method="post" novalidate>
+                    <form method="post" action="{% url 'main:login' %}">
                         {% csrf_token %}
-                        
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" required autofocus>
+                            <label for="id_username" class="form-label">Email address</label>
+                            <input type="email" name="username" id="id_username" class="form-control" required autofocus>
+                            <div class="form-text">Use your registered email address.</div>
                         </div>
-                        
+
                         <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <label for="id_password" class="form-label">Password</label>
+                            <input type="password" name="password" id="id_password" class="form-control" required>
                         </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </button>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="remember" id="id_remember" class="form-check-input">
+                            <label class="form-check-label" for="id_remember">Remember me</label>
                         </div>
-                        
-                        <input type="hidden" name="next" value="{{ next }}">
+
+                        <button type="submit" class="btn btn-success w-100">Login</button>
                     </form>
-                    
+
                     <hr>
-                    
-                    <p class="text-center mb-0">
-                        Don't have an account? 
-                        <a href="{% url 'register' %}" class="text-success">Register here</a>
-                    </p>
+
+                    <div class="text-center">
+                        <a href="{% url 'main:password_reset' %}">Forgot your password?</a>
+                        &nbsp;|&nbsp;
+                        <a href="{% url 'main:register' %}">Create an account</a>
+                    </div>
                 </div>
             </div>
         </div>

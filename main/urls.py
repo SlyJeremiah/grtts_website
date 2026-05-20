@@ -44,8 +44,40 @@ urlpatterns = [
 
     # Registration (user signup)
     path('register/', views.register, name='register'),
-
+    
     # Email test (debug)
     path('test-email/', views.test_email, name='test_email'),
     path('debug-media/', views.debug_media, name='debug_media'),
+    path('password-reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name='main/password_reset.html',
+             email_template_name='main/password_reset_email.html',
+             subject_template_name='main/password_reset_subject.txt',
+             success_url='/password-reset-done/'
+         ),
+         name='password_reset'),
+    path('password-reset-done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='main/password_reset_done.html'
+         ),
+         name='password_reset_done'),
+    path('reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='main/password_reset_confirm.html',
+             success_url='/reset-done/'
+         ),
+         name='password_reset_confirm'),
+    path('reset-done/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='main/password_reset_complete.html'
+         ),
+         name='password_reset_complete'),
+    path('password-change/',
+         auth_views.PasswordChangeView.as_view(
+             template_name='main/password_change.html',
+             success_url='/'
+         ),
+         name='password_change'),
+    path('login/', auth_views.LoginView.as_view(template_name='main/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),     
 ]
