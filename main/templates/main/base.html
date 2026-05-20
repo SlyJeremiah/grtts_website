@@ -173,10 +173,10 @@
             padding-bottom: 0;
         }
 
-        .footer-admin-link, .footer-register-link {
+        .footer-admin-link {
             transition: color 0.3s ease;
         }
-        .footer-admin-link:hover, .footer-register-link:hover {
+        .footer-admin-link:hover {
             color: #ffd966 !important;
         }
 
@@ -336,36 +336,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
                     </li>
-                    
-                    <!-- Authentication links -->
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle"></i> {{ user.email }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'main:password_change' %}">Change Password</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="post" action="{% url 'main:logout' %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item">Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'main:login' %}">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'main:register' %}">
-                                <i class="fas fa-user-plus"></i> Register
-                            </a>
-                        </li>
-                    {% endif %}
+                    <!-- No login/register links in navbar -->
                 </ul>
             </div>
         </div>
@@ -432,9 +403,7 @@
                         <li><a href="{% url 'main:careers' %}" class="text-white-50 text-decoration-none">Careers</a></li>
                         <li><a href="{% url 'main:faq' %}" class="text-white-50 text-decoration-none">FAQ</a></li>
                         <li><a href="{% url 'blog:post_list' %}" class="text-white-50 text-decoration-none">News & Updates</a></li>
-                        <li><a href="{% url 'main:register' %}" class="text-white-50 text-decoration-none footer-register-link">
-                            <i class="fas fa-user-plus"></i> Register
-                        </a></li>
+                        <!-- Admin Login only – no Register link -->
                         <li><a href="{% url 'admin:index' %}" class="text-white-50 text-decoration-none footer-admin-link">
                             <i class="fas fa-lock"></i> Admin Login
                         </a></li>
