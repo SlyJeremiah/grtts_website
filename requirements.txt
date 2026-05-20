@@ -31,4 +31,4 @@ dj-database-url
 django-storages[boto3]
 boto3
 django-admin-interface
-colorfield
+django-colorfield
