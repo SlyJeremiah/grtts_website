@@ -197,7 +197,7 @@
     </div>
 </section>
 
-<!-- Partners Section -->
+<!-- Partners Section with DEBUG -->
 <section class="py-5" style="background-color: #ffffff;">
     <div class="container">
         <h2 class="text-center mb-4" style="font-size: 2.5rem; font-weight: 800; color: #2d5a3b;">
@@ -208,6 +208,36 @@
         <p class="text-center text-muted mb-5" style="font-size: 1.1rem;">
             Collaborating with leading organizations to protect Zimbabwe's wildlife
         </p>
+        
+        <!-- ===== DEBUG INFO - REMOVE AFTER TESTING ===== -->
+        <div style="background: #fff3cd; padding: 20px; margin: 20px 0; border: 3px solid #ffc107; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #856404;">🔍 DEBUG INFORMATION</h4>
+            <hr style="border-color: #ffc107;">
+            <p><strong>partners variable exists:</strong> {{ partners|yesno:"✅ Yes,❌ No" }}</p>
+            <p><strong>partners count:</strong> {{ partners|length }}</p>
+            
+            {% if partners %}
+                <p><strong>Partner names:</strong></p>
+                <ul>
+                {% for p in partners %}
+                    <li>
+                        <strong>{{ p.name }}</strong> 
+                        (Active: {{ p.is_active|yesno:"Yes,No" }}, 
+                        Order: {{ p.order }}, 
+                        Has Logo: {{ p.logo|yesno:"Yes,No" }}
+                        {% if p.logo %} - URL: {{ p.logo.url }}{% endif %})
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p style="color: red; font-weight: bold;">⚠️ No partners found in template context</p>
+                <p>This means the context processor is not passing the partners variable to the template.</p>
+            {% endif %}
+            
+            <p><strong>Template path:</strong> main/home.html</p>
+            <p><strong>Context keys available:</strong> {{ context.keys|join:", " }}</p>
+        </div>
+        <!-- ===== END DEBUG ===== -->
         
         {% if partners %}
         <div class="row align-items-center justify-content-center g-4">
