@@ -15,8 +15,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Security
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-abc123def456')
-DEBUG = env('DEBUG', default=False)   # now correct: False unless env var says True
-
+DEBUG = env('DEBUG', default=False)
 ALLOWED_HOSTS = ['*']
 
 # Email settings
@@ -30,15 +29,15 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default=f'GRTTS <{EMAIL_HOST_USER
 
 # Application definition
 INSTALLED_APPS = [
-     'django.contrib.auth',
+    'admin_interface',        # Must be first
+    'colorfield',            # Must come before admin
+    'django.contrib.admin',  # Admin after admin_interface
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',                    # ← now before admin
-    'admin_interface',
-    'colorfield',
-    'django.contrib.admin',    # ← admin after main
+    'main',
     'blog',
 ]
 
@@ -61,6 +60,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'main.context_processors.partners',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -97,12 +97,13 @@ USE_TZ = True
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
-# Static files
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'main/static')]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),          # Root level static folder
+    os.path.join(BASE_DIR, 'main/static'),     # App level static folder (if exists)
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Media storage: local in development, Backblaze B2 in production
 if DEBUG:
@@ -124,4 +125,5 @@ else:
     AWS_S3_FILE_OVERWRITE = False
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
     MEDIA_URL = None
-    
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

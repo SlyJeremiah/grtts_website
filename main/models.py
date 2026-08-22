@@ -800,3 +800,23 @@ class JobApplication(models.Model):
     
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
+
+class Partner(models.Model):
+    """Partner organizations with logos and website links"""
+    name = models.CharField(max_length=200, help_text="Organization name")
+    logo = models.ImageField(
+        upload_to='partners/',
+        help_text="Partner logo (recommended: 200x100px PNG with transparent background)"
+    )
+    website = models.URLField(blank=True, null=True, help_text="Full URL including https://")
+    description = models.TextField(blank=True, help_text="Brief description of the partnership")
+    order = models.IntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name

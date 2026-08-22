@@ -197,6 +197,115 @@
     </div>
 </section>
 
+<!-- Partners Section -->
+<section class="py-5" style="background-color: #ffffff;">
+    <div class="container">
+        <h2 class="text-center mb-4" style="font-size: 2.5rem; font-weight: 800; color: #2d5a3b;">
+            <i class="fas fa-handshake" style="color: #ffd966; margin-right: 15px;"></i>
+            OUR PARTNERS
+            <i class="fas fa-handshake" style="color: #ffd966; margin-left: 15px;"></i>
+        </h2>
+        <p class="text-center text-muted mb-5" style="font-size: 1.1rem;">
+            Collaborating with leading organizations to protect Zimbabwe's wildlife
+        </p>
+        
+        {% load static %}
+        {% get_partners as partners %}
+        {% if partners %}
+        <div class="row align-items-center justify-content-center g-4">
+            {% for partner in partners %}
+            <div class="col-6 col-md-3 col-lg-2 text-center partner-item">
+                <div class="p-3 rounded shadow-sm bg-white h-100 d-flex flex-column align-items-center justify-content-center" 
+                     style="transition: transform 0.3s ease, box-shadow 0.3s ease; min-height: 140px; border: 1px solid #e9ecef;">
+                    {% if partner.website %}
+                    <a href="{{ partner.website }}" target="_blank" rel="noopener noreferrer" title="{{ partner.name }}" 
+                       style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; text-decoration: none;">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" 
+                             class="img-fluid" 
+                             style="max-height: 70px; max-width: 140px; object-fit: contain; filter: grayscale(0%); transition: filter 0.3s ease;"
+                             onmouseover="this.style.filter='grayscale(0%) brightness(1.1)'" 
+                             onmouseout="this.style.filter='grayscale(0%)'">
+                    </a>
+                    {% else %}
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" 
+                         class="img-fluid" 
+                         style="max-height: 70px; max-width: 140px; object-fit: contain;">
+                    {% endif %}
+                </div>
+                <p class="mt-2 small text-muted">{{ partner.name }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Partner Carousel for more than 6 partners -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <button class="btn btn-sm btn-outline-success partner-scroll-btn" onclick="scrollPartners(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="mx-2 text-muted">Browse Partners</span>
+                <button class="btn btn-sm btn-outline-success partner-scroll-btn" onclick="scrollPartners(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="text-center py-4">
+            <p class="text-muted">Partners coming soon.</p>
+            <p class="small text-muted">Check back later to see our partner organizations.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.partner-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    border-color: #ffd966 !important;
+}
+.partner-scroll-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 768px) {
+    .partner-item {
+        min-height: 100px !important;
+    }
+    .partner-item img {
+        max-height: 50px !important;
+        max-width: 100px !important;
+    }
+}
+</style>
+
+<script>
+let currentPartnerRow = 0;
+const partnersPerRow = 6;
+
+function scrollPartners(direction) {
+    const partnerItems = document.querySelectorAll('.partner-item');
+    const totalPartners = partnerItems.length;
+    const totalRows = Math.ceil(totalPartners / partnersPerRow);
+    
+    // Find the parent row
+    const row = document.querySelector('.partner-items-row');
+    if (!row) return;
+    
+    // Calculate new position
+    currentPartnerRow = Math.max(0, Math.min(currentPartnerRow + direction, totalRows - 1));
+    
+    // Scroll the row container
+    row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+
 <!-- Testimonials Section -->
 {% if testimonials %}
 <section class="py-5" style="background-color: #f4f7f2;">

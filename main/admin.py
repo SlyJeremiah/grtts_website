@@ -627,3 +627,26 @@ class JobApplicationAdmin(admin.ModelAdmin):
     def full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
     full_name.short_description = "Name"
+
+from .models import Partner
+
+@admin.register(Partner)
+class PartnerAdmin(admin.ModelAdmin):
+    list_display = ['name', 'website', 'is_active', 'order', 'logo_preview']
+    list_filter = ['is_active']
+    list_editable = ['is_active', 'order']
+    search_fields = ['name', 'description']
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'logo', 'website', 'description')
+        }),
+        ('Display Settings', {
+            'fields': ('order', 'is_active')
+        }),
+    )
+
+    def logo_preview(self, obj):
+        if obj.logo:
+            return format_html('<img src="{}" style="max-height: 50px; max-width: 100px; object-fit: contain;" />', obj.logo.url)
+        return "No logo"
+    logo_preview.short_description = "Logo"
