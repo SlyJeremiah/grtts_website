@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
@@ -46,15 +46,15 @@ def register(request):
             last_name = form.cleaned_data['last_name']
             email = form.cleaned_data['email']
             phone = form.cleaned_data['phone']
-            
+
             # Create username from email
             username = email.split('@')[0]
-            
+
             # Check if user already exists
             if User.objects.filter(email=email).exists():
                 messages.error(request, 'A user with this email already exists.')
                 return render(request, 'main/register.html', {'form': form})
-            
+
             # Create the User (using custom User model)
             user = User.objects.create_user(
                 username=username,
@@ -67,7 +67,7 @@ def register(request):
             user.phone = phone  # Save phone to User model
             user.user_type = 'applicant'  # Set user type
             user.save()
-            
+
             # Create the ApplicantProfile
             applicant = ApplicantProfile.objects.create(
                 user=user,
@@ -83,7 +83,7 @@ def register(request):
                 medical_conditions=form.cleaned_data.get('medical_conditions', ''),
                 dietary_requirements=form.cleaned_data.get('dietary_requirements', '')
             )
-            
+
             # Save uploaded files as UserDocument objects
             file_mappings = [
                 ('profile_photo', 'photo', 'Profile photo'),
@@ -91,7 +91,7 @@ def register(request):
                 ('cv', 'cv', 'CV/Resume'),
                 ('certificates', 'certificate', 'Certificate'),
             ]
-            
+
             for field_name, doc_type, description in file_mappings:
                 file = form.cleaned_data.get(field_name)
                 if file:
@@ -101,9 +101,9 @@ def register(request):
                         file=file,
                         description=f"{description} uploaded during registration for {email}"
                     )
-            
+
             messages.success(
-                request, 
+                request,
                 f'Thank you for registering, {first_name}! Your information has been saved.'
             )
             return redirect('main:home')
@@ -113,7 +113,7 @@ def register(request):
             logger.error(f"Registration form errors: {form.errors}")
     else:
         form = ApplicantRegistrationForm()
-    
+
     return render(request, 'main/register.html', {'form': form})
 
 # =============================================================================
@@ -140,10 +140,10 @@ def inquiry_student(request):
             intake=request.POST.get('intake', ''),
             experience=request.POST.get('experience', ''),
         )
-        
+
         # Send email notification
         send_inquiry_notification(inquiry, 'student')
-        
+
         return JsonResponse({
             'success': True,
             'message': 'Your student inquiry has been submitted successfully. We will contact you within 48 hours.'
@@ -174,10 +174,10 @@ def inquiry_landowner(request):
             concerns_trespassing=bool(request.POST.get('concerns_trespassing')),
             details=request.POST.get('details', ''),
         )
-        
+
         # Send email notification
         send_inquiry_notification(inquiry, 'landowner')
-        
+
         return JsonResponse({
             'success': True,
             'message': 'Your landowner inquiry has been submitted successfully. We will contact you within 48 hours.'
@@ -202,10 +202,10 @@ def inquiry_enthusiast(request):
             availability=request.POST.get('availability', ''),
             message=request.POST.get('message', ''),
         )
-        
+
         # Send email notification
         send_inquiry_notification(inquiry, 'enthusiast')
-        
+
         return JsonResponse({
             'success': True,
             'message': 'Your enthusiast inquiry has been submitted successfully. We will contact you within 48 hours.'
@@ -232,10 +232,10 @@ def inquiry_other(request):
             message=request.POST.get('message'),
             urgency=request.POST.get('urgency', 'normal'),
         )
-        
+
         # Send email notification
         send_inquiry_notification(inquiry, 'other')
-        
+
         return JsonResponse({
             'success': True,
             'message': 'Your inquiry has been submitted successfully. We will respond within 48 hours.'
@@ -254,9 +254,9 @@ def inquiry_other(request):
 def send_inquiry_notification(inquiry, inquiry_type):
     """
     Send two emails:
-    1. Detailed notification to admin (shanyaslym19@gmail.com)
+    1. Detailed notification to admin (shanyaslym19@gmail.com) with CC to grttsrangers@gmail.com
     2. Auto-reply summary to the user (client)
-    
+
     Returns True if both succeed, False if any fails (but logs errors).
     """
     # --- 1. Prepare admin email content ---
@@ -349,17 +349,22 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
         subject = f"New {inquiry_type.title()} Inquiry"
         body = f"New inquiry received. Check admin panel for details."
 
-    # --- 2. Send admin notification (fail loudly) ---
+    # --- 2. Send admin notification with CC to grttsrangers@gmail.com ---
     admin_sent = False
     try:
-        send_mail(
-            subject,
-            body,
-            settings.DEFAULT_FROM_EMAIL,
-            ['shanyaslym19@gmail.com'],
-            fail_silently=False,
+        admin_email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['shanyaslym19@gmail.com'],
+            cc=['grttsrangers@gmail.com'],
+            reply_to=[inquiry.email] if getattr(inquiry, 'email', None) else None,
         )
-        logger.info(f"Admin notification sent for {inquiry_type} inquiry from {inquiry.name}")
+        admin_email.send(fail_silently=False)
+        logger.info(
+            f"Admin notification sent for {inquiry_type} inquiry from {inquiry.name} "
+            f"(CC: grttsrangers@gmail.com)"
+        )
         admin_sent = True
     except Exception as e:
         logger.error(f"Admin notification FAILED for {inquiry_type} inquiry: {e}")
@@ -414,7 +419,7 @@ www.grtts.co.zw
 
 
 def send_contact_notification(contact):
-    """Send notification for contact form submissions"""
+    """Send notification for contact form submissions (CC to grttsrangers@gmail.com)"""
     try:
         subject = f"New Contact Message: {contact.subject}"
         body = f"""
@@ -433,14 +438,16 @@ Message:
 Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-        send_mail(
-            subject,
-            body,
-            settings.DEFAULT_FROM_EMAIL,
-            ['shanyaslym19@gmail.com'],
-            fail_silently=False,
+        email = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['shanyaslym19@gmail.com'],
+            cc=['grttsrangers@gmail.com'],
+            reply_to=[contact.email] if contact.email else None,
         )
-        logger.info(f"Email notification sent for contact from {contact.name}")
+        email.send(fail_silently=False)
+        logger.info(f"Email notification sent for contact from {contact.name} (CC: grttsrangers@gmail.com)")
         return True
     except Exception as e:
         logger.error(f"Failed to send contact email: {e}")
@@ -448,7 +455,7 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 
 
 def send_newsletter_notification(email):
-    """Send notification to admin when someone subscribes"""
+    """Send notification to admin when someone subscribes (CC to grttsrangers@gmail.com)"""
     try:
         subject = "New Newsletter Subscriber"
         body = f"""
@@ -460,14 +467,16 @@ Email: {email}
 Time: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
-        send_mail(
-            subject,
-            body,
-            settings.DEFAULT_FROM_EMAIL,
-            ['shanyaslym19@gmail.com'],
-            fail_silently=False,
+        message = EmailMessage(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=['shanyaslym19@gmail.com'],
+            cc=['grttsrangers@gmail.com'],
+            reply_to=[email],
         )
-        logger.info(f"Admin notification sent for newsletter subscriber: {email}")
+        message.send(fail_silently=False)
+        logger.info(f"Admin notification sent for newsletter subscriber: {email} (CC: grttsrangers@gmail.com)")
         return True
     except Exception as e:
         logger.error(f"Failed to send newsletter notification: {e}")
@@ -514,7 +523,7 @@ def home(request):
     """Home page view"""
     featured_courses = Course.objects.filter(is_active=True)[:3]
     testimonials = Testimonial.objects.filter(is_active=True)[:3]
-    
+
     context = {
         'featured_courses': featured_courses,
         'testimonials': testimonials,
@@ -547,7 +556,7 @@ def courses(request):
     """All courses listing with filtering"""
     courses = Course.objects.filter(is_active=True)
     course_type = request.GET.get('type')
-    
+
     if course_type:
         if course_type == 'basic':
             courses = courses.filter(course_type='BASIC')
@@ -557,14 +566,14 @@ def courses(request):
             courses = courses.filter(course_type='ADVANCED')
         elif course_type == 'tracking':
             courses = courses.filter(course_type='TRACKING')
-    
+
     search_query = request.GET.get('q')
     if search_query:
         courses = courses.filter(
-            Q(title__icontains=search_query) | 
+            Q(title__icontains=search_query) |
             Q(description__icontains=search_query)
         )
-    
+
     context = {
         'courses': courses,
         'basic_courses': courses.filter(course_type='BASIC'),
@@ -600,14 +609,14 @@ def locations(request):
     """Training and deployment locations with filtering"""
     locations = DeploymentLocation.objects.all()
     center = request.GET.get('center')
-    
+
     if center:
         center_name = center.replace('-', ' ').title()
         locations = locations.filter(name__icontains=center_name)
-    
+
     training_centers = locations.filter(is_training_center=True)
     deployment_sites = locations.filter(is_deployment_location=True)
-    
+
     context = {
         'locations': locations,
         'training_centers': training_centers,
@@ -621,7 +630,7 @@ def location_detail(request, location_id):
     """Individual location detail page with gallery"""
     location = get_object_or_404(DeploymentLocation, id=location_id)
     other_locations = DeploymentLocation.objects.exclude(id=location_id)[:5]
-    
+
     context = {
         'location': location,
         'locations': other_locations,
@@ -636,16 +645,16 @@ def location_detail(request, location_id):
 @ensure_csrf_cookie
 def contact(request):
     """Enhanced contact page that handles different inquiry types"""
-    
+
     # Get parameters from URL
     inquiry_type = request.GET.get('type', 'general')
     course_param = request.GET.get('course')
     job_param = request.GET.get('job')
     location_param = request.GET.get('location')
-    
+
     # Set initial subject based on parameters
     initial_subject = ''
-    
+
     if course_param:
         if course_param == 'basic':
             initial_subject = 'Inquiry about Basic Ranger Course'
@@ -657,17 +666,17 @@ def contact(request):
             initial_subject = 'Inquiry about Tracking Course'
         elif course_param == 'gis':
             initial_subject = 'Inquiry about GIS Applications Training'
-    
+
     if job_param:
         try:
             job = JobPost.objects.get(id=job_param, is_active=True)
             initial_subject = f"Job Application Inquiry: {job.title}"
         except JobPost.DoesNotExist:
             pass
-    
+
     if location_param:
         initial_subject = f"Inquiry about {location_param.replace('-', ' ').title()} Location"
-    
+
     # Handle form submission
     if request.method == 'POST':
         try:
@@ -679,23 +688,23 @@ def contact(request):
                 message=request.POST.get('message')
             )
             contact.save()
-            
+
             # Send email notification
             send_contact_notification(contact)
-            
+
             messages.success(request, 'Thank you for your message! We will contact you soon.')
             return redirect('main:contact')
-            
+
         except Exception as e:
             logger.error(f"Contact form error: {e}")
             messages.error(request, 'There was an error sending your message. Please try again.')
-    
+
     # Get FAQs for the sidebar
     faqs = FAQ.objects.filter(is_active=True)[:5]
-    
+
     # Get active jobs for dropdown (optional)
     active_jobs = JobPost.objects.filter(is_active=True)
-    
+
     context = {
         'initial_subject': initial_subject,
         'inquiry_type': inquiry_type,
@@ -716,15 +725,15 @@ def contact(request):
 def newsletter_signup(request):
     try:
         email = request.POST.get('email', '').strip()
-        
+
         if not email:
             return JsonResponse({'success': False, 'message': 'Email address is required.'}, status=400)
-        
+
         try:
             validate_email(email)
         except ValidationError:
             return JsonResponse({'success': False, 'message': 'Please enter a valid email address.'}, status=400)
-        
+
         subscriber, created = NewsletterSubscriber.objects.get_or_create(
             email=email,
             defaults={
@@ -732,7 +741,7 @@ def newsletter_signup(request):
                 'source': 'website_footer'
             }
         )
-        
+
         if created:
             message = 'Thank you for subscribing to our newsletter!'
             # Send admin notification
@@ -749,9 +758,9 @@ def newsletter_signup(request):
                 send_newsletter_autoreply(email)
             else:
                 return JsonResponse({'success': False, 'message': 'This email is already subscribed.'}, status=400)
-        
+
         return JsonResponse({'success': True, 'message': message})
-        
+
     except Exception as e:
         logger.error(f"Newsletter signup error: {e}")
         return JsonResponse({'success': False, 'message': 'Server error. Please try again later.'}, status=500)
@@ -795,7 +804,7 @@ def newsletter_test_page(request):
 def verify_certificate(request):
     certificate = None
     verified = False
-    
+
     if request.method == 'POST':
         cert_number = request.POST.get('certificate_number')
         try:
@@ -805,7 +814,7 @@ def verify_certificate(request):
             )
             certificate.view_count += 1
             certificate.save()
-            
+
             CertificateVerificationLog.objects.create(
                 certificate=certificate,
                 ip_address=request.META.get('REMOTE_ADDR'),
@@ -815,7 +824,7 @@ def verify_certificate(request):
             verified = True
         except Certificate.DoesNotExist:
             messages.error(request, 'Invalid certificate number or certificate not found')
-    
+
     context = {
         'certificate': certificate,
         'verified': verified,
@@ -825,14 +834,14 @@ def verify_certificate(request):
 
 def certificate_detail(request, cert_number):
     certificate = get_object_or_404(Certificate, certificate_number=cert_number, is_valid=True)
-    
+
     CertificateVerificationLog.objects.create(
         certificate=certificate,
         ip_address=request.META.get('REMOTE_ADDR'),
         user_agent=request.META.get('HTTP_USER_AGENT', ''),
         successful=True
     )
-    
+
     return render(request, 'main/certificate_detail.html', {'certificate': certificate})
 
 
@@ -973,7 +982,7 @@ def apply_now(request):
 def careers(request):
     """Careers page showing active job posts from database"""
     active_jobs = JobPost.objects.filter(is_active=True)
-    
+
     # Group jobs by category for better display
     jobs_by_category = {}
     for job in active_jobs:
@@ -981,7 +990,7 @@ def careers(request):
         if category not in jobs_by_category:
             jobs_by_category[category] = []
         jobs_by_category[category].append(job)
-    
+
     context = {
         'title': 'Careers at GRTTS',
         'jobs': active_jobs,
@@ -1006,7 +1015,7 @@ def careers(request):
 def job_apply(request, job_id):
     """Apply for a specific job"""
     job = get_object_or_404(JobPost, id=job_id, is_active=True)
-    
+
     if request.method == 'POST':
         # Process form submission
         try:
@@ -1019,12 +1028,12 @@ def job_apply(request, job_id):
             experience_years = request.POST.get('experience_years', 0)
             current_employer = request.POST.get('current_employer', '')
             current_position = request.POST.get('current_position', '')
-            
+
             # Check if CV is uploaded
             if 'cv' not in request.FILES:
                 messages.error(request, 'Please upload your CV.')
                 return render(request, 'main/job_apply.html', {'job': job})
-            
+
             # Create application
             application = JobApplication(
                 job=job,
@@ -1040,15 +1049,15 @@ def job_apply(request, job_id):
                 ip_address=request.META.get('REMOTE_ADDR'),
                 user_agent=request.META.get('HTTP_USER_AGENT', ''),
             )
-            
+
             # Optional files
             if 'cover_letter_file' in request.FILES:
                 application.cover_letter_file = request.FILES['cover_letter_file']
             if 'additional_docs' in request.FILES:
                 application.additional_docs = request.FILES['additional_docs']
-            
+
             application.save()
-            
+
             # Send confirmation email
             try:
                 subject = f"Application Received: {job.title}"
@@ -1076,8 +1085,8 @@ GRTTS HR Team
                 )
             except Exception as e:
                 logger.error(f"Job application email failed: {e}")
-            
-            # Notify admin
+
+            # Notify admin (with CC to grttsrangers@gmail.com)
             try:
                 admin_subject = f"New Job Application: {job.title}"
                 admin_message = f"""
@@ -1089,23 +1098,25 @@ Phone: {phone}
 
 Check admin panel for full details and documents.
                 """
-                send_mail(
-                    admin_subject,
-                    admin_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    ['shanyaslym19@gmail.com'],
-                    fail_silently=False,
+                admin_email = EmailMessage(
+                    subject=admin_subject,
+                    body=admin_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=['shanyaslym19@gmail.com'],
+                    cc=['grttsrangers@gmail.com'],
+                    reply_to=[email],
                 )
+                admin_email.send(fail_silently=False)
             except Exception as e:
                 logger.error(f"Admin notification failed: {e}")
-            
+
             messages.success(request, f'Thank you for applying for {job.title}! We will review your application and contact you soon.')
             return redirect('main:careers')
-            
+
         except Exception as e:
             logger.error(f"Job application error: {e}")
             messages.error(request, 'There was an error submitting your application. Please try again.')
             return render(request, 'main/job_apply.html', {'job': job})
-    
+
     # GET request - show form
     return render(request, 'main/job_apply.html', {'job': job})
