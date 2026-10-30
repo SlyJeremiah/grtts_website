@@ -1,37 +1,51 @@
 {% extends 'main/base.html' %}
 
-{% block title %}FAQ - GRTTS{% endblock %}
+{% block title %}Frequently Asked Questions — GRTTS{% endblock %}
+{% block meta_description %}Answers to common questions about GRTTS ranger training courses, entry requirements, deployment and certification.{% endblock %}
+{% block og_title %}Frequently Asked Questions — GRTTS{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-5" style="color: #2d5a3b;">Frequently Asked Questions</h1>
-    
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="accordion" id="faqAccordion">
-                {% for faq in faqs %}
-                <div class="accordion-item mb-3 border-0 shadow-sm">
-                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" 
-                                type="button" data-bs-toggle="collapse" 
-                                data-bs-target="#collapse{{ forloop.counter }}" 
-                                style="background-color: #f4f7f2; color: #2d5a3b; font-weight: bold;">
-                            {{ faq.question }}
-                        </button>
-                    </h2>
-                    <div id="collapse{{ forloop.counter }}" 
-                         class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
-                         aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            {{ faq.answer|linebreaks }}
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p class="text-center">No FAQs available yet.</p>
-                {% endfor %}
-            </div>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <header class="grtts-center grtts-measure" style="margin-bottom: var(--grtts-space-7);">
+      <span class="grtts-eyebrow">Help</span>
+      <h1>Frequently asked questions</h1>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        If your question is not answered here, ask us directly &mdash; we
+        normally reply within one working day.
+      </p>
+    </header>
+
+    <div style="max-width: 48rem; margin-inline: auto;">
+      {% for faq in faqs %}
+        <details class="grtts-accordion" {% if forloop.first %}open{% endif %}>
+          <summary>{{ faq.question }}</summary>
+          <div class="grtts-accordion__body grtts-prose">
+            {{ faq.answer|linebreaks }}
+          </div>
+        </details>
+      {% empty %}
+        <div class="grtts-alert grtts-alert--info grtts-center">
+          We are still writing this section.
+          <a href="{% url 'main:contact' %}">Send us your question</a> and we
+          will answer it directly.
         </div>
+      {% endfor %}
     </div>
-</div>
+  </div>
+</section>
+
+<section class="grtts-section grtts-section--sunken">
+  <div class="grtts-container grtts-center">
+    <h2>Still have a question?</h2>
+    <p class="grtts-text-muted grtts-measure" style="margin-inline: auto;">
+      Whether you want to train as a ranger or need rangers deployed on your
+      property, talk to us.
+    </p>
+    <p style="margin-top: var(--grtts-space-5); display: flex; gap: var(--grtts-space-3); justify-content: center; flex-wrap: wrap;">
+      <a href="{% url 'main:contact' %}" class="grtts-btn grtts-btn--primary">Contact us</a>
+      <a href="{% url 'main:courses' %}" class="grtts-btn grtts-btn--outline">Browse courses</a>
+    </p>
+  </div>
+</section>
 {% endblock %}

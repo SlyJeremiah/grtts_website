@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Unsubscribed — GRTTS{% endblock %}
+{% block meta_robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+<section class="grtts-section">
+  <div class="grtts-container">
+    <div style="max-width: 36rem; margin-inline: auto;">
+      <span class="grtts-eyebrow">Newsletter</span>
+      <h1>You have been unsubscribed</h1>
+
+      <div class="grtts-alert grtts-alert--success">
+        <strong>{{ email }}</strong> will no longer receive the GRTTS
+        newsletter. Nothing else to do.
+      </div>
+
+      <p class="grtts-text-muted">
+        If you unsubscribed by mistake, you can sign up again from the footer
+        of any page. We will still reply to you directly if you contact us.
+      </p>
+
+      <p style="margin-top: var(--grtts-space-6); display: flex; gap: var(--grtts-space-3); flex-wrap: wrap;">
+        <a href="{% url 'main:home' %}" class="grtts-btn grtts-btn--primary">Back to the site</a>
+        <a href="{% url 'main:contact' %}" class="grtts-btn grtts-btn--outline">Contact us</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

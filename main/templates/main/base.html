@@ -36,12 +36,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
     <!-- GRTTS design system -->
     <link rel="stylesheet" href="{% static 'css/grtts.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <script type="application/ld+json">
     {
@@ -70,502 +67,259 @@
     }
     </script>
 
-    <style>
-        /* ===== LOGO & BRAND ===== */
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ffd966;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-image:hover {
-            transform: scale(1.1);
-        }
-
-        /* Fallback when image fails to load */
-        .logo-fallback {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffd966;
-        }
-
-        .logo-fallback span {
-            color: #ffd966;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-main {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white;
-            line-height: 1.2;
-        }
-
-        .brand-motto {
-            font-size: 0.8rem;
-            color: #ffd966;
-            font-style: italic;
-        }
-
-        /* ===== FLOATING BUTTONS ===== */
-        .floating-buttons {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .floating-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #2d5a3b;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-            position: relative;
-            animation: pulse 2s infinite;
-        }
-
-        .floating-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            color: white;
-        }
-
-        .floating-btn i {
-            font-size: 24px;
-        }
-
-        .floating-btn .btn-label {
-            position: absolute;
-            right: 70px;
-            background-color: #2d5a3b;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .floating-btn:hover .btn-label {
-            opacity: 1;
-            visibility: visible;
-            right: 80px;
-        }
-
-        .floating-btn.location { background-color: #2196F3; }
-        .floating-btn.whatsapp { background-color: #25D366; }
-        .floating-btn.call     { background-color: #4CAF50; }
-        .floating-btn.email    { background-color: #FF5722; }
-
-        @keyframes pulse {
-            0%   { box-shadow: 0 0 0 0 rgba(45, 90, 59, 0.7); }
-            70%  { box-shadow: 0 0 0 15px rgba(45, 90, 59, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(45, 90, 59, 0); }
-        }
-
-        .floating-buttons.hide {
-            transform: translateX(100px);
-            transition: transform 0.3s ease;
-        }
-
-        body {
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .footer-admin-link, .footer-register-link {
-            transition: color 0.3s ease;
-        }
-        .footer-admin-link:hover, .footer-register-link:hover {
-            color: #ffd966 !important;
-        }
-
-        @media (max-width: 768px) {
-            .logo-image, .logo-fallback {
-                width: 38px;
-                height: 38px;
-            }
-            .brand-main {
-                font-size: 1.1rem;
-            }
-            .brand-motto {
-                font-size: 0.65rem;
-            }
-            .navbar-brand {
-                gap: 8px;
-            }
-            .navbar-nav .nav-link {
-                font-size: 0.9rem;
-                padding: 6px 10px;
-            }
-            .floating-buttons {
-                bottom: 20px;
-                right: 20px;
-                gap: 10px;
-            }
-            .floating-btn {
-                width: 48px;
-                height: 48px;
-            }
-            .floating-btn i {
-                font-size: 18px;
-            }
-            .floating-btn .btn-label {
-                display: none;
-            }
-            footer h5 {
-                font-size: 0.95rem;
-                margin-top: 1rem;
-            }
-            footer p, footer a {
-                font-size: 0.82rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                font-size: 0.9rem;
-            }
-            .brand-main {
-                font-size: 1rem;
-            }
-            .brand-motto {
-                font-size: 0.6rem;
-            }
-            .logo-image, .logo-fallback {
-                width: 34px;
-                height: 34px;
-            }
-            .logo-fallback span {
-                font-size: 16px;
-            }
-            .navbar-brand {
-                gap: 6px;
-            }
-            .navbar-nav .nav-link {
-                font-size: 0.85rem;
-                padding: 5px 8px;
-            }
-            .floating-buttons {
-                bottom: 15px;
-                right: 15px;
-                gap: 8px;
-            }
-            .floating-btn {
-                width: 42px;
-                height: 42px;
-            }
-            .floating-btn i {
-                font-size: 16px;
-            }
-            footer h5 {
-                font-size: 0.9rem;
-            }
-            footer p, footer a {
-                font-size: 0.78rem;
-                line-height: 1.6;
-            }
-        }
-    </style>
-
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2d5a3b;">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'main:home' %}">
-                <div class="logo-container">
-                    <!-- Logo image with fallback -->
-                    <img src="{% static 'images/logo-mark-96.png' %}"
-                         alt="GRTTS" width="50" height="50" fetchpriority="high"
-                         class="logo-image"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="logo-fallback" style="display: none;">
-                        <span>GR</span>
-                    </div>
-                    <div class="brand-text">
-                        <span class="brand-main">GRTTS</span>
-                        <span class="brand-motto">Training That Saves Lives</span>
-                    </div>
-                </div>
-            </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<a class="grtts-skip-link" href="#main-content">Skip to content</a>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'main:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'main:about' %}">About Us</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="coursesDropdown" role="button" data-bs-toggle="dropdown">
-                            Courses
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'main:courses' %}">All Courses</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=basic">Basic Ranger Course</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=specialist">Specialist Courses</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=advanced">Advanced Ranger</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:courses' %}?type=tracking">Tracking Course</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="locationsDropdown" role="button" data-bs-toggle="dropdown">
-                            Locations
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'main:locations' %}">All Locations</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=gweru">Gweru</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=guruve">Guruve</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=elephant-hills">Elephant Hills</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=hwange">Hwange</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:locations' %}?center=victoria-falls">Victoria Falls</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog:post_list' %}">News & Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+<header class="grtts-header" id="site-header" data-nav-open="false">
+  <div class="grtts-container grtts-header__inner">
+
+    <a class="grtts-brand" href="{% url 'main:home' %}">
+      <img src="{% static 'images/logo-mark-96.png' %}" alt="" width="44" height="44" fetchpriority="high">
+      <span>
+        <span class="grtts-brand__name">GRTTS</span>
+        <span class="grtts-brand__tagline">Training That Saves Lives</span>
+      </span>
+    </a>
+
+    <button type="button" class="grtts-nav__toggle" id="nav-toggle"
+            aria-expanded="false" aria-controls="primary-nav">
+      <span aria-hidden="true">&#9776;</span> Menu
+    </button>
+
+    <nav class="grtts-nav" id="primary-nav" aria-label="Primary">
+      <ul class="grtts-nav__list">
+        <li><a class="grtts-nav__link" href="{% url 'main:home' %}">Home</a></li>
+        <li><a class="grtts-nav__link" href="{% url 'main:about' %}">About</a></li>
+
+        <li class="grtts-nav__item">
+          <button type="button" class="grtts-nav__link" aria-expanded="false"
+                  data-menu-trigger>Courses <span aria-hidden="true">&#9662;</span></button>
+          <ul class="grtts-nav__menu">
+            <li><a href="{% url 'main:courses' %}">All courses</a></li>
+            {% if nav_course_types %}<li><hr></li>{% endif %}
+            {% for type in nav_course_types %}
+              <li><a href="{% url 'main:courses' %}?type={{ type.slug }}">{{ type.label }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li class="grtts-nav__item">
+          <button type="button" class="grtts-nav__link" aria-expanded="false"
+                  data-menu-trigger>Locations <span aria-hidden="true">&#9662;</span></button>
+          <ul class="grtts-nav__menu">
+            <li><a href="{% url 'main:locations' %}">All locations</a></li>
+            {% if nav_locations %}<li><hr></li>{% endif %}
+            {% for location in nav_locations %}
+              <li><a href="{% url 'main:location_detail' location.id %}">{{ location.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li><a class="grtts-nav__link" href="{% url 'main:careers' %}">Careers</a></li>
+        <li><a class="grtts-nav__link" href="{% url 'blog:post_list' %}">News</a></li>
+        <li><a class="grtts-nav__link" href="{% url 'main:contact' %}">Contact</a></li>
+      </ul>
     </nav>
 
-    <!-- Floating Action Buttons -->
-    <div class="floating-buttons animate__animated animate__fadeInRight">
-        <a href="{% url 'main:locations' %}" class="floating-btn location" title="Our Locations">
-            <i class="fas fa-map-marker-alt"></i>
-            <span class="btn-label">Locations</span>
+  </div>
+</header>
+
+<div class="grtts-floating-contact" id="floating-contact">
+  <a href="https://wa.me/263788661234?text=Hello%20GRTTS%2C%20I%27m%20interested%20in%20your%20programmes."
+     class="is-whatsapp" target="_blank" rel="noopener" aria-label="Chat with GRTTS on WhatsApp">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  </a>
+  <a href="tel:+263781603802" class="is-call" aria-label="Call GRTTS">
+    <i class="fas fa-phone-alt" aria-hidden="true"></i>
+  </a>
+  <a href="{% url 'main:contact' %}?type=general" class="is-email" aria-label="Email GRTTS">
+    <i class="fas fa-envelope" aria-hidden="true"></i>
+  </a>
+</div>
+
+{% if messages %}
+  <div class="grtts-container grtts-messages" role="status">
+    {% for message in messages %}
+      <div class="grtts-alert grtts-alert--{% if message.tags == 'error' %}danger{% elif message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<main id="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="grtts-footer">
+  <div class="grtts-container">
+    <div class="grtts-footer__grid">
+
+      <div>
+        <a class="grtts-brand" href="{% url 'main:home' %}" style="margin-bottom: var(--grtts-space-4);">
+          <img src="{% static 'images/logo-mark-96.png' %}" alt="" width="44" height="44" loading="lazy">
+          <span class="grtts-brand__name">GRTTS</span>
         </a>
-        <a href="https://wa.me/+263788661234?text=Hello%20GRTTS%2C%20I'm%20interested%20in%20your%20programs."
-           class="floating-btn whatsapp" target="_blank" title="Chat on WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-            <span class="btn-label">WhatsApp</span>
-        </a>
-        <a href="tel:+263781603802" class="floating-btn call" title="Call Us">
-            <i class="fas fa-phone-alt"></i>
-            <span class="btn-label">Call</span>
-        </a>
-        <a href="{% url 'main:contact' %}?type=general" class="floating-btn email" title="Contact Us">
-            <i class="fas fa-envelope"></i>
-            <span class="btn-label">Contact</span>
-        </a>
+        <p>
+          Zimbabwe&rsquo;s specialist in training, deploying and managing
+          anti-poaching rangers for conservancies, NGOs and private landowners.
+        </p>
+      </div>
+
+      <div>
+        <h2>Explore</h2>
+        <ul class="grtts-footer__list">
+          <li><a href="{% url 'main:courses' %}">Training programmes</a></li>
+          <li><a href="{% url 'main:locations' %}">Deployment locations</a></li>
+          <li><a href="{% url 'main:gis_applications' %}">GIS applications</a></li>
+          <li><a href="{% url 'main:apply_now' %}">Apply now</a></li>
+          <li><a href="{% url 'main:careers' %}">Careers</a></li>
+          <li><a href="{% url 'main:faq' %}">FAQ</a></li>
+          <li><a href="{% url 'main:verify_certificate' %}">Verify a certificate</a></li>
+          <li><a href="{% url 'blog:post_list' %}">News &amp; updates</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Contact</h2>
+        <ul class="grtts-footer__list">
+          <li><a href="tel:+263781603802">+263 781 603 802</a></li>
+          <li><a href="tel:+263788661234">+263 788 661 234</a></li>
+          <li><a href="mailto:info@grtts.co.zw">info@grtts.co.zw</a></li>
+          <li>Plot 72, Mityana Farm, Makonde</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Newsletter</h2>
+        <p style="font-size: var(--grtts-text-sm);">
+          Updates on courses and conservation work.
+        </p>
+        <div id="newsletter-status" role="status"></div>
+        <form id="newsletter-form" method="post" action="{% url 'main:newsletter_signup' %}">
+          {% csrf_token %}
+          <label for="newsletter-email" class="grtts-visually-hidden">Email address</label>
+          <div style="display: flex; gap: var(--grtts-space-2);">
+            <input type="email" id="newsletter-email" name="email" class="grtts-input"
+                   placeholder="Your email address" required autocomplete="email">
+            <button type="submit" class="grtts-btn grtts-btn--accent">Join</button>
+          </div>
+          <label style="display: flex; gap: var(--grtts-space-2); align-items: flex-start; margin-top: var(--grtts-space-3); font-size: var(--grtts-text-sm);">
+            <input type="checkbox" name="consent" required style="margin-top: 0.25em;">
+            <span>I agree to receive newsletters from GRTTS.</span>
+          </label>
+        </form>
+      </div>
+
     </div>
 
-    <!-- Messages/Alerts -->
-    {% if messages %}
-    <div class="container mt-3">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
+    <div class="grtts-footer__bottom">
+      &copy; {% now "Y" %} GRTTS. All rights reserved. &middot;
+      <a href="https://www.grtts.co.zw">www.grtts.co.zw</a> &middot;
+      <a href="{% url 'admin:index' %}">Staff login</a>
     </div>
-    {% endif %}
+  </div>
+</footer>
 
-    <!-- Main Content -->
-    <div class="content">
-        {% block content %}{% endblock %}
-    </div>
+<script>
+(function () {
+  'use strict';
 
-    <!-- Footer -->
-    <footer class="text-white pt-5 pb-4 mt-5" style="background-color: #1e3c2c;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="{% static 'images/logo-mark-96.png' %}" 
-                             alt="" width="50" height="50" loading="lazy"
-                             style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #ffd966; margin-right: 12px;">
-                        <h5 class="mb-0">GRTTS</h5>
-                    </div>
-                    <p class="text-white-50">Leading Zimbabwean company dedicated to training, deploying and managing anti-poaching rangers across the country.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'main:courses' %}" class="text-white-50 text-decoration-none">Training Programs</a></li>
-                        <li><a href="{% url 'main:locations' %}" class="text-white-50 text-decoration-none">Deployment Locations</a></li>
-                        <li><a href="{% url 'main:gis_applications' %}" class="text-white-50 text-decoration-none">GIS Applications</a></li>
-                        <li><a href="{% url 'main:apply_now' %}" class="text-white-50 text-decoration-none">Apply Now</a></li>
-                        <li><a href="{% url 'main:careers' %}" class="text-white-50 text-decoration-none">Careers</a></li>
-                        <li><a href="{% url 'main:faq' %}" class="text-white-50 text-decoration-none">FAQ</a></li>
-                        <li><a href="{% url 'blog:post_list' %}" class="text-white-50 text-decoration-none">News & Updates</a></li>
-                        <!-- Register link – no icon -->
-                        <li><a href="{% url 'main:register' %}" class="text-white-50 text-decoration-none footer-register-link">Register</a></li>
-                        <!-- Admin Login – no icon -->
-                        <li><a href="{% url 'admin:index' %}" class="text-white-50 text-decoration-none footer-admin-link">Admin Login</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact Info</h5>
-                    <p class="text-white-50">
-                        <i class="fas fa-phone-alt"></i> +263 781 603 802<br>
-                        <i class="fas fa-phone-alt"></i> +263 788 661 234<br>
-                        <i class="fas fa-envelope"></i> info@grtts.co.zw<br>
-                        <i class="fas fa-envelope"></i> grttsrangers@gmail.com<br>
-                        <i class="fas fa-map-marker-alt"></i> Plot 72, Mityana Farm, Makonde
-                    </p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Subscribe to Newsletter</h5>
-                    <p class="text-white-50 small">Get updates on courses and conservation news</p>
-                    <div id="newsletter-status"></div>
-                    <form id="newsletter-form" method="post" action="{% url 'main:newsletter_signup' %}">
-                        {% csrf_token %}
-                        <div class="input-group mb-2">
-                            <input type="email" name="email" class="form-control form-control-sm"
-                                   placeholder="Your email address" required>
-                            <button class="btn btn-sm" type="submit" style="background-color: #ffd966; color: #2d5a3b;">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="consent"
-                                   id="newsletter_consent" required>
-                            <label class="form-check-label text-white-50 small" for="newsletter_consent">
-                                I agree to receive newsletters from GRTTS
-                            </label>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <hr class="bg-light">
-            <div class="text-center">
-                <p class="text-white-50">&copy; 2026 GRTTS. All rights reserved. |
-                    <a href="https://www.grtts.co.zw" class="text-white-50">www.grtts.co.zw</a>
-                </p>
-            </div>
-        </div>
-    </footer>
+  // Mobile navigation disclosure.
+  var header = document.getElementById('site-header');
+  var toggle = document.getElementById('nav-toggle');
+  if (header && toggle) {
+    toggle.addEventListener('click', function () {
+      var open = header.getAttribute('data-nav-open') === 'true';
+      header.setAttribute('data-nav-open', String(!open));
+      toggle.setAttribute('aria-expanded', String(!open));
+    });
+  }
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.floating-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.style.transform = 'scale(0.9)';
-                setTimeout(() => { this.style.transform = ''; }, 200);
-            });
+  // Dropdown menus: one open at a time, Escape closes.
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-menu-trigger]'));
+  function closeAll(except) {
+    triggers.forEach(function (t) {
+      if (t !== except) { t.setAttribute('aria-expanded', 'false'); }
+    });
+  }
+  triggers.forEach(function (trigger) {
+    trigger.addEventListener('click', function (event) {
+      event.stopPropagation();
+      var open = trigger.getAttribute('aria-expanded') === 'true';
+      closeAll(trigger);
+      trigger.setAttribute('aria-expanded', String(!open));
+    });
+  });
+  document.addEventListener('click', function () { closeAll(null); });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') { closeAll(null); }
+  });
+
+  // Hide the floating contact buttons while scrolling down.
+  var floating = document.getElementById('floating-contact');
+  if (floating) {
+    var lastY = window.pageYOffset;
+    window.addEventListener('scroll', function () {
+      var y = window.pageYOffset;
+      floating.setAttribute('data-hidden', String(y > lastY && y > 200));
+      lastY = y;
+    }, { passive: true });
+  }
+
+  // Newsletter signup, submitted without leaving the page.
+  var form = document.getElementById('newsletter-form');
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var status = document.getElementById('newsletter-status');
+      var button = form.querySelector('button[type="submit"]');
+      var label = button.innerHTML;
+      button.disabled = true;
+      button.innerHTML = 'Sending…';
+
+      function report(kind, text) {
+        status.innerHTML = '';
+        var box = document.createElement('div');
+        box.className = 'grtts-alert grtts-alert--' + kind;
+        box.style.marginTop = 'var(--grtts-space-3)';
+        box.style.fontSize = 'var(--grtts-text-sm)';
+        box.textContent = text;
+        status.appendChild(box);
+      }
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+          if (data.success) {
+            report('success', data.message || 'Thank you for subscribing.');
+            form.reset();
+          } else {
+            var detail = data.errors
+              ? Object.keys(data.errors).map(function (k) { return data.errors[k]; }).join(', ')
+              : (data.message || 'Please check your email address and try again.');
+            report('danger', detail);
+          }
+        })
+        .catch(function () {
+          report('danger', 'Network error. Please try again.');
+        })
+        .finally(function () {
+          button.disabled = false;
+          button.innerHTML = label;
         });
+    });
+  }
+}());
+</script>
 
-        let lastScroll = 0;
-        const floatingButtons = document.querySelector('.floating-buttons');
-        if (floatingButtons) {
-            window.addEventListener('scroll', () => {
-                const currentScroll = window.pageYOffset;
-                if (currentScroll <= 0) {
-                    floatingButtons.classList.remove('hide');
-                    return;
-                }
-                if (currentScroll > lastScroll && !floatingButtons.classList.contains('hide')) {
-                    floatingButtons.classList.add('hide');
-                } else if (currentScroll < lastScroll && floatingButtons.classList.contains('hide')) {
-                    floatingButtons.classList.remove('hide');
-                }
-                lastScroll = currentScroll;
-            });
-        }
-
-        const newsletterForm = document.getElementById('newsletter-form');
-        if (newsletterForm) {
-            newsletterForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const form = this;
-                const formData = new FormData(form);
-                const statusDiv = document.getElementById('newsletter-status');
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                submitBtn.disabled = true;
-
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        statusDiv.innerHTML = '<div class="alert alert-success alert-dismissible fade show py-2 small" role="alert">' +
-                            data.message +
-                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                        form.reset();
-                    } else {
-                        let errorMessage = 'Error: ';
-                        if (data.errors) {
-                            errorMessage += Object.values(data.errors).flat().join(', ');
-                        } else {
-                            errorMessage += data.message || 'Please check your email and try again.';
-                        }
-                        statusDiv.innerHTML = '<div class="alert alert-danger alert-dismissible fade show py-2 small" role="alert">' +
-                            errorMessage +
-                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                    }
-                })
-                .catch(() => {
-                    statusDiv.innerHTML = '<div class="alert alert-danger alert-dismissible fade show py-2 small" role="alert">' +
-                        'Network error. Please try again.' +
-                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                })
-                .finally(() => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                });
-            });
-        }
-    </script>
-
-    {% block extra_js %}{% endblock %}
+{% block extra_js %}{% endblock %}
 </body>
 </html>

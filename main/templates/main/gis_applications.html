@@ -1,104 +1,100 @@
 {% extends 'main/base.html' %}
-{% load static %}
 
-{% block title %}GIS Applications - GRTTS{% endblock %}
+{% block title %}GIS in Conservation — GRTTS{% endblock %}
+{% block meta_description %}{{ description }}{% endblock %}
+{% block og_title %}GIS Applications in Conservation — GRTTS{% endblock %}
+{% block og_description %}How mapping and spatial analysis sharpen anti-poaching patrols and protected-area management.{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section" style="background: linear-gradient(rgba(0, 40, 0, 0.8), rgba(0, 20, 0, 0.9)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; padding: 100px 0;">
-    <div class="container text-center text-white">
-        <h1 class="display-3 mb-4 animate__animated animate__fadeInDown">GIS Applications in Conservation</h1>
-        <p class="lead mb-4 animate__animated animate__fadeInUp">Leveraging technology to protect wildlife and wildlands</p>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <header class="grtts-measure" style="margin-bottom: var(--grtts-space-7);">
+      <span class="grtts-eyebrow">Capability</span>
+      <h1>{{ title }}</h1>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        {{ description }}
+      </p>
+    </header>
+
+    <div class="grtts-grid">
+      {% for application in applications %}
+        <article class="grtts-card">
+          <div class="grtts-card__body">
+            <p style="color: var(--grtts-gold-800); font-size: var(--grtts-text-2xl); margin: 0 0 var(--grtts-space-3);">
+              <i class="fas {{ application.icon }}" aria-hidden="true"></i>
+            </p>
+            <h2 class="grtts-card__title">{{ application.title }}</h2>
+            <p class="grtts-text-muted">{{ application.description }}</p>
+          </div>
+        </article>
+      {% endfor %}
     </div>
+  </div>
 </section>
 
-<!-- Introduction -->
-<section class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h2 class="text-success mb-4">What is GIS?</h2>
-                <p class="lead">Geographic Information Systems (GIS) are powerful tools that allow us to visualize, analyze, and interpret data to understand spatial relationships and patterns in conservation.</p>
-                <p>At GRTTS, we integrate GIS technology across all our operations - from tracking wildlife movements to optimizing ranger patrols and identifying poaching hotspots.</p>
-            </div>
-        </div>
-    </div>
-</section>
+<section class="grtts-section grtts-section--sunken">
+  <div class="grtts-container">
+    <div class="grtts-with-aside">
+      <div class="grtts-prose">
+        <h2>Why it matters for your property</h2>
+        <p>
+          A patrol plan drawn on a map covers ground; a patrol plan drawn from
+          data covers the ground that matters. Where incursions happen, which
+          fence lines are tested, which waterholes draw both animals and
+          poachers &mdash; all of it is spatial. Recording patrols and
+          incidents turns a ranger team from a presence into an
+          evidence-gathering operation you can plan around.
+        </p>
+        <p>
+          Rangers we deploy log their patrols, and we feed that back to the
+          landowner or NGO as coverage maps and incident reports rather than a
+          verbal account at month end.
+        </p>
 
-<!-- Applications Grid -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center text-success mb-5">Key Applications</h2>
-        <div class="row">
-            {% for app in applications %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body text-center p-4">
-                        <div class="mb-3">
-                            <i class="fas {{ app.icon }} fa-3x text-success"></i>
-                        </div>
-                        <h4 class="card-title">{{ app.title }}</h4>
-                        <p class="card-text">{{ app.description }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+        <h2>Training</h2>
+        <p>
+          {% if training_available %}
+            We train rangers and field staff in practical GIS &mdash; recording
+            patrol tracks, logging incidents and reading the maps that come
+            back out. Ask us about it for your team.
+          {% else %}
+            GIS training is not currently scheduled. Contact us about dates.
+          {% endif %}
+        </p>
+      </div>
 
-<!-- Software & Tools -->
-<section class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h3 class="text-success mb-4">GIS Software We Use</h3>
-                <ul class="list-group list-group-flush">
-                    {% for item in software %}
-                    <li class="list-group-item bg-transparent">
-                        <i class="fas fa-check-circle text-success me-3"></i>{{ item }}
-                    </li>
-                    {% endfor %}
-                </ul>
+      <aside class="grtts-stack">
+        {% if software %}
+          <div class="grtts-card">
+            <div class="grtts-card__body">
+              <h2 class="grtts-card__title">Tools we work with</h2>
+              <ul class="grtts-chips">
+                {% for item in software %}
+                  <li><span class="grtts-badge grtts-badge--neutral">{{ item }}</span></li>
+                {% endfor %}
+              </ul>
             </div>
-            <div class="col-md-6">
-                <div class="card bg-success text-white">
-                    <div class="card-body p-5">
-                        <h4 class="mb-4">Training Available</h4>
-                        <p class="lead mb-4">We offer specialized GIS training for conservation professionals.</p>
-                        <!-- UPDATED: Added type=gis parameter -->
-                        <a href="{% url 'main:contact' %}?type=gis" class="btn btn-light btn-lg">
-                            <i class="fas fa-graduation-cap"></i> Inquire About GIS Training
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+          </div>
+        {% endif %}
 
-<!-- Call to Action -->
-<section class="py-5" style="background-color: #f8f9fa;">
-    <div class="container text-center">
-        <h3 class="mb-4">Ready to Apply GIS in Conservation?</h3>
-        <p class="lead mb-4">Join our team, view my portfolio, or collaborate with us on GIS projects.</p>
-        
-        <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <!-- Careers Button -->
-            <a href="{% url 'main:careers' %}" class="btn btn-success btn-lg px-4">
-                <i class="fas fa-briefcase me-2"></i>View Careers
+        <div class="grtts-card">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">Want this for your area?</h2>
+            <p class="grtts-text-muted">
+              Mapped patrol coverage and incident reporting can be part of a
+              ranger deployment, or training for your existing team.
+            </p>
+            <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--accent" style="width: 100%;">
+              Request a proposal
             </a>
-            
-            <!-- Portfolio Button (NEW) -->
-            <a href="{% url 'blog:post_detail' 'my-portfolio' %}" class="btn btn-warning btn-lg px-4" style="background-color: #ffd966; color: #2d5a3b;">
-                <i class="fas fa-user me-2"></i>View My Portfolio
+            <a href="{% url 'main:courses' %}" class="grtts-btn grtts-btn--outline"
+               style="width: 100%; margin-top: var(--grtts-space-3);">
+              All courses
             </a>
-            
-            <!-- Contact Button -->
-            <a href="{% url 'main:contact' %}?type=gis" class="btn btn-outline-success btn-lg px-4">
-                <i class="fas fa-envelope me-2"></i>Contact GIS Team
-            </a>
+          </div>
         </div>
+      </aside>
     </div>
+  </div>
 </section>
 {% endblock %}

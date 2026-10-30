@@ -1,0 +1,16 @@
+{% comment %}
+  Renders one Django form field on the design system. Include it with
+  `{% include 'main/_field.html' with field=form.some_field %}`.
+{% endcomment %}
+<div class="grtts-field">
+  <label class="grtts-label" for="{{ field.id_for_label }}">
+    {{ field.label }}{% if field.field.required %} <abbr title="required">*</abbr>{% endif %}
+  </label>
+  {{ field }}
+  {% if field.help_text %}
+    <span class="grtts-help">{{ field.help_text }}</span>
+  {% endif %}
+  {% for error in field.errors %}
+    <span class="grtts-error">{{ error }}</span>
+  {% endfor %}
+</div>

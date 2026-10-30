@@ -1,138 +1,118 @@
 {% extends 'main/base.html' %}
-{% load static %}
 
-{% block title %}Careers - GRTTS{% endblock %}
+{% block title %}Careers at GRTTS — Conservation & Ranger Jobs{% endblock %}
+{% block meta_description %}Current vacancies at GRTTS: field ranger, GIS specialist, training instructor and support roles across our Zimbabwe operations.{% endblock %}
+{% block og_title %}Careers at GRTTS{% endblock %}
+{% block og_description %}Join a team protecting {{ site_facts.hectares_protected }} hectares of Zimbabwean wildlife area.{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section" style="background: linear-gradient(rgba(0, 40, 0, 0.8), rgba(0, 20, 0, 0.9)), url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; padding: 100px 0;">
-    <div class="container text-center text-white">
-        <h1 class="display-3 mb-4 animate__animated animate__fadeInDown">Careers at GRTTS</h1>
-        <p class="lead mb-4 animate__animated animate__fadeInUp">Make a difference in conservation</p>
-    </div>
-</section>
-
-<!-- Why Join Us -->
-<section class="py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <h2 class="text-success mb-4">Why Work With Us?</h2>
-                <p class="lead">At GRTTS, you're not just taking a job - you're joining a mission to protect Zimbabwe's natural heritage for future generations.</p>
-            </div>
-        </div>
-        
-        <div class="row mt-5">
-            {% for benefit in benefits %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 bg-light">
-                    <div class="card-body text-center p-4">
-                        <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
-                        <p class="mb-0">{{ benefit }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Open Positions -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center text-success mb-5">
-            {% if total_jobs > 0 %}
-                Open Positions ({{ total_jobs }})
-            {% else %}
-                Open Positions
-            {% endif %}
-        </h2>
-        
-        {% if jobs %}
-            {% if jobs_by_category %}
-                {% for category, category_jobs in jobs_by_category.items %}
-                    {% if category_jobs %}
-                        <h3 class="text-success mt-4 mb-3">{{ category }}</h3>
-                        <div class="row">
-                            {% for job in category_jobs %}
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100 shadow-sm">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <i class="fas {{ job.icon|default:'fa-briefcase' }} fa-2x text-success me-3"></i>
-                                            <h4 class="card-title mb-0">{{ job.title }}</h4>
-                                        </div>
-                                        <div class="mb-3">
-                                            <span class="badge bg-secondary me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
-                                            <span class="badge bg-info me-2"><i class="fas fa-clock me-1"></i>{{ job.get_job_type_display }}</span>
-                                            {% if job.deadline %}
-                                            <span class="badge bg-warning"><i class="fas fa-calendar me-1"></i>Deadline: {{ job.deadline|date:"M d, Y" }}</span>
-                                            {% endif %}
-                                        </div>
-                                        <p class="card-text">{{ job.description|truncatewords:30 }}</p>
-                                        
-                                        {% if job.salary_range %}
-                                        <p class="text-success"><i class="fas fa-money-bill-wave me-1"></i> {{ job.salary_range }}</p>
-                                        {% endif %}
-                                        
-                                        <a href="{% url 'main:job_apply' job.id %}" class="btn btn-success mt-2">Apply Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <div class="row">
-                    {% for job in jobs %}
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <i class="fas {{ job.icon|default:'fa-briefcase' }} fa-2x text-success me-3"></i>
-                                    <h4 class="card-title mb-0">{{ job.title }}</h4>
-                                </div>
-                                <div class="mb-3">
-                                    <span class="badge bg-secondary me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
-                                    <span class="badge bg-info me-2"><i class="fas fa-clock me-1"></i>{{ job.get_job_type_display }}</span>
-                                    {% if job.deadline %}
-                                    <span class="badge bg-warning"><i class="fas fa-calendar me-1"></i>Deadline: {{ job.deadline|date:"M d, Y" }}</span>
-                                    {% endif %}
-                                </div>
-                                <p class="card-text">{{ job.description|truncatewords:30 }}</p>
-                                
-                                {% if job.salary_range %}
-                                <p class="text-success"><i class="fas fa-money-bill-wave me-1"></i> {{ job.salary_range }}</p>
-                                {% endif %}
-                                
-                                <a href="{% url 'main:job_apply' job.id %}" class="btn btn-success mt-2">Apply Now</a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <header class="grtts-measure" style="margin-bottom: var(--grtts-space-7);">
+      <span class="grtts-eyebrow">Careers</span>
+      <h1>Work with us</h1>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        {% if total_jobs %}
+          {{ total_jobs }} open position{{ total_jobs|pluralize }} across our
+          training centres and deployment sites.
         {% else %}
-            <div class="alert alert-info text-center py-5">
-                <i class="fas fa-info-circle fa-3x mb-3"></i>
-                <h4>No open positions at the moment</h4>
-                <p>Please check back later or register to receive notifications when new positions are posted.</p>
-                <a href="{% url 'main:register' %}" class="btn btn-success mt-3">Register for Updates</a>
-            </div>
+          We are not advertising vacancies at the moment, but we are always
+          glad to hear from good people.
         {% endif %}
-    </div>
+      </p>
+    </header>
+
+    {% if jobs_by_category %}
+      {% for category, category_jobs in jobs_by_category.items %}
+        <h2 style="margin-bottom: var(--grtts-space-5);">{{ category }}</h2>
+        <div class="grtts-grid" style="margin-bottom: var(--grtts-space-8);">
+          {% for job in category_jobs %}
+            <article class="grtts-card grtts-card--interactive">
+              <div class="grtts-card__body">
+                <span class="grtts-badge">{{ job.get_job_type_display }}</span>
+                {% if job.deadline %}
+                  <span class="grtts-badge grtts-badge--accent">Closes {{ job.deadline|date:"j M Y" }}</span>
+                {% endif %}
+                <h3 class="grtts-card__title" style="margin-top: var(--grtts-space-3);">
+                  {{ job.title }}
+                </h3>
+                <p class="grtts-card__meta">
+                  {{ job.location }}{% if job.salary_range %} &middot; {{ job.salary_range }}{% endif %}
+                </p>
+                <p class="grtts-text-muted">{{ job.description|striptags|truncatewords:32 }}</p>
+
+                {% with requirements=job.get_requirements_list %}
+                  {% if requirements %}
+                    <details class="grtts-accordion" style="margin-top: var(--grtts-space-4);">
+                      <summary>Requirements</summary>
+                      <div class="grtts-accordion__body">
+                        <ul style="margin: 0;">
+                          {% for item in requirements %}<li>{{ item }}</li>{% endfor %}
+                        </ul>
+                      </div>
+                    </details>
+                  {% endif %}
+                {% endwith %}
+
+                {% with responsibilities=job.get_responsibilities_list %}
+                  {% if responsibilities %}
+                    <details class="grtts-accordion" style="margin-top: var(--grtts-space-3);">
+                      <summary>Responsibilities</summary>
+                      <div class="grtts-accordion__body">
+                        <ul style="margin: 0;">
+                          {% for item in responsibilities %}<li>{{ item }}</li>{% endfor %}
+                        </ul>
+                      </div>
+                    </details>
+                  {% endif %}
+                {% endwith %}
+              </div>
+              <div class="grtts-card__footer">
+                <a href="{% url 'main:job_apply' job.id %}"
+                   class="grtts-btn grtts-btn--accent grtts-btn--sm">Apply for this role</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="grtts-alert grtts-alert--info grtts-measure" style="margin-inline: auto;">
+        There are no vacancies advertised right now. Send us your CV through
+        the <a href="{% url 'main:contact' %}?type=other">contact form</a> and
+        we will keep it on file, or
+        <a href="{% url 'main:courses' %}">train with us</a> first.
+      </div>
+    {% endif %}
+  </div>
 </section>
 
-<!-- Not Finding What You're Looking For? -->
-<section class="py-5">
-    <div class="container text-center">
-        <h3 class="mb-4">Don't see the right fit?</h3>
-        <p class="lead mb-4">We're always looking for passionate individuals. Send us your CV for future opportunities.</p>
-        <!-- UPDATED: Added type=careers parameter -->
-        <a href="{% url 'main:contact' %}?type=careers" class="btn btn-success btn-lg">
-            <i class="fas fa-paper-plane"></i> Contact Our HR Team
-        </a>
-    </div>
+{% if benefits %}
+<section class="grtts-section grtts-section--sunken">
+  <div class="grtts-container">
+    <h2 class="grtts-center" style="margin-bottom: var(--grtts-space-6);">What we offer our staff</h2>
+    <ul class="grtts-grid" style="--grtts-grid-min: 16rem; list-style: none; padding: 0;">
+      {% for benefit in benefits %}
+        <li class="grtts-card">
+          <div class="grtts-card__body">{{ benefit }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<section class="grtts-section grtts-section--inverse">
+  <div class="grtts-container grtts-center">
+    <h2>Not qualified yet?</h2>
+    <p class="grtts-measure" style="margin-inline: auto; color: var(--grtts-green-200);">
+      Most of our rangers started on a GRTTS course. Train with us and you
+      enter the field with a qualification employers recognise.
+    </p>
+    <p style="margin-top: var(--grtts-space-5);">
+      <a href="{% url 'main:courses' %}" class="grtts-btn grtts-btn--accent grtts-btn--lg">
+        See our courses
+      </a>
+    </p>
+  </div>
 </section>
 {% endblock %}

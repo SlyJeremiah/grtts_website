@@ -23,6 +23,33 @@ HECTARES_PROTECTED = 50000
 DEPLOYMENT_LOCATIONS = 8
 
 
+def navigation(request):
+    """Menu data for the header.
+
+    The course and location menus were hardcoded lists in base.html that had
+    drifted from the database — the locations menu named five towns while nine
+    sites existed. Building them from the data keeps the menu honest.
+    """
+    from .models import Course, DeploymentLocation
+
+    # One query for the types that actually have active courses, rather than
+    # an exists() check per type.
+    populated = set(
+        Course.objects.filter(is_active=True)
+        .values_list('course_type', flat=True)
+        .distinct()
+    )
+
+    return {
+        'nav_course_types': [
+            {'slug': value.lower(), 'label': label}
+            for value, label in Course.COURSE_TYPES
+            if value in populated
+        ],
+        'nav_locations': DeploymentLocation.objects.order_by('name')[:8],
+    }
+
+
 def site_facts(request):
     years_operating = date.today().year - FOUNDED_YEAR
     return {

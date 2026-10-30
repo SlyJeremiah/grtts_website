@@ -6,6 +6,7 @@ from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -108,9 +109,7 @@ def register(request):
             )
             return redirect('main:home')
         else:
-            print("FORM ERRORS:")
-            print(form.errors)
-            logger.error(f"Registration form errors: {form.errors}")
+            logger.warning('Registration form errors: %s', form.errors)
     else:
         form = ApplicantRegistrationForm()
 
@@ -128,6 +127,25 @@ def inquiry_page(request):
     by the contact page, which posts to the inquiry_* endpoints below, so this
     now redirects there instead of erroring.
     """
+    return redirect('main:contact')
+
+
+def _inquiry_response(request, success, message, status=200):
+    """Reply to an enquiry POST.
+
+    The contact page submits these with fetch() and expects JSON. Without
+    JavaScript the browser posts the form normally, and returning JSON would
+    show the visitor a wall of braces, so fall back to a message and a
+    redirect.
+    """
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': success, 'message': message},
+                            status=status)
+
+    if success:
+        messages.success(request, message)
+    else:
+        messages.error(request, message)
     return redirect('main:contact')
 
 
@@ -150,16 +168,10 @@ def inquiry_student(request):
         # Send email notification
         send_inquiry_notification(inquiry, 'student')
 
-        return JsonResponse({
-            'success': True,
-            'message': 'Your student inquiry has been submitted successfully. We will contact you within 48 hours.'
-        })
+        return _inquiry_response(request, True, 'Your student inquiry has been submitted successfully. We will contact you within 48 hours.')
     except Exception as e:
         logger.error(f"Student inquiry error: {e}")
-        return JsonResponse({
-            'success': False,
-            'message': 'Error submitting form. Please try again.'
-        }, status=400)
+        return _inquiry_response(request, False, 'Error submitting form. Please try again.', status=400)
 
 
 @require_POST
@@ -184,16 +196,10 @@ def inquiry_landowner(request):
         # Send email notification
         send_inquiry_notification(inquiry, 'landowner')
 
-        return JsonResponse({
-            'success': True,
-            'message': 'Your landowner inquiry has been submitted successfully. We will contact you within 48 hours.'
-        })
+        return _inquiry_response(request, True, 'Your landowner inquiry has been submitted successfully. We will contact you within 48 hours.')
     except Exception as e:
         logger.error(f"Landowner inquiry error: {e}")
-        return JsonResponse({
-            'success': False,
-            'message': 'Error submitting form. Please try again.'
-        }, status=400)
+        return _inquiry_response(request, False, 'Error submitting form. Please try again.', status=400)
 
 
 @require_POST
@@ -212,16 +218,10 @@ def inquiry_enthusiast(request):
         # Send email notification
         send_inquiry_notification(inquiry, 'enthusiast')
 
-        return JsonResponse({
-            'success': True,
-            'message': 'Your enthusiast inquiry has been submitted successfully. We will contact you within 48 hours.'
-        })
+        return _inquiry_response(request, True, 'Your enthusiast inquiry has been submitted successfully. We will contact you within 48 hours.')
     except Exception as e:
         logger.error(f"Enthusiast inquiry error: {e}")
-        return JsonResponse({
-            'success': False,
-            'message': 'Error submitting form. Please try again.'
-        }, status=400)
+        return _inquiry_response(request, False, 'Error submitting form. Please try again.', status=400)
 
 
 @require_POST
@@ -242,16 +242,10 @@ def inquiry_other(request):
         # Send email notification
         send_inquiry_notification(inquiry, 'other')
 
-        return JsonResponse({
-            'success': True,
-            'message': 'Your inquiry has been submitted successfully. We will respond within 48 hours.'
-        })
+        return _inquiry_response(request, True, 'Your inquiry has been submitted successfully. We will respond within 48 hours.')
     except Exception as e:
         logger.error(f"Other inquiry error: {e}")
-        return JsonResponse({
-            'success': False,
-            'message': 'Error submitting form. Please try again.'
-        }, status=400)
+        return _inquiry_response(request, False, 'Error submitting form. Please try again.', status=400)
 
 # =============================================================================
 # EMAIL NOTIFICATION HELPER FUNCTIONS
@@ -595,12 +589,16 @@ def course_detail(request, course_id):
     return render(request, 'main/course_detail.html', context)
 
 
+@staff_member_required
 def debug_media(request):
-    from main.models import Course
-    course = Course.objects.first()
+    """Check that media files resolve to a working storage URL.
+
+    Staff-only: the URL it prints is a signed Backblaze link.
+    """
+    course = Course.objects.exclude(image='').first()
     if course and course.image:
         return HttpResponse(f"Image URL: {course.image.url}")
-    return HttpResponse("No image found")
+    return HttpResponse("No course image found")
 
 # =============================================================================
 # LOCATION VIEWS
@@ -643,30 +641,54 @@ def location_detail(request, location_id):
 # ENHANCED CONTACT VIEW
 # =============================================================================
 
+# The contact page offers one form per audience, each posting to its own
+# inquiry_* endpoint. Anything else (including the old 'general' and 'course'
+# values still sitting in old links and bookmarks) maps onto one of these.
+INQUIRY_FORMS = ('landowner', 'student', 'enthusiast', 'other')
+INQUIRY_ALIASES = {
+    'general': 'other',
+    'course': 'student',
+    'training': 'student',
+    'ranger': 'student',
+    'ngo': 'landowner',
+    'conservancy': 'landowner',
+    'volunteer': 'enthusiast',
+    'supporter': 'enthusiast',
+}
+
+
 @ensure_csrf_cookie
 def contact(request):
-    """Enhanced contact page that handles different inquiry types"""
+    """Contact page. Shows one enquiry form per audience."""
 
     # Get parameters from URL
-    inquiry_type = request.GET.get('type', 'general')
+    requested_type = request.GET.get('type', 'landowner')
+    if requested_type in INQUIRY_FORMS:
+        inquiry_type = requested_type
+    else:
+        inquiry_type = INQUIRY_ALIASES.get(requested_type, 'landowner')
     course_param = request.GET.get('course')
     job_param = request.GET.get('job')
     location_param = request.GET.get('location')
 
     # Set initial subject based on parameters
     initial_subject = ''
+    selected_course = None
 
     if course_param:
-        if course_param == 'basic':
-            initial_subject = 'Inquiry about Basic Ranger Course'
-        elif course_param == 'specialist':
-            initial_subject = 'Inquiry about Specialist Courses'
-        elif course_param == 'advanced':
-            initial_subject = 'Inquiry about Advanced Ranger Course'
-        elif course_param == 'tracking':
-            initial_subject = 'Inquiry about Tracking Course'
-        elif course_param == 'gis':
-            initial_subject = 'Inquiry about GIS Applications Training'
+        # Links from the course pages pass the row's primary key; older links
+        # pass a course-type slug. Accept both.
+        if course_param.isdigit():
+            selected_course = Course.objects.filter(id=course_param).first()
+            if selected_course:
+                initial_subject = f'Inquiry about {selected_course.title}'
+        else:
+            slugs = {value.lower(): label for value, label in Course.COURSE_TYPES}
+            label = slugs.get(course_param.lower())
+            if label:
+                initial_subject = f'Inquiry about {label}'
+            elif course_param.lower() == 'gis':
+                initial_subject = 'Inquiry about GIS Applications Training'
 
     if job_param:
         try:
@@ -712,8 +734,14 @@ def contact(request):
         'faqs': faqs,
         'active_jobs': active_jobs,
         'course_param': course_param,
+        'selected_course': selected_course,
         'job_param': job_param,
         'location_param': location_param,
+        'student_course_choices': StudentInquiry.COURSE_CHOICES,
+        'landowner_service_choices': LandownerInquiry.SERVICE_CHOICES,
+        'enthusiast_interest_choices': EnthusiastInquiry.INTEREST_CHOICES,
+        'other_category_choices': OtherInquiry.CATEGORY_CHOICES,
+        'other_urgency_choices': OtherInquiry.URGENCY_CHOICES,
     }
     return render(request, 'main/contact.html', context)
 
@@ -790,11 +818,14 @@ def unsubscribe_newsletter(request, email):
         return render(request, 'main/unsubscribe_not_found.html')
 
 
+@staff_member_required
 def newsletter_test(request):
     return JsonResponse({'success': True, 'message': 'Newsletter test endpoint'})
 
 
+@staff_member_required
 def newsletter_test_page(request):
+    """Developer harness for the newsletter endpoint. Staff-only."""
     return render(request, 'main/newsletter_test.html')
 
 
@@ -807,10 +838,12 @@ def verify_certificate(request):
     verified = False
 
     if request.method == 'POST':
-        cert_number = request.POST.get('certificate_number')
+        # People retype these off a printed certificate, so be forgiving about
+        # case and stray whitespace.
+        cert_number = (request.POST.get('certificate_number') or '').strip()
         try:
             certificate = Certificate.objects.get(
-                certificate_number=cert_number,
+                certificate_number__iexact=cert_number,
                 is_valid=True
             )
             certificate.view_count += 1
@@ -834,7 +867,9 @@ def verify_certificate(request):
 
 
 def certificate_detail(request, cert_number):
-    certificate = get_object_or_404(Certificate, certificate_number=cert_number, is_valid=True)
+    certificate = get_object_or_404(
+        Certificate, certificate_number__iexact=cert_number.strip(), is_valid=True
+    )
 
     CertificateVerificationLog.objects.create(
         certificate=certificate,
@@ -850,7 +885,13 @@ def certificate_detail(request, cert_number):
 # EMAIL TEST VIEW
 # =============================================================================
 
+@staff_member_required
 def test_email(request):
+    """Send one test email to confirm the mail settings work.
+
+    Staff-only: open to the public this was a way to make the site send mail
+    on demand, and a failure returned the raw SMTP error to the browser.
+    """
     try:
         send_mail(
             'Test Email from GRTTS',
@@ -859,10 +900,11 @@ def test_email(request):
             [settings.CONTACT_RECIPIENT],
             fail_silently=False,
         )
-        return HttpResponse('Email sent successfully! Check your inbox.')
+        return HttpResponse(f'Email sent to {settings.CONTACT_RECIPIENT}.')
     except Exception as e:
-        logger.error(f"Test email error: {e}")
-        return HttpResponse(f'Error sending email: {str(e)}')
+        logger.error('Test email error: %s', e)
+        return HttpResponse('Sending failed. See the server log for details.',
+                            status=500)
 
 # =============================================================================
 # GIS APPLICATIONS PAGE
@@ -930,28 +972,28 @@ def apply_now(request):
             {
                 'name': 'Ranger Training',
                 'description': 'Apply for our comprehensive ranger training programs',
-                'url': 'courses',
+                'url': 'main:courses',
                 'icon': 'fa-user-graduate',
                 'deadline': 'Rolling admissions'
             },
             {
                 'name': 'Conservation Jobs',
                 'description': 'Current job openings at GRTTS',
-                'url': 'careers',
+                'url': 'main:careers',
                 'icon': 'fa-briefcase',
                 'deadline': 'Varies by position'
             },
             {
                 'name': 'Volunteer Program',
                 'description': 'Join us as a volunteer in conservation efforts',
-                'url': 'contact',
+                'url': 'main:contact',
                 'icon': 'fa-hands-helping',
                 'deadline': 'Ongoing'
             },
             {
                 'name': 'Research Collaboration',
                 'description': 'Partner with us on conservation research',
-                'url': 'contact',
+                'url': 'main:contact',
                 'icon': 'fa-flask',
                 'deadline': 'By agreement'
             },

@@ -1,216 +1,405 @@
 {% extends 'main/base.html' %}
-{% load static %}
 
-{% block title %}Contact Us - GRTTS{% endblock %}
+{% block title %}Contact GRTTS{% endblock %}
+{% block meta_description %}Contact GRTTS about ranger deployment, staff training or ranger management for your conservancy, reserve or community land. We reply within one working day.{% endblock %}
+{% block og_title %}Contact GRTTS{% endblock %}
+{% block og_description %}Talk to us about ranger deployment, training or management.{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">
-                        {% if inquiry_type == 'course' %}
-                            Course Inquiry
-                        {% elif inquiry_type == 'job' %}
-                            Job Application Inquiry
-                        {% elif inquiry_type == 'location' %}
-                            Location Inquiry
-                        {% elif inquiry_type == 'gis' %}
-                            GIS Training Inquiry
-                        {% else %}
-                            Contact GRTTS
-                        {% endif %}
-                    </h3>
-                </div>
-                <div class="card-body p-4">
-                    
-                    <!-- Dynamic Header Message -->
-                    <div class="alert alert-info mb-4">
-                        <i class="fas fa-info-circle"></i>
-                        {% if course_param %}
-                            You're inquiring about a <strong>course</strong>. Please fill out the form below and our training team will respond within 48 hours.
-                        {% elif job_param %}
-                            You're inquiring about a <strong>job opportunity</strong>. Please fill out the form below and our HR team will respond within 48 hours.
-                        {% elif location_param %}
-                            You're inquiring about <strong>{{ location_param|title }} location</strong>. Please fill out the form below.
-                        {% elif inquiry_type == 'gis' %}
-                            You're inquiring about <strong>GIS Applications training</strong>. Please fill out the form below.
-                        {% else %}
-                            Please fill out the form below and we'll get back to you within 48 hours.
-                        {% endif %}
-                    </div>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <header class="grtts-measure" style="margin-bottom: var(--grtts-space-6);">
+      <span class="grtts-eyebrow">Contact</span>
+      <h1>Talk to us</h1>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        Tell us who you are and we will put you in front of the right person.
+        We normally reply within one working day.
+      </p>
+    </header>
 
-                    <!-- Display Messages -->
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+    {% comment %}
+      Each audience gets its own form and its own endpoint, so the enquiry
+      arrives with the detail we actually need. The switcher is plain links
+      rather than JavaScript tabs: the server picks the form, so it works
+      without script and each form has its own shareable URL.
+    {% endcomment %}
+    <nav aria-label="Who is enquiring"
+         style="display: flex; flex-wrap: wrap; gap: var(--grtts-space-2); margin-bottom: var(--grtts-space-7);">
+      <a href="{% url 'main:contact' %}?type=landowner"
+         class="grtts-btn grtts-btn--sm {% if inquiry_type == 'landowner' %}grtts-btn--primary{% else %}grtts-btn--outline{% endif %}"
+         {% if inquiry_type == 'landowner' %}aria-current="page"{% endif %}>
+        Landowner, NGO or conservancy
+      </a>
+      <a href="{% url 'main:contact' %}?type=student"
+         class="grtts-btn grtts-btn--sm {% if inquiry_type == 'student' %}grtts-btn--primary{% else %}grtts-btn--outline{% endif %}"
+         {% if inquiry_type == 'student' %}aria-current="page"{% endif %}>
+        Prospective ranger
+      </a>
+      <a href="{% url 'main:contact' %}?type=enthusiast"
+         class="grtts-btn grtts-btn--sm {% if inquiry_type == 'enthusiast' %}grtts-btn--primary{% else %}grtts-btn--outline{% endif %}"
+         {% if inquiry_type == 'enthusiast' %}aria-current="page"{% endif %}>
+        Supporter or volunteer
+      </a>
+      <a href="{% url 'main:contact' %}?type=other"
+         class="grtts-btn grtts-btn--sm {% if inquiry_type == 'other' %}grtts-btn--primary{% else %}grtts-btn--outline{% endif %}"
+         {% if inquiry_type == 'other' %}aria-current="page"{% endif %}>
+        Something else
+      </a>
+    </nav>
 
-                    <!-- Contact Form -->
-                    <form method="post" action="{% url 'main:contact' %}">
-                        {% csrf_token %}
-                        
-                        <!-- Hidden fields to preserve parameters -->
-                        {% if course_param %}
-                            <input type="hidden" name="course_param" value="{{ course_param }}">
-                        {% endif %}
-                        {% if job_param %}
-                            <input type="hidden" name="job_param" value="{{ job_param }}">
-                        {% endif %}
-                        {% if location_param %}
-                            <input type="hidden" name="location_param" value="{{ location_param }}">
-                        {% endif %}
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="name" class="form-label">Full Name *</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email Address *</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+263 123 456 789">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="subject" class="form-label">Subject *</label>
-                            <input type="text" class="form-control" id="subject" name="subject" value="{{ initial_subject }}" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message *</label>
-                            <textarea class="form-control" id="message" name="message" rows="6" required>
-{% if course_param %}I'm interested in learning more about the {% if course_param == 'basic' %}Basic Ranger Course{% elif course_param == 'specialist' %}Specialist Courses{% elif course_param == 'advanced' %}Advanced Ranger Course{% elif course_param == 'tracking' %}Tracking Course{% endif %}. Please send me more information about course dates, requirements, and pricing.{% elif job_param %}I'm interested in the job opportunity at GRTTS. Please provide more information about the application process.{% elif location_param %}I'd like to know more about your operations in {{ location_param|title }}.{% else %}I'd like to get more information about GRTTS and your programs.{% endif %}
-                            </textarea>
-                        </div>
+    <div class="grtts-with-aside">
 
-                        <!-- Job-specific fields (shown only for job inquiries) -->
-                        {% if job_param %}
-                        <div class="card mb-3 border-success">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">Job Application Details</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="cv" class="form-label">Upload CV (Optional)</label>
-                                    <input type="file" class="form-control" id="cv" name="cv" accept=".pdf,.doc,.docx">
-                                    <small class="text-muted">PDF, DOC, DOCX format. Max 5MB.</small>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="cover_letter" class="form-label">Cover Letter (Optional)</label>
-                                    <textarea class="form-control" id="cover_letter" name="cover_letter" rows="4"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Course-specific fields (shown only for course inquiries) -->
-                        {% if course_param %}
-                        <div class="card mb-3 border-success">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">Course Interest Details</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="preferred_date" class="form-label">Preferred Start Date</label>
-                                        <input type="date" class="form-control" id="preferred_date" name="preferred_date">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="experience_level" class="form-label">Experience Level</label>
-                                        <select class="form-control" id="experience_level" name="experience_level">
-                                            <option value="">Select...</option>
-                                            <option value="beginner">Beginner (No experience)</option>
-                                            <option value="intermediate">Intermediate (Some experience)</option>
-                                            <option value="advanced">Advanced (Experienced)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fas fa-paper-plane"></i> Send Message
-                            </button>
-                        </div>
-                    </form>
-                </div>
+      <div>
+        <div id="form-status" role="status" style="margin-bottom: var(--grtts-space-5);"></div>
+
+        {% if inquiry_type == 'landowner' %}
+          <h2>Ranger deployment, training or management</h2>
+          <p class="grtts-text-muted">
+            The more you tell us about the area and the pressure on it, the
+            more useful our first reply will be.
+          </p>
+          <form method="post" action="{% url 'main:inquiry_landowner' %}" data-ajax-form>
+            {% csrf_token %}
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Your name <abbr title="required">*</abbr></span>
+                <input type="text" name="name" class="grtts-input" required autocomplete="name">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Organisation</span>
+                <input type="text" name="organization" class="grtts-input" autocomplete="organization">
+              </label>
             </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Email <abbr title="required">*</abbr></span>
+                <input type="email" name="email" class="grtts-input" required autocomplete="email">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Phone <abbr title="required">*</abbr></span>
+                <input type="tel" name="phone" class="grtts-input" required autocomplete="tel">
+              </label>
+            </div>
+            <label class="grtts-field">
+              <span class="grtts-label">What do you need? <abbr title="required">*</abbr></span>
+              <select name="service" class="grtts-select" required>
+                {% for value, label in landowner_service_choices %}
+                  <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Property size (hectares)</span>
+                <input type="number" name="property_size" class="grtts-input" min="1" inputmode="numeric">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Property location</span>
+                <input type="text" name="property_location" class="grtts-input"
+                       value="{% if location_param %}{{ location_param|cut:'-'|title }}{% endif %}"
+                       placeholder="District or nearest town">
+              </label>
+            </div>
+            <fieldset style="border: 1px solid var(--grtts-line); border-radius: var(--grtts-radius-md); padding: var(--grtts-space-4); margin-bottom: var(--grtts-space-4);">
+              <legend class="grtts-label" style="padding-inline: var(--grtts-space-2);">What are you dealing with?</legend>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: var(--grtts-space-3);">
+                <label style="display: flex; gap: var(--grtts-space-2); align-items: center;">
+                  <input type="checkbox" name="concerns_poaching" value="1"> Poaching
+                </label>
+                <label style="display: flex; gap: var(--grtts-space-2); align-items: center;">
+                  <input type="checkbox" name="concerns_human_wildlife" value="1"> Human&ndash;wildlife conflict
+                </label>
+                <label style="display: flex; gap: var(--grtts-space-2); align-items: center;">
+                  <input type="checkbox" name="concerns_livestock" value="1"> Livestock theft
+                </label>
+                <label style="display: flex; gap: var(--grtts-space-2); align-items: center;">
+                  <input type="checkbox" name="concerns_trespassing" value="1"> Trespassing
+                </label>
+              </div>
+            </fieldset>
+            <label class="grtts-field">
+              <span class="grtts-label">Anything else we should know</span>
+              <textarea name="details" class="grtts-textarea"
+                        placeholder="Current security arrangements, timeframe, budget range&hellip;">{{ initial_subject }}</textarea>
+            </label>
+            <button type="submit" class="grtts-btn grtts-btn--accent grtts-btn--lg">Send enquiry</button>
+          </form>
+
+        {% elif inquiry_type == 'student' %}
+          <h2>Train as a ranger</h2>
+          <p class="grtts-text-muted">
+            Tell us a little about yourself and which course interests you.
+          </p>
+          <form method="post" action="{% url 'main:inquiry_student' %}" data-ajax-form>
+            {% csrf_token %}
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Your name <abbr title="required">*</abbr></span>
+                <input type="text" name="name" class="grtts-input" required autocomplete="name">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Email <abbr title="required">*</abbr></span>
+                <input type="email" name="email" class="grtts-input" required autocomplete="email">
+              </label>
+            </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Phone <abbr title="required">*</abbr></span>
+                <input type="tel" name="phone" class="grtts-input" required autocomplete="tel">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Age <abbr title="required">*</abbr></span>
+                <input type="number" name="age" class="grtts-input" min="16" max="70" required inputmode="numeric">
+                <span class="grtts-help">You must be at least 18 to enrol.</span>
+              </label>
+            </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Nationality <abbr title="required">*</abbr></span>
+                <input type="text" name="nationality" class="grtts-input" required value="Zimbabwean">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Highest education</span>
+                <input type="text" name="education" class="grtts-input" placeholder="e.g. O-Level, A-Level, Diploma">
+              </label>
+            </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Which course? <abbr title="required">*</abbr></span>
+                <select name="course" class="grtts-select" required>
+                  {% for value, label in student_course_choices %}
+                    <option value="{{ value }}"
+                      {% if selected_course and selected_course.course_type|lower == value %}selected{% endif %}>
+                      {{ label }}
+                    </option>
+                  {% endfor %}
+                </select>
+                {% if selected_course %}
+                  <span class="grtts-help">You came from {{ selected_course.title }}.</span>
+                {% endif %}
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Preferred intake</span>
+                <input type="text" name="intake" class="grtts-input" placeholder="e.g. next available">
+              </label>
+            </div>
+            <label class="grtts-field">
+              <span class="grtts-label">Relevant experience</span>
+              <textarea name="experience" class="grtts-textarea"
+                        placeholder="Previous ranger, security, military or field work &mdash; or none at all."></textarea>
+            </label>
+            <button type="submit" class="grtts-btn grtts-btn--accent grtts-btn--lg">Send enquiry</button>
+          </form>
+
+        {% elif inquiry_type == 'enthusiast' %}
+          <h2>Support our work</h2>
+          <p class="grtts-text-muted">
+            Volunteers, advocates and visitors &mdash; tell us how you would
+            like to be involved.
+          </p>
+          <form method="post" action="{% url 'main:inquiry_enthusiast' %}" data-ajax-form>
+            {% csrf_token %}
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Your name <abbr title="required">*</abbr></span>
+                <input type="text" name="name" class="grtts-input" required autocomplete="name">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Email <abbr title="required">*</abbr></span>
+                <input type="email" name="email" class="grtts-input" required autocomplete="email">
+              </label>
+            </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">How would you like to help? <abbr title="required">*</abbr></span>
+                <select name="interest" class="grtts-select" required>
+                  {% for value, label in enthusiast_interest_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Availability</span>
+                <input type="text" name="availability" class="grtts-input" placeholder="e.g. weekends, 2 weeks in July">
+              </label>
+            </div>
+            <label class="grtts-field">
+              <span class="grtts-label">Your background</span>
+              <textarea name="background" class="grtts-textarea"
+                        placeholder="Skills or experience you could bring."></textarea>
+            </label>
+            <label class="grtts-field">
+              <span class="grtts-label">Message</span>
+              <textarea name="message" class="grtts-textarea"></textarea>
+            </label>
+            <button type="submit" class="grtts-btn grtts-btn--accent grtts-btn--lg">Send enquiry</button>
+          </form>
+
+        {% else %}
+          <h2>General enquiry</h2>
+          <p class="grtts-text-muted">
+            Media, partnerships, research, suppliers &mdash; anything else.
+          </p>
+          <form method="post" action="{% url 'main:inquiry_other' %}" data-ajax-form>
+            {% csrf_token %}
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Your name <abbr title="required">*</abbr></span>
+                <input type="text" name="name" class="grtts-input" required autocomplete="name">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Organisation</span>
+                <input type="text" name="organization" class="grtts-input" autocomplete="organization">
+              </label>
+            </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">Email <abbr title="required">*</abbr></span>
+                <input type="email" name="email" class="grtts-input" required autocomplete="email">
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Phone</span>
+                <input type="tel" name="phone" class="grtts-input" autocomplete="tel">
+              </label>
+            </div>
+            <div class="grtts-form-row">
+              <label class="grtts-field">
+                <span class="grtts-label">What is this about? <abbr title="required">*</abbr></span>
+                <select name="category" class="grtts-select" required>
+                  {% for value, label in other_category_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+              <label class="grtts-field">
+                <span class="grtts-label">Urgency</span>
+                <select name="urgency" class="grtts-select">
+                  {% for value, label in other_urgency_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+            </div>
+            <label class="grtts-field">
+              <span class="grtts-label">Subject <abbr title="required">*</abbr></span>
+              <input type="text" name="subject" class="grtts-input" required
+                     value="{{ initial_subject }}">
+            </label>
+            <label class="grtts-field">
+              <span class="grtts-label">Message <abbr title="required">*</abbr></span>
+              <textarea name="message" class="grtts-textarea" required></textarea>
+            </label>
+            <button type="submit" class="grtts-btn grtts-btn--accent grtts-btn--lg">Send enquiry</button>
+          </form>
+        {% endif %}
+      </div>
+
+      <aside class="grtts-stack">
+        <div class="grtts-card">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">Reach us directly</h2>
+            <dl class="grtts-datalist">
+              <dt>Phone</dt>
+              <dd><a href="tel:+263781603802">+263 781 603 802</a></dd>
+              <dt>WhatsApp</dt>
+              <dd><a href="https://wa.me/263788661234" target="_blank" rel="noopener">+263 788 661 234</a></dd>
+              <dt>Email</dt>
+              <dd><a href="mailto:info@grtts.co.zw">info@grtts.co.zw</a></dd>
+              <dt>Address</dt>
+              <dd>Plot 72, Mityana Farm,<br>Makonde, Zimbabwe</dd>
+            </dl>
+          </div>
         </div>
+
+        {% if active_jobs %}
+          <div class="grtts-card">
+            <div class="grtts-card__body">
+              <h2 class="grtts-card__title">Looking for work?</h2>
+              <p class="grtts-text-muted">
+                We have {{ active_jobs|length }} open
+                position{{ active_jobs|length|pluralize }}. Apply there rather
+                than through this form.
+              </p>
+              <a href="{% url 'main:careers' %}" class="grtts-btn grtts-btn--outline" style="width: 100%;">
+                View vacancies
+              </a>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if faqs %}
+          <div class="grtts-card">
+            <div class="grtts-card__body">
+              <h2 class="grtts-card__title">Quick answers</h2>
+              {% for faq in faqs %}
+                <details class="grtts-accordion">
+                  <summary>{{ faq.question }}</summary>
+                  <div class="grtts-accordion__body">{{ faq.answer|linebreaks }}</div>
+                </details>
+              {% endfor %}
+              <a href="{% url 'main:faq' %}" class="grtts-btn grtts-btn--outline"
+                 style="width: 100%; margin-top: var(--grtts-space-5);">
+                All questions
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      </aside>
+
     </div>
-    
-    <!-- Contact Information -->
-    <div class="row mt-5">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 bg-light text-center">
-                <div class="card-body">
-                    <i class="fas fa-map-marker-alt fa-3x text-success mb-3"></i>
-                    <h5>Visit Us</h5>
-                    <p class="mb-0">Plot 72, Mityana Farm<br>Makonde, Zimbabwe</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 bg-light text-center">
-                <div class="card-body">
-                    <i class="fas fa-phone-alt fa-3x text-success mb-3"></i>
-                    <h5>Call Us</h5>
-                    <p class="mb-0">+263 781 603 802<br>+263 788 661 234</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 bg-light text-center">
-                <div class="card-body">
-                    <i class="fas fa-envelope fa-3x text-success mb-3"></i>
-                    <h5>Email Us</h5>
-                    <p class="mb-0">info@grtts.co.zw<br>grttsrangers@gmail.com</p>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
+</section>
+{% endblock %}
 
-    <!-- FAQ Section -->
-    {% if faqs %}
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Frequently Asked Questions</h4>
-                </div>
-                <div class="card-body">
-                    <div class="accordion" id="faqAccordion">
-                        {% for faq in faqs %}
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}">
-                                    {{ faq.question }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    {{ faq.answer|linebreaks }}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-</div>
+
+{% block extra_js %}
+<script>
+(function () {
+  'use strict';
+
+  var form = document.querySelector('[data-ajax-form]');
+  if (!form) { return; }
+
+  var status = document.getElementById('form-status');
+
+  function report(kind, text) {
+    status.innerHTML = '';
+    var box = document.createElement('div');
+    box.className = 'grtts-alert grtts-alert--' + kind;
+    box.textContent = text;
+    status.appendChild(box);
+    status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var button = form.querySelector('button[type="submit"]');
+    var label = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Sending…';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+      .then(function (response) { return response.json(); })
+      .then(function (data) {
+        if (data.success) {
+          report('success', data.message || 'Thank you. We will be in touch.');
+          form.reset();
+        } else {
+          report('danger', data.message || 'Something went wrong. Please try again.');
+        }
+      })
+      .catch(function () {
+        report('danger', 'Network error. Please try again, or call us on +263 781 603 802.');
+      })
+      .finally(function () {
+        button.disabled = false;
+        button.textContent = label;
+      });
+  });
+}());
+</script>
 {% endblock %}

@@ -1,114 +1,168 @@
 {% extends 'main/base.html' %}
-{% load static %}
 
-{% block title %}Apply for {{ job.title }} - GRTTS{% endblock %}
+{% block title %}Apply: {{ job.title }} — GRTTS{% endblock %}
+{% block meta_description %}Apply for the {{ job.title }} position at GRTTS, {{ job.location }}.{% endblock %}
+{% block meta_robots %}<meta name="robots" content="noindex, follow">{% endblock %}
+{% block og_title %}Apply: {{ job.title }} — GRTTS{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'main:careers' %}">Careers</a></li>
-            <li class="breadcrumb-item active">Apply for {{ job.title }}</li>
-        </ol>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+
+    <nav aria-label="Breadcrumb">
+      <ol class="grtts-breadcrumb">
+        <li><a href="{% url 'main:careers' %}">Careers</a></li>
+        <li class="grtts-breadcrumb__sep" aria-hidden="true">/</li>
+        <li aria-current="page">{{ job.title }}</li>
+      </ol>
     </nav>
-    
-    <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">Apply for {{ job.title }}</h3>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-info mb-4">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Position:</strong> {{ job.title }} - {{ job.location }}<br>
-                        <strong>Job Type:</strong> {{ job.get_job_type_display }}<br>
-                        {% if job.deadline %}
-                        <strong>Application Deadline:</strong> {{ job.deadline|date:"F j, Y" }}
-                        {% endif %}
-                    </div>
 
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
+    <div class="grtts-with-aside">
 
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <h5 class="text-success">Personal Information</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="first_name" class="form-label">First Name *</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="last_name" class="form-label">Last Name *</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" required>
-                            </div>
-                        </div>
+      <div>
+        <span class="grtts-eyebrow">{{ job.get_category_display }}</span>
+        <h1>{{ job.title }}</h1>
+        <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+          {{ job.get_job_type_display }} &middot; {{ job.location }}
+          {% if job.salary_range %}&middot; {{ job.salary_range }}{% endif %}
+        </p>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email Address *</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">Phone Number *</label>
-                                <input type="text" class="form-control" id="phone" name="phone" required>
-                            </div>
-                        </div>
+        {% if job.deadline %}
+          <div class="grtts-alert grtts-alert--warning">
+            Applications close {{ job.deadline|date:"j F Y" }}.
+          </div>
+        {% endif %}
 
-                        <h5 class="text-success mt-4">Professional Information</h5>
-                        <div class="mb-3">
-                            <label for="cover_letter" class="form-label">Cover Letter *</label>
-                            <textarea class="form-control" id="cover_letter" name="cover_letter" rows="6" required></textarea>
-                            <div class="form-text">Tell us why you're interested in this position and why you'd be a good fit.</div>
-                        </div>
+        <h2 style="margin-top: var(--grtts-space-7);">Your application</h2>
+        <p class="grtts-text-muted">
+          Fields marked <abbr title="required" style="text-decoration: none; color: var(--grtts-danger);">*</abbr>
+          are required. A CV is required; the other documents are optional.
+        </p>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="experience_years" class="form-label">Years of Relevant Experience</label>
-                                <input type="number" class="form-control" id="experience_years" name="experience_years" min="0" value="0">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="current_employer" class="form-label">Current Employer</label>
-                                <input type="text" class="form-control" id="current_employer" name="current_employer">
-                            </div>
-                        </div>
+        <form method="post" action="" enctype="multipart/form-data">
+          {% csrf_token %}
 
-                        <div class="mb-3">
-                            <label for="current_position" class="form-label">Current Position</label>
-                            <input type="text" class="form-control" id="current_position" name="current_position">
-                        </div>
+          <div class="grtts-form-row">
+            <label class="grtts-field">
+              <span class="grtts-label">First name <abbr title="required">*</abbr></span>
+              <input type="text" name="first_name" class="grtts-input" required autocomplete="given-name">
+            </label>
+            <label class="grtts-field">
+              <span class="grtts-label">Last name <abbr title="required">*</abbr></span>
+              <input type="text" name="last_name" class="grtts-input" required autocomplete="family-name">
+            </label>
+          </div>
 
-                        <h5 class="text-success mt-4">Documents</h5>
-                        <div class="mb-3">
-                            <label for="cv" class="form-label">CV/Resume * (PDF, DOC, DOCX) Max 10MB</label>
-                            <input type="file" class="form-control" id="cv" name="cv" accept=".pdf,.doc,.docx" required>
-                        </div>
+          <div class="grtts-form-row">
+            <label class="grtts-field">
+              <span class="grtts-label">Email <abbr title="required">*</abbr></span>
+              <input type="email" name="email" class="grtts-input" required autocomplete="email">
+            </label>
+            <label class="grtts-field">
+              <span class="grtts-label">Phone <abbr title="required">*</abbr></span>
+              <input type="tel" name="phone" class="grtts-input" required autocomplete="tel">
+            </label>
+          </div>
 
-                        <div class="mb-3">
-                            <label for="cover_letter_file" class="form-label">Cover Letter File (Optional)</label>
-                            <input type="file" class="form-control" id="cover_letter_file" name="cover_letter_file" accept=".pdf,.doc,.docx">
-                            <div class="form-text">You can upload a separate cover letter file if you have one.</div>
-                        </div>
+          <div class="grtts-form-row">
+            <label class="grtts-field">
+              <span class="grtts-label">Years of relevant experience</span>
+              <input type="number" name="experience_years" class="grtts-input"
+                     min="0" max="60" value="0" inputmode="numeric">
+            </label>
+            <label class="grtts-field">
+              <span class="grtts-label">Current employer</span>
+              <input type="text" name="current_employer" class="grtts-input" autocomplete="organization">
+            </label>
+          </div>
 
-                        <div class="mb-3">
-                            <label for="additional_docs" class="form-label">Additional Documents (Optional)</label>
-                            <input type="file" class="form-control" id="additional_docs" name="additional_docs" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            <div class="form-text">Certificates, references, or any other relevant documents.</div>
-                        </div>
+          <label class="grtts-field">
+            <span class="grtts-label">Current position</span>
+            <input type="text" name="current_position" class="grtts-input" autocomplete="organization-title">
+          </label>
 
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">Submit Application</button>
-                            <a href="{% url 'main:careers' %}" class="btn btn-outline-secondary btn-lg ms-2">Cancel</a>
-                        </div>
-                    </form>
-                </div>
+          <label class="grtts-field">
+            <span class="grtts-label">Why you? <abbr title="required">*</abbr></span>
+            <textarea name="cover_letter" class="grtts-textarea" required
+                      placeholder="Tell us why you want this role and what you bring to it."></textarea>
+          </label>
+
+          <label class="grtts-field">
+            <span class="grtts-label">CV <abbr title="required">*</abbr></span>
+            <input type="file" name="cv" class="grtts-input" required
+                   accept=".pdf,.doc,.docx">
+            <span class="grtts-help">PDF or Word document.</span>
+          </label>
+
+          <label class="grtts-field">
+            <span class="grtts-label">Cover letter file</span>
+            <input type="file" name="cover_letter_file" class="grtts-input" accept=".pdf,.doc,.docx">
+            <span class="grtts-help">Optional, if you would rather attach one.</span>
+          </label>
+
+          <label class="grtts-field">
+            <span class="grtts-label">Supporting documents</span>
+            <input type="file" name="additional_docs" class="grtts-input">
+            <span class="grtts-help">Certificates, references or qualifications.</span>
+          </label>
+
+          <button type="submit" class="grtts-btn grtts-btn--accent grtts-btn--lg">
+            Submit application
+          </button>
+          <p class="grtts-help" style="margin-top: var(--grtts-space-3);">
+            We will confirm by email and come back to you within 5&ndash;7
+            working days.
+          </p>
+        </form>
+      </div>
+
+      <aside class="grtts-stack">
+        <div class="grtts-card">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">About the role</h2>
+            <div class="grtts-prose" style="font-size: var(--grtts-text-base);">
+              {{ job.description|linebreaks }}
             </div>
+          </div>
         </div>
+
+        {% with requirements=job.get_requirements_list %}
+          {% if requirements %}
+            <div class="grtts-card">
+              <div class="grtts-card__body">
+                <h2 class="grtts-card__title">Requirements</h2>
+                <ul style="margin: 0; padding-left: 1.25em;">
+                  {% for item in requirements %}<li>{{ item }}</li>{% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% with responsibilities=job.get_responsibilities_list %}
+          {% if responsibilities %}
+            <div class="grtts-card">
+              <div class="grtts-card__body">
+                <h2 class="grtts-card__title">Responsibilities</h2>
+                <ul style="margin: 0; padding-left: 1.25em;">
+                  {% for item in responsibilities %}<li>{{ item }}</li>{% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="grtts-card">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">Other vacancies</h2>
+            <a href="{% url 'main:careers' %}" class="grtts-btn grtts-btn--outline" style="width: 100%;">
+              Back to careers
+            </a>
+          </div>
+        </div>
+      </aside>
+
     </div>
-</div>
+  </div>
+</section>
 {% endblock %}
