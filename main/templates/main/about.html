@@ -10,10 +10,10 @@
         <div class="col-lg-8 mx-auto">
             <div class="card shadow-sm p-4 mb-4">
                 <h3>Who We Are</h3>
-                <p>GRTTS is a ranger training, deployment and management private company. We have trained over 500 rangers to date and we cover nearly 45,000ha of private and community owned wildlife areas across Zimbabwe.</p>
-                
+                <p>GRTTS is a ranger training, deployment and management private company. We have trained over {{ site_facts.rangers_trained }} rangers to date and we cover {{ site_facts.hectares_protected }}ha of private and community owned wildlife areas across Zimbabwe.</p>
+
                 <h3 class="mt-4">Our History</h3>
-                <p>Founded by Zimbabwean conservationists and wildlife managers, GRTTS was registered in Zimbabwe in 2017 and has been active in wildlife protection since then.</p>
+                <p>GRTTS was founded in {{ site_facts.founded_year }} by Zimbabwean conservationists and wildlife managers, and formally registered in Zimbabwe in {{ site_facts.registered_year }}. We have been active in wildlife protection for {{ site_facts.years_operating }} years.</p>
                 
                 <h3 class="mt-4">Our Mission</h3>
                 <p>To empower men and women to serve on the frontlines of wildlife and environmental protection through professional training and deployment.</p>

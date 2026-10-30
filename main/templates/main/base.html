@@ -1,11 +1,23 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5890129130238734"
-     crossorigin="anonymous"></script>
+    <title>{% block title %}GRTTS — Game Ranger & Tracker Training Specialist{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}GRTTS trains, deploys and manages professional anti-poaching rangers across Zimbabwe. Over {{ site_facts.rangers_trained }} rangers trained and {{ site_facts.hectares_protected }} hectares protected since {{ site_facts.founded_year }}.{% endblock %}">
+    <link rel="canonical" href="https://www.grtts.co.zw{{ request.path }}">
+    {% block meta_robots %}{% endblock %}
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:site_name" content="GRTTS">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}GRTTS — Game Ranger & Tracker Training Specialist{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Training, deploying and managing professional anti-poaching rangers across Zimbabwe.{% endblock %}">
+    <meta property="og:url" content="https://www.grtts.co.zw{{ request.path }}">
+    <meta property="og:image" content="{% block og_image %}https://www.grtts.co.zw{% static 'images/logo.png' %}{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ME8PVJ2M57"></script>
     <script>
@@ -14,10 +26,7 @@
       gtag('js', new Date());
       gtag('config', 'G-ME8PVJ2M57');
     </script>
-    
-    <title>{% block title %}GRTTS - Game Ranger & Tracker Training Specialist{% endblock %}</title>
 
-    {% load static %}
     <!-- ===== FAVICON ===== -->
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
@@ -29,7 +38,36 @@
     <!-- Animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+    <!-- GRTTS design system -->
+    <link rel="stylesheet" href="{% static 'css/grtts.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Game Ranger and Tracker Training Specialist",
+      "alternateName": "GRTTS",
+      "url": "https://www.grtts.co.zw",
+      "logo": "https://www.grtts.co.zw{% static 'images/logo.png' %}",
+      "description": "Zimbabwean specialist in training, deploying and managing anti-poaching rangers for private and community wildlife areas.",
+      "foundingDate": "{{ site_facts.founded_year }}",
+      "areaServed": "ZW",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Plot 72, Mityana Farm",
+        "addressLocality": "Makonde",
+        "addressCountry": "ZW"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "sales",
+        "telephone": "+263781603802",
+        "email": "info@grtts.co.zw",
+        "availableLanguage": "en"
+      }
+    }
+    </script>
 
     <style>
         /* ===== LOGO & BRAND ===== */
@@ -277,7 +315,7 @@
             <a class="navbar-brand" href="{% url 'main:home' %}">
                 <div class="logo-container">
                     <!-- Logo image with fallback -->
-                    <img src="{% static 'images/logo.a76307707669.png' %}"
+                    <img src="{% static 'images/logo.png' %}"
                          alt="GRTTS Logo" 
                          class="logo-image"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -385,7 +423,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="{% static 'images/logo.a76307707669.png' %}" 
+                        <img src="{% static 'images/logo.png' %}" 
                              alt="GRTTS Logo" 
                              style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #ffd966; margin-right: 12px;">
                         <h5 class="mb-0">GRTTS</h5>

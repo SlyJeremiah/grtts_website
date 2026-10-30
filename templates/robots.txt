@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Private and transactional areas
+Disallow: /admin/
+Disallow: /register/
+Disallow: /newsletter/unsubscribe/
+Disallow: /newsletter/track/
+Disallow: /newsletter/test/
+Disallow: /newsletter/test-page/
+Disallow: /test-email/
+Disallow: /debug-media/
+
+Sitemap: https://www.grtts.co.zw/sitemap.xml

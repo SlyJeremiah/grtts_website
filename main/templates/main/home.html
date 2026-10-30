@@ -19,7 +19,7 @@
         </p>
         <p class="shine-text" style="background-color: rgba(45, 90, 59, 0.95); display: inline-block; padding: 1rem 3rem; border-radius: 50px; font-size: 1.3rem; border: 2px solid #ffd966; animation: fadeIn 1s ease 0.6s both;">
             <i class="fas fa-star" style="color: #ffd966; margin-right: 10px;"></i>
-            Over a Septennium of Excellence
+            Protecting Zimbabwe's Wildlife Since {{ site_facts.founded_year }}
             <i class="fas fa-star" style="color: #ffd966; margin-left: 10px;"></i>
         </p>
     </div>
@@ -35,7 +35,7 @@
         <div class="row text-center">
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">500+</div>
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">{{ site_facts.rangers_trained }}+</div>
                     <i class="fas fa-users" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">RANGERS TRAINED</h4>
                     <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Professionally equipped and field-ready</p>
@@ -43,7 +43,7 @@
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">45,000</div>
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">{{ site_facts.hectares_protected }}</div>
                     <i class="fas fa-tree" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">HECTARES PROTECTED</h4>
                     <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Private & community wildlife areas</p>
@@ -51,15 +51,15 @@
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">2017</div>
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">{{ site_facts.founded_year }}</div>
                     <i class="fas fa-calendar-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">YEAR FOUNDED</h4>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Over 7 years of excellence</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Registered {{ site_facts.registered_year }} &middot; {{ site_facts.years_operating }} years in the field</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">8</div>
+                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">{{ site_facts.deployment_locations }}</div>
                     <i class="fas fa-map-marker-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">DEPLOYMENT LOCATIONS</h4>
                     <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Across Zimbabwe's prime wildlife areas</p>
@@ -72,16 +72,14 @@
 <!-- Who We Are -->
 <section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5 text-3d" style="font-size: 2rem; font-weight: 600;">
-            <i class="fas fa-paw" style="color: #ffd966; margin-right: 15px;"></i>
-            WHO ARE WE?
-            <i class="fas fa-paw" style="color: #ffd966; margin-left: 15px;"></i>
+        <h2 class="text-center mb-5" style="font-size: 2rem; font-weight: 700; color: var(--grtts-green-900);">
+            Who We Are
         </h2>
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <div class="card border-0 shadow-sm p-4" style="border-radius: 20px; background: linear-gradient(145deg, #ffffff, #f8f9fa);">
-                    <p class="lead animated-bg-text" style="font-size: 1.3rem; line-height: 1.8;">WE ARE THE LEADING ZIMBABWEAN COMPANY DEDICATED TO TRAINING, DEPLOYING AND MANAGING ANTI-POACHING RANGERS ACROSS THE COUNTRY WITH OVER A DECADE OF EXPERIENCE.</p>
-                    <p class="shine-text" style="font-size: 1.1rem; line-height: 1.6;">WE HAVE TRAINED AND DEPLOYED MORE THAN 500 MEN AND WOMEN, EMPOWERING THEM TO SERVE ON THE FRONTLINES OF WILDLIFE AND ENVIRONMENTAL PROTECTION.</p>
+                    <p class="lead" style="font-size: 1.3rem; line-height: 1.8;">We are the leading Zimbabwean company dedicated to training, deploying and managing anti-poaching rangers across the country, with {{ site_facts.years_operating }} years of operational experience.</p>
+                    <p style="font-size: 1.1rem; line-height: 1.7;">We have trained and deployed more than {{ site_facts.rangers_trained }} men and women, equipping them to serve on the frontlines of wildlife and environmental protection across {{ site_facts.hectares_protected }} hectares of private and community wildlife areas.</p>
                 </div>
             </div>
         </div>
@@ -358,7 +356,7 @@
     
     <div class="container text-center" style="position: relative; z-index: 2;">
         <h3 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(255,217,102,0.3);">GET IN TOUCH</h3>
-        <p class="lead mb-4 animated-bg-text" style="font-size: 1.3rem;">For course deployment plans or ranger management contracts</p>
+        <p class="lead mb-4" style="font-size: 1.3rem;">For course deployment plans or ranger management contracts</p>
         <div class="row justify-content-center">
             <div class="col-md-4 mb-2">
                 <div style="display: inline-block;">

@@ -1,0 +1,529 @@
+/* ==========================================================================
+   GRTTS Design System
+   --------------------------------------------------------------------------
+   Single source of truth for colour, type, spacing, elevation and components.
+
+   Load order: bootstrap.min.css -> grtts.css -> style.css
+
+   This file bridges the GRTTS tokens onto Bootstrap 5.3's own CSS custom
+   properties, so existing Bootstrap markup picks up the brand without each
+   template being rewritten first. Component classes are prefixed `grtts-`.
+
+   Audience note: the primary reader is a landowner, NGO or conservancy
+   assessing whether GRTTS can be trusted with an armed deployment contract.
+   The system favours clarity, contrast and restraint over decoration.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* --- Brand: green ------------------------------------------------------
+     Ramp from the existing GRTTS green. Every step below 400 is a safe
+     background for white text; every step above 500 is a safe background for
+     --grtts-ink. Contrast ratios are verified in docs/design-system.md. */
+  --grtts-green-950: #06150D;
+  --grtts-green-900: #0C2B1A;
+  --grtts-green-800: #114026;
+  --grtts-green-700: #16572F;
+  --grtts-green-600: #1C6E3A;
+  --grtts-green-500: #238446;
+  --grtts-green-400: #3DA063;
+  --grtts-green-300: #71BE8C;
+  --grtts-green-200: #A9D8BB;
+  --grtts-green-100: #D7EDE0;
+  --grtts-green-50:  #EFF7F2;
+
+  /* --- Brand: gold -------------------------------------------------------
+     Gold is an accent, never a surface for body text. On white it is
+     decorative only; for text use --grtts-gold-700 or darker. */
+  --grtts-gold-800: #6B5310;
+  --grtts-gold-700: #8A6A15;
+  --grtts-gold-600: #A8821B;
+  --grtts-gold-500: #C79A21;
+  --grtts-gold-400: #D9B43F;
+  --grtts-gold-300: #E7CC78;
+  --grtts-gold-200: #F2E2AE;
+  --grtts-gold-100: #FAF3DC;
+
+  /* --- Neutrals ---------------------------------------------------------- */
+  --grtts-ink:        #14201A;  /* body text — 16.8:1 on white */
+  --grtts-ink-muted:  #4A5A51;  /* secondary text — 7.3:1 on white */
+  --grtts-ink-subtle: #66766D;  /* metadata — 4.8:1 on white */
+  --grtts-line:       #DCE4DF;
+  --grtts-line-strong:#BFCBC4;
+  --grtts-surface:    #FFFFFF;
+  --grtts-surface-raised: #FFFFFF;
+  --grtts-surface-sunken: #F5F8F6;
+  --grtts-surface-inverse: var(--grtts-green-900);
+
+  /* --- Semantic ---------------------------------------------------------- */
+  --grtts-primary:    var(--grtts-green-700);
+  --grtts-primary-hover: var(--grtts-green-800);
+  --grtts-accent:     var(--grtts-gold-500);
+  --grtts-success:    #1C6E3A;
+  --grtts-warning:    #8A6A15;
+  --grtts-danger:     #9B2226;
+  --grtts-info:       #1C5A7A;
+
+  /* --- Typography --------------------------------------------------------
+     System stack: no webfont request, which matters on the mobile
+     connections much of this audience browses from. */
+  --grtts-font-sans: system-ui, -apple-system, "Segoe UI", Roboto,
+                     "Helvetica Neue", Arial, sans-serif;
+  --grtts-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+
+  /* Modular scale, 1.250 (major third), 16px base */
+  --grtts-text-xs:   0.75rem;   /* 12 */
+  --grtts-text-sm:   0.875rem;  /* 14 */
+  --grtts-text-base: 1rem;      /* 16 */
+  --grtts-text-lg:   1.125rem;  /* 18 */
+  --grtts-text-xl:   1.375rem;  /* 22 */
+  --grtts-text-2xl:  1.75rem;   /* 28 */
+  --grtts-text-3xl:  2.125rem;  /* 34 */
+  --grtts-text-4xl:  2.75rem;   /* 44 */
+  --grtts-text-5xl:  3.5rem;    /* 56 */
+
+  --grtts-leading-tight:   1.15;
+  --grtts-leading-snug:    1.3;
+  --grtts-leading-normal:  1.6;
+  --grtts-leading-relaxed: 1.75;
+
+  --grtts-tracking-tight: -0.02em;
+  --grtts-tracking-normal: 0;
+  --grtts-tracking-wide:  0.04em;
+  --grtts-tracking-caps:  0.08em;
+
+  --grtts-weight-regular:  400;
+  --grtts-weight-medium:   500;
+  --grtts-weight-semibold: 600;
+  --grtts-weight-bold:     700;
+
+  /* --- Spacing: 4px base -------------------------------------------------- */
+  --grtts-space-1:  0.25rem;
+  --grtts-space-2:  0.5rem;
+  --grtts-space-3:  0.75rem;
+  --grtts-space-4:  1rem;
+  --grtts-space-5:  1.5rem;
+  --grtts-space-6:  2rem;
+  --grtts-space-7:  3rem;
+  --grtts-space-8:  4rem;
+  --grtts-space-9:  6rem;
+  --grtts-space-10: 8rem;
+
+  /* --- Radius, elevation, motion ------------------------------------------ */
+  --grtts-radius-sm:   4px;
+  --grtts-radius-md:   8px;
+  --grtts-radius-lg:   14px;
+  --grtts-radius-pill: 999px;
+
+  --grtts-shadow-sm: 0 1px 2px rgba(12, 43, 26, 0.06),
+                     0 1px 3px rgba(12, 43, 26, 0.08);
+  --grtts-shadow-md: 0 2px 6px rgba(12, 43, 26, 0.07),
+                     0 6px 16px rgba(12, 43, 26, 0.09);
+  --grtts-shadow-lg: 0 8px 24px rgba(12, 43, 26, 0.10),
+                     0 18px 48px rgba(12, 43, 26, 0.12);
+
+  --grtts-ease: cubic-bezier(0.2, 0, 0.1, 1);
+  --grtts-duration-fast: 120ms;
+  --grtts-duration-base: 200ms;
+
+  --grtts-container: 1200px;
+  --grtts-measure: 68ch;   /* comfortable reading width */
+}
+
+/* --------------------------------------------------------------------------
+   2. Bootstrap bridge
+   Maps Bootstrap 5.3's variables onto GRTTS tokens so existing markup
+   inherits the brand. Remove once every template uses grtts- components.
+   -------------------------------------------------------------------------- */
+
+:root {
+  --bs-font-sans-serif: var(--grtts-font-sans);
+  --bs-body-font-size: var(--grtts-text-base);
+  --bs-body-line-height: var(--grtts-leading-normal);
+  --bs-body-color: var(--grtts-ink);
+  --bs-body-bg: var(--grtts-surface);
+  --bs-secondary-color: var(--grtts-ink-muted);
+  --bs-border-color: var(--grtts-line);
+  --bs-border-radius: var(--grtts-radius-md);
+  --bs-border-radius-sm: var(--grtts-radius-sm);
+  --bs-border-radius-lg: var(--grtts-radius-lg);
+
+  --bs-primary: var(--grtts-green-700);
+  --bs-primary-rgb: 22, 87, 47;
+  --bs-success: var(--grtts-success);
+  --bs-warning: var(--grtts-warning);
+  --bs-danger: var(--grtts-danger);
+  --bs-info: var(--grtts-info);
+
+  --bs-link-color: var(--grtts-green-700);
+  --bs-link-color-rgb: 22, 87, 47;
+  --bs-link-hover-color: var(--grtts-green-900);
+}
+
+/* --------------------------------------------------------------------------
+   3. Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--grtts-font-sans);
+  font-size: var(--grtts-text-base);
+  line-height: var(--grtts-leading-normal);
+  color: var(--grtts-ink);
+  background: var(--grtts-surface);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6,
+.grtts-h1, .grtts-h2, .grtts-h3, .grtts-h4 {
+  font-weight: var(--grtts-weight-bold);
+  line-height: var(--grtts-leading-tight);
+  letter-spacing: var(--grtts-tracking-tight);
+  color: var(--grtts-green-900);
+  margin-top: 0;
+  text-wrap: balance;
+}
+
+h1, .grtts-h1 { font-size: clamp(2.125rem, 1.4rem + 2.6vw, 3.5rem); }
+h2, .grtts-h2 { font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.75rem); }
+h3, .grtts-h3 { font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem); }
+h4, .grtts-h4 { font-size: var(--grtts-text-xl); letter-spacing: var(--grtts-tracking-normal); }
+
+p { margin-top: 0; }
+
+/* Readable measure for long-form text. Body copy set in all caps is a
+   legibility problem, so uppercase is confined to short labels only. */
+.grtts-prose {
+  max-width: var(--grtts-measure);
+  line-height: var(--grtts-leading-relaxed);
+  text-transform: none;
+}
+
+.grtts-prose > * + * { margin-top: var(--grtts-space-4); }
+
+a { color: var(--grtts-green-700); text-underline-offset: 0.2em; }
+a:hover { color: var(--grtts-green-900); }
+
+/* Visible, consistent keyboard focus everywhere. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--grtts-gold-500);
+  outline-offset: 2px;
+  border-radius: var(--grtts-radius-sm);
+}
+
+.grtts-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 1000;
+  padding: var(--grtts-space-3) var(--grtts-space-4);
+  background: var(--grtts-green-900);
+  color: #fff;
+  border-radius: 0 0 var(--grtts-radius-md) 0;
+}
+.grtts-skip-link:focus { left: 0; color: #fff; }
+
+img { max-width: 100%; height: auto; }
+
+/* --------------------------------------------------------------------------
+   4. Layout
+   -------------------------------------------------------------------------- */
+
+.grtts-container {
+  width: 100%;
+  max-width: var(--grtts-container);
+  margin-inline: auto;
+  padding-inline: var(--grtts-space-4);
+}
+
+.grtts-section { padding-block: var(--grtts-space-8); }
+.grtts-section--tight { padding-block: var(--grtts-space-7); }
+.grtts-section--sunken { background: var(--grtts-surface-sunken); }
+.grtts-section--inverse {
+  background: var(--grtts-surface-inverse);
+  color: var(--grtts-green-100);
+}
+.grtts-section--inverse h1,
+.grtts-section--inverse h2,
+.grtts-section--inverse h3 { color: #fff; }
+
+.grtts-stack > * + * { margin-top: var(--grtts-space-4); }
+.grtts-stack--lg > * + * { margin-top: var(--grtts-space-6); }
+
+.grtts-grid {
+  display: grid;
+  gap: var(--grtts-space-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+}
+
+/* --------------------------------------------------------------------------
+   5. Components
+   -------------------------------------------------------------------------- */
+
+/* --- Eyebrow / section label -------------------------------------------- */
+.grtts-eyebrow {
+  display: inline-block;
+  font-size: var(--grtts-text-sm);
+  font-weight: var(--grtts-weight-semibold);
+  letter-spacing: var(--grtts-tracking-caps);
+  text-transform: uppercase;
+  color: var(--grtts-gold-700);
+  margin-bottom: var(--grtts-space-2);
+}
+.grtts-section--inverse .grtts-eyebrow { color: var(--grtts-gold-300); }
+
+/* --- Buttons ------------------------------------------------------------- */
+.grtts-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--grtts-space-2);
+  padding: var(--grtts-space-3) var(--grtts-space-5);
+  font-size: var(--grtts-text-base);
+  font-weight: var(--grtts-weight-semibold);
+  line-height: 1.2;
+  border: 1px solid transparent;
+  border-radius: var(--grtts-radius-md);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--grtts-duration-base) var(--grtts-ease),
+              border-color var(--grtts-duration-base) var(--grtts-ease),
+              color var(--grtts-duration-base) var(--grtts-ease),
+              transform var(--grtts-duration-fast) var(--grtts-ease);
+  /* 44px minimum touch target */
+  min-height: 44px;
+}
+.grtts-btn:active { transform: translateY(1px); }
+
+.grtts-btn--primary {
+  background: var(--grtts-green-700);
+  color: #fff;
+}
+.grtts-btn--primary:hover { background: var(--grtts-green-800); color: #fff; }
+
+.grtts-btn--accent {
+  background: var(--grtts-gold-500);
+  color: var(--grtts-green-950);
+}
+.grtts-btn--accent:hover { background: var(--grtts-gold-400); color: var(--grtts-green-950); }
+
+.grtts-btn--outline {
+  background: transparent;
+  color: var(--grtts-green-800);
+  border-color: var(--grtts-line-strong);
+}
+.grtts-btn--outline:hover {
+  border-color: var(--grtts-green-700);
+  background: var(--grtts-green-50);
+  color: var(--grtts-green-900);
+}
+
+.grtts-btn--on-dark {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.grtts-btn--on-dark:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+.grtts-btn--lg { padding: var(--grtts-space-4) var(--grtts-space-6); font-size: var(--grtts-text-lg); }
+.grtts-btn--sm { padding: var(--grtts-space-2) var(--grtts-space-4); font-size: var(--grtts-text-sm); min-height: 36px; }
+
+/* --- Cards --------------------------------------------------------------- */
+.grtts-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--grtts-surface-raised);
+  border: 1px solid var(--grtts-line);
+  border-radius: var(--grtts-radius-lg);
+  box-shadow: var(--grtts-shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--grtts-duration-base) var(--grtts-ease),
+              transform var(--grtts-duration-base) var(--grtts-ease);
+}
+.grtts-card--interactive:hover {
+  box-shadow: var(--grtts-shadow-md);
+  transform: translateY(-2px);
+}
+.grtts-card__media { aspect-ratio: 16 / 10; object-fit: cover; width: 100%; }
+.grtts-card__body { padding: var(--grtts-space-5); flex: 1; }
+.grtts-card__title {
+  font-size: var(--grtts-text-xl);
+  margin-bottom: var(--grtts-space-2);
+}
+.grtts-card__meta {
+  font-size: var(--grtts-text-sm);
+  color: var(--grtts-ink-subtle);
+}
+.grtts-card__footer {
+  padding: var(--grtts-space-4) var(--grtts-space-5);
+  border-top: 1px solid var(--grtts-line);
+  background: var(--grtts-surface-sunken);
+}
+
+/* --- Statistic ----------------------------------------------------------- */
+.grtts-stat { text-align: center; }
+.grtts-stat__value {
+  display: block;
+  font-size: clamp(2.125rem, 1.6rem + 2vw, 3.5rem);
+  font-weight: var(--grtts-weight-bold);
+  line-height: 1;
+  letter-spacing: var(--grtts-tracking-tight);
+  color: var(--grtts-gold-400);
+  font-variant-numeric: tabular-nums;
+}
+.grtts-stat__label {
+  display: block;
+  margin-top: var(--grtts-space-2);
+  font-size: var(--grtts-text-sm);
+  font-weight: var(--grtts-weight-semibold);
+  letter-spacing: var(--grtts-tracking-caps);
+  text-transform: uppercase;
+  color: #fff;
+}
+.grtts-stat__note {
+  display: block;
+  margin-top: var(--grtts-space-1);
+  font-size: var(--grtts-text-sm);
+  color: var(--grtts-green-200);
+}
+
+/* On light surfaces the gold is too pale — darken it. */
+.grtts-section:not(.grtts-section--inverse) .grtts-stat__value { color: var(--grtts-green-700); }
+.grtts-section:not(.grtts-section--inverse) .grtts-stat__label { color: var(--grtts-ink-muted); }
+.grtts-section:not(.grtts-section--inverse) .grtts-stat__note { color: var(--grtts-ink-subtle); }
+
+/* --- Badge --------------------------------------------------------------- */
+.grtts-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--grtts-space-1);
+  padding: var(--grtts-space-1) var(--grtts-space-3);
+  font-size: var(--grtts-text-xs);
+  font-weight: var(--grtts-weight-semibold);
+  letter-spacing: var(--grtts-tracking-wide);
+  text-transform: uppercase;
+  border-radius: var(--grtts-radius-pill);
+  background: var(--grtts-green-100);
+  color: var(--grtts-green-800);
+}
+.grtts-badge--accent { background: var(--grtts-gold-100); color: var(--grtts-gold-800); }
+.grtts-badge--neutral { background: var(--grtts-surface-sunken); color: var(--grtts-ink-muted); }
+
+/* --- Forms --------------------------------------------------------------- */
+.grtts-field { display: block; margin-bottom: var(--grtts-space-4); }
+.grtts-label {
+  display: block;
+  margin-bottom: var(--grtts-space-2);
+  font-size: var(--grtts-text-sm);
+  font-weight: var(--grtts-weight-semibold);
+  color: var(--grtts-ink);
+}
+.grtts-input,
+.grtts-select,
+.grtts-textarea {
+  width: 100%;
+  padding: var(--grtts-space-3) var(--grtts-space-4);
+  font: inherit;
+  font-size: var(--grtts-text-base); /* 16px — stops iOS zooming on focus */
+  color: var(--grtts-ink);
+  background: var(--grtts-surface);
+  border: 1px solid var(--grtts-line-strong);
+  border-radius: var(--grtts-radius-md);
+  min-height: 44px;
+  transition: border-color var(--grtts-duration-fast) var(--grtts-ease),
+              box-shadow var(--grtts-duration-fast) var(--grtts-ease);
+}
+.grtts-input:focus,
+.grtts-select:focus,
+.grtts-textarea:focus {
+  border-color: var(--grtts-green-600);
+  box-shadow: 0 0 0 3px var(--grtts-green-100);
+  outline: none;
+}
+.grtts-textarea { min-height: 8rem; resize: vertical; }
+.grtts-help { margin-top: var(--grtts-space-2); font-size: var(--grtts-text-sm); color: var(--grtts-ink-subtle); }
+.grtts-error { margin-top: var(--grtts-space-2); font-size: var(--grtts-text-sm); color: var(--grtts-danger); font-weight: var(--grtts-weight-medium); }
+.grtts-input[aria-invalid="true"] { border-color: var(--grtts-danger); }
+
+/* --- Alerts -------------------------------------------------------------- */
+.grtts-alert {
+  padding: var(--grtts-space-4);
+  border-radius: var(--grtts-radius-md);
+  border-left: 4px solid;
+  font-size: var(--grtts-text-base);
+}
+.grtts-alert--success { background: var(--grtts-green-50); border-color: var(--grtts-success); color: var(--grtts-green-900); }
+.grtts-alert--warning { background: var(--grtts-gold-100); border-color: var(--grtts-warning); color: var(--grtts-gold-800); }
+.grtts-alert--danger  { background: #FBEDED; border-color: var(--grtts-danger); color: #7A1B1E; }
+.grtts-alert--info    { background: #EAF2F7; border-color: var(--grtts-info); color: #14455E; }
+
+/* --- Media overlay -------------------------------------------------------
+   Guarantees text over photography stays readable regardless of the image. */
+.grtts-overlay { position: relative; isolation: isolate; }
+.grtts-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 21, 13, 0.55) 0%,
+    rgba(6, 21, 13, 0.70) 55%,
+    rgba(6, 21, 13, 0.85) 100%
+  );
+}
+
+/* --------------------------------------------------------------------------
+   6. Utilities
+   -------------------------------------------------------------------------- */
+
+.grtts-visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.grtts-text-muted  { color: var(--grtts-ink-muted); }
+.grtts-text-subtle { color: var(--grtts-ink-subtle); }
+.grtts-measure     { max-width: var(--grtts-measure); }
+.grtts-center      { margin-inline: auto; text-align: center; }
+
+/* --------------------------------------------------------------------------
+   7. Motion preferences
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. Print
+   -------------------------------------------------------------------------- */
+
+@media print {
+  .grtts-no-print,
+  .navbar,
+  .grtts-floating-contact { display: none !important; }
+  body { color: #000; background: #fff; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+}

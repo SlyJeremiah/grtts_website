@@ -254,7 +254,7 @@ def inquiry_other(request):
 def send_inquiry_notification(inquiry, inquiry_type):
     """
     Send two emails:
-    1. Detailed notification to admin (shanyaslym19@gmail.com) with CC to grttsrangers@gmail.com
+    1. Detailed notification to settings.CONTACT_RECIPIENT with CC to the configured CONTACT_CC addresses
     2. Auto-reply summary to the user (client)
 
     Returns True if both succeed, False if any fails (but logs errors).
@@ -349,21 +349,21 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
         subject = f"New {inquiry_type.title()} Inquiry"
         body = f"New inquiry received. Check admin panel for details."
 
-    # --- 2. Send admin notification with CC to grttsrangers@gmail.com ---
+    # --- 2. Send admin notification with CC to the configured CONTACT_CC addresses ---
     admin_sent = False
     try:
         admin_email = EmailMessage(
             subject=subject,
             body=body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['shanyaslym19@gmail.com'],
-            cc=['grttsrangers@gmail.com'],
+            to=[settings.CONTACT_RECIPIENT],
+            cc=settings.CONTACT_CC,
             reply_to=[inquiry.email] if getattr(inquiry, 'email', None) else None,
         )
         admin_email.send(fail_silently=False)
         logger.info(
             f"Admin notification sent for {inquiry_type} inquiry from {inquiry.name} "
-            f"(CC: grttsrangers@gmail.com)"
+            f"(CC: {', '.join(settings.CONTACT_CC)})"
         )
         admin_sent = True
     except Exception as e:
@@ -419,7 +419,7 @@ www.grtts.co.zw
 
 
 def send_contact_notification(contact):
-    """Send notification for contact form submissions (CC to grttsrangers@gmail.com)"""
+    """Send notification for contact form submissions (CC to the configured CONTACT_CC addresses)"""
     try:
         subject = f"New Contact Message: {contact.subject}"
         body = f"""
@@ -442,12 +442,12 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
             subject=subject,
             body=body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['shanyaslym19@gmail.com'],
-            cc=['grttsrangers@gmail.com'],
+            to=[settings.CONTACT_RECIPIENT],
+            cc=settings.CONTACT_CC,
             reply_to=[contact.email] if contact.email else None,
         )
         email.send(fail_silently=False)
-        logger.info(f"Email notification sent for contact from {contact.name} (CC: grttsrangers@gmail.com)")
+        logger.info(f"Email notification sent for contact from {contact.name} (CC: {', '.join(settings.CONTACT_CC)})")
         return True
     except Exception as e:
         logger.error(f"Failed to send contact email: {e}")
@@ -455,7 +455,7 @@ Submitted: {timezone.now().strftime('%Y-%m-%d %H:%M')}
 
 
 def send_newsletter_notification(email):
-    """Send notification to admin when someone subscribes (CC to grttsrangers@gmail.com)"""
+    """Send notification to admin when someone subscribes (CC to the configured CONTACT_CC addresses)"""
     try:
         subject = "New Newsletter Subscriber"
         body = f"""
@@ -471,12 +471,12 @@ Time: {timezone.now().strftime('%Y-%m-%d %H:%M')}
             subject=subject,
             body=body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['shanyaslym19@gmail.com'],
-            cc=['grttsrangers@gmail.com'],
+            to=[settings.CONTACT_RECIPIENT],
+            cc=settings.CONTACT_CC,
             reply_to=[email],
         )
         message.send(fail_silently=False)
-        logger.info(f"Admin notification sent for newsletter subscriber: {email} (CC: grttsrangers@gmail.com)")
+        logger.info(f"Admin notification sent for newsletter subscriber: {email} (CC: {', '.join(settings.CONTACT_CC)})")
         return True
     except Exception as e:
         logger.error(f"Failed to send newsletter notification: {e}")
@@ -855,7 +855,7 @@ def test_email(request):
             'Test Email from GRTTS',
             'This is a test email to verify SMTP settings.',
             settings.DEFAULT_FROM_EMAIL,
-            ['shanyaslym19@gmail.com'],
+            [settings.CONTACT_RECIPIENT],
             fail_silently=False,
         )
         return HttpResponse('Email sent successfully! Check your inbox.')
@@ -1086,7 +1086,7 @@ GRTTS HR Team
             except Exception as e:
                 logger.error(f"Job application email failed: {e}")
 
-            # Notify admin (with CC to grttsrangers@gmail.com)
+            # Notify admin (with CC to the configured CONTACT_CC addresses)
             try:
                 admin_subject = f"New Job Application: {job.title}"
                 admin_message = f"""
@@ -1102,8 +1102,8 @@ Check admin panel for full details and documents.
                     subject=admin_subject,
                     body=admin_message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=['shanyaslym19@gmail.com'],
-                    cc=['grttsrangers@gmail.com'],
+                    to=[settings.CONTACT_RECIPIENT],
+                    cc=settings.CONTACT_CC,
                     reply_to=[email],
                 )
                 admin_email.send(fail_silently=False)

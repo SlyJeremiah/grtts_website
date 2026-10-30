@@ -1,20 +1,18 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-echo "=== Starting Vercel Build ==="
+echo "=== GRTTS build ==="
 
-# Install dependencies
 pip install -r requirements.txt
 
-# Run migrations
+# Applies any unapplied migrations. Migrations are additive by design — review
+# every generated migration before merging; this runs automatically on deploy.
+echo "=== Applying migrations ==="
 python manage.py migrate --no-input
 
-# Collect static files (this is critical for admin CSS)
+# static/ is committed and served by Vercel's CDN. collectstatic only populates
+# staticfiles/ for WhiteNoise as a fallback; --clear is deliberately not used.
 echo "=== Collecting static files ==="
-python manage.py collectstatic --no-input --clear
+python manage.py collectstatic --no-input
 
-# Show what was collected
-echo "=== Static files collected ==="
-ls -la staticfiles/admin/css/ | head -20
-
-echo "=== Build Complete ==="
+echo "=== Build complete ==="
