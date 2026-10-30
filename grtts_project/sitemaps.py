@@ -41,7 +41,7 @@ class CourseSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Course.objects.filter(is_active=True)
+        return Course.objects.filter(is_active=True).order_by('id')
 
     def location(self, obj):
         return reverse('main:course_detail', args=[obj.id])
@@ -53,7 +53,7 @@ class LocationSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return DeploymentLocation.objects.all()
+        return DeploymentLocation.objects.all().order_by('id')
 
     def lastmod(self, obj):
         return obj.updated_at
@@ -68,7 +68,7 @@ class PostSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Post.objects.filter(status='published')
+        return Post.objects.filter(status='published').order_by('-published_date')
 
     def lastmod(self, obj):
         return obj.updated_at
@@ -80,7 +80,7 @@ class CategorySitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Category.objects.all()
+        return Category.objects.all().order_by('slug')
 
     def location(self, obj):
         return reverse('blog:category_list', args=[obj.slug])
@@ -92,7 +92,7 @@ class TagSitemap(Sitemap):
     protocol = 'https'
 
     def items(self):
-        return Tag.objects.all()
+        return Tag.objects.all().order_by('slug')
 
     def location(self, obj):
         return reverse('blog:tag_list', args=[obj.slug])
