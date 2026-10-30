@@ -27,8 +27,10 @@
       </div>
     </form>
 
-    {# Filter chips are built from the model's own choices, so adding a course
-       type in models.py surfaces here without touching this template. #}
+    {% comment %}
+      Filter chips are built from the model's own choices, so adding a course
+      type in models.py surfaces here without touching this template.
+    {% endcomment %}
     <nav aria-label="Filter by course type"
          style="display: flex; flex-wrap: wrap; gap: var(--grtts-space-2); justify-content: center; margin-bottom: var(--grtts-space-7);">
       <a href="{% url 'main:courses' %}"
