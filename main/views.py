@@ -121,8 +121,14 @@ def register(request):
 # =============================================================================
 
 def inquiry_page(request):
-    """Main inquiry page with all forms"""
-    return render(request, 'main/inquiry.html')
+    """Legacy enquiry route.
+
+    This rendered main/inquiry.html, a template that has never existed in the
+    repository, so the URL returned a 500 in production. Enquiries are handled
+    by the contact page, which posts to the inquiry_* endpoints below, so this
+    now redirects there instead of erroring.
+    """
+    return redirect('main:contact')
 
 
 @require_POST
@@ -520,19 +526,19 @@ www.grtts.co.zw
 # =============================================================================
 
 def home(request):
-    """Home page view"""
-    featured_courses = Course.objects.filter(is_active=True)[:3]
-    testimonials = Testimonial.objects.filter(is_active=True)[:3]
+    """Home page.
 
+    Ordered for the primary audience — landowners, NGOs and conservancies
+    assessing GRTTS for a deployment contract — so proof of real operations
+    comes before the course listings.
+    """
     context = {
-        'featured_courses': featured_courses,
-        'testimonials': testimonials,
-        'stats': {
-            'rangers_trained': 500,
-            'hectares_protected': 45000,
-            'locations': 5,
-            'year_founded': 2017
-        }
+        'featured_courses': Course.objects.filter(is_active=True)[:3],
+        'testimonials': Testimonial.objects.filter(is_active=True)[:3],
+        'featured_locations': DeploymentLocation.objects.filter(
+            is_deployment_location=True
+        ).order_by('name')[:6],
+        'location_count': DeploymentLocation.objects.count(),
     }
     return render(request, 'main/home.html', context)
 
@@ -553,19 +559,18 @@ def faq(request):
 # =============================================================================
 
 def courses(request):
-    """All courses listing with filtering"""
+    """All courses listing, filterable by type and searchable."""
     courses = Course.objects.filter(is_active=True)
-    course_type = request.GET.get('type')
 
-    if course_type:
-        if course_type == 'basic':
-            courses = courses.filter(course_type='BASIC')
-        elif course_type == 'specialist':
-            courses = courses.filter(course_type='SPECIALIST')
-        elif course_type == 'advanced':
-            courses = courses.filter(course_type='ADVANCED')
-        elif course_type == 'tracking':
-            courses = courses.filter(course_type='TRACKING')
+    # Accept the type slug in lower case (?type=basic) and match it against
+    # the model's own choices, so adding a course type to COURSE_TYPES needs
+    # no change here or in the template.
+    valid_types = {value.lower(): value for value, _ in Course.COURSE_TYPES}
+    course_type = (request.GET.get('type') or '').lower()
+    if course_type in valid_types:
+        courses = courses.filter(course_type=valid_types[course_type])
+    else:
+        course_type = None
 
     search_query = request.GET.get('q')
     if search_query:
@@ -576,10 +581,6 @@ def courses(request):
 
     context = {
         'courses': courses,
-        'basic_courses': courses.filter(course_type='BASIC'),
-        'specialist_courses': courses.filter(course_type='SPECIALIST'),
-        'advanced_courses': courses.filter(course_type='ADVANCED'),
-        'tracking_courses': courses.filter(course_type='TRACKING'),
         'current_filter': course_type,
         'search_query': search_query,
         'course_types': Course.COURSE_TYPES,

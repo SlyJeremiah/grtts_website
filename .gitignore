@@ -11,6 +11,13 @@ db.sqlite3
 # Local media — production serves from Backblaze B2
 /media/
 
+# Database exports — never commit, even sanitized ones
+/grtts-sanitized*.json
+/*-sanitized.json
+/*-loadable.json
+*.sql
+*.dump
+
 # collectstatic output (static/ is committed and served by Vercel's CDN)
 /staticfiles/
 

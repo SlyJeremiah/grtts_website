@@ -125,8 +125,12 @@ SCRUB: dict[str, dict[str, str]] = {
     },
 }
 
-# Never exported at all.
-EXCLUDE_MODELS = {'sessions.Session', 'admin.LogEntry'}
+# Never exported. Content types and permissions are recreated by migrate;
+# exporting them makes the fixture collide with a freshly migrated database.
+EXCLUDE_MODELS = {
+    'sessions.Session', 'admin.LogEntry',
+    'contenttypes.ContentType', 'auth.Permission',
+}
 
 FIRST_NAMES = ['Tendai', 'Rudo', 'Farai', 'Chipo', 'Tatenda', 'Nyasha',
                'Kudzai', 'Rutendo', 'Tafara', 'Anesu']
