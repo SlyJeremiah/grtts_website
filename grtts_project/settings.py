@@ -35,19 +35,30 @@ if not SECRET_KEY:
             'import get_random_secret_key; print(get_random_secret_key())"'
         )
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
+# The domains this site must always answer on. ALLOWED_HOSTS used to be read
+# from the environment with these as a fallback, but the environment variable
+# set in Vercel is narrower than this list, so it silently replaced the lot and
+# the custom domain started returning DisallowedHost (400) while the
+# *.vercel.app address still worked. Adding to the canonical list rather than
+# replacing it means a misconfigured variable can widen access but can never
+# take the site's own domain away from it.
+CANONICAL_HOSTS = [
     'grtts.co.zw',
     'www.grtts.co.zw',
     '.vercel.app',
     'localhost',
     '127.0.0.1',
-])
+]
+ALLOWED_HOSTS = sorted(set(CANONICAL_HOSTS + env.list('ALLOWED_HOSTS', default=[])))
 
-CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
+CANONICAL_ORIGINS = [
     'https://grtts.co.zw',
     'https://www.grtts.co.zw',
     'https://*.vercel.app',
-])
+]
+CSRF_TRUSTED_ORIGINS = sorted(
+    set(CANONICAL_ORIGINS + env.list('CSRF_TRUSTED_ORIGINS', default=[]))
+)
 
 # Vercel terminates TLS at the edge and forwards the original scheme.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
