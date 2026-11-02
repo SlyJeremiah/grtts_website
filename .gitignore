@@ -1,39 +1,43 @@
 # Django
 *.pyc
 __pycache__/
+*.log
+logs/
+
+# Local database
 db.sqlite3
-/media/  # Local media files (Cloudinary will be used in production)
+*.sqlite3
+
+# Local media — production serves from Backblaze B2
+/media/
+
+# Database exports — never commit, even sanitized ones
+/grtts-sanitized*.json
+/*-sanitized.json
+/*-loadable.json
+*.sql
+*.dump
+
+# collectstatic output (static/ is committed and served by Vercel's CDN)
 /staticfiles/
 
-# Environment variables
+# Environment
 .env
-.env.local
-*.env
+.env.*
+!.env.example
 
-# IDE
+# Virtual environments
+venv/
+venv311/
+.venv/
+
+# Vercel
+.vercel
+
+# Editors / OS
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-logs/
-
-# Local SQLite database
-*.sqlite3
-.vercel
-.env*.local
-.env
-.env
-
-# Virtual Environment
-venv/
-venv311/
-.env
-__pycache__/
-*.pyc

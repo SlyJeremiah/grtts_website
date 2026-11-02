@@ -1,7 +1,40 @@
 from django import forms
 from .models import ApplicantProfile, UserDocument
 
-class ApplicantRegistrationForm(forms.ModelForm):
+
+class StyledFormMixin:
+    """Give every widget the matching design-system class.
+
+    The widgets used to carry a hardcoded Bootstrap `form-control` class.
+    Deciding the class from the widget type here means a new field is styled
+    correctly without anyone remembering to add it.
+    """
+
+    WIDGET_CLASSES = (
+        (forms.Select, 'grtts-select'),
+        (forms.SelectMultiple, 'grtts-select'),
+        (forms.Textarea, 'grtts-textarea'),
+        (forms.CheckboxInput, ''),
+        (forms.RadioSelect, ''),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            widget = field.widget
+            css = 'grtts-input'
+            for widget_type, widget_class in self.WIDGET_CLASSES:
+                if isinstance(widget, widget_type):
+                    css = widget_class
+                    break
+            existing = widget.attrs.get('class', '')
+            if css and css not in existing.split():
+                widget.attrs['class'] = (existing + ' ' + css).strip()
+            if field.required:
+                widget.attrs.setdefault('required', 'required')
+
+
+class ApplicantRegistrationForm(StyledFormMixin, forms.ModelForm):
     """
     Registration form for applicants - creates User and ApplicantProfile
     """
@@ -10,7 +43,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=30,
         required=True,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Enter your first name'
         })
     )
@@ -18,14 +50,12 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=30,
         required=True,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Enter your surname'
         })
     )
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={
-            'class': 'form-control',
             'placeholder': 'your.email@example.com'
         })
     )
@@ -33,7 +63,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=20,
         required=True,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': '+263 123 456 789'
         })
     )
@@ -42,27 +71,24 @@ class ApplicantRegistrationForm(forms.ModelForm):
     date_of_birth = forms.DateField(
         required=False,
         widget=forms.DateInput(attrs={
-            'class': 'form-control',
             'type': 'date'
         })
     )
     gender = forms.ChoiceField(
         choices=[('', 'Select Gender'), ('M', 'Male'), ('F', 'Female'), ('O', 'Other')],
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'})
+        widget=forms.Select(attrs={})
     )
     nationality = forms.CharField(
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'e.g., Zimbabwean'
         })
     )
     address = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
-            'class': 'form-control',
             'rows': 2,
             'placeholder': 'Your physical address'
         })
@@ -71,7 +97,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'City/Town'
         })
     )
@@ -79,7 +104,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Province'
         })
     )
@@ -87,7 +111,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Emergency contact full name'
         })
     )
@@ -95,7 +118,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=20,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Emergency contact phone'
         })
     )
@@ -103,14 +125,12 @@ class ApplicantRegistrationForm(forms.ModelForm):
         max_length=50,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Relationship to contact'
         })
     )
     medical_conditions = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
-            'class': 'form-control',
             'rows': 2,
             'placeholder': 'Any medical conditions we should know about'
         })
@@ -118,7 +138,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
     dietary_requirements = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
-            'class': 'form-control',
             'rows': 2,
             'placeholder': 'Any dietary requirements'
         })
@@ -128,7 +147,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
     profile_photo = forms.ImageField(
         required=False,
         widget=forms.FileInput(attrs={
-            'class': 'form-control',
             'accept': 'image/*'
         }),
         help_text='Upload a profile photo (JPG, PNG). Max 5MB.'
@@ -137,7 +155,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
     id_document = forms.FileField(
         required=False,
         widget=forms.FileInput(attrs={
-            'class': 'form-control',
             'accept': '.pdf,.jpg,.jpeg,.png'
         }),
         help_text='Upload your ID or Passport (PDF, JPG, PNG). Max 10MB.'
@@ -146,7 +163,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
     cv = forms.FileField(
         required=False,
         widget=forms.FileInput(attrs={
-            'class': 'form-control',
             'accept': '.pdf,.doc,.docx,.txt'
         }),
         help_text='Upload your CV/Resume (PDF, DOC, DOCX, TXT). Max 10MB.'
@@ -155,7 +171,6 @@ class ApplicantRegistrationForm(forms.ModelForm):
     certificates = forms.FileField(
         required=False,
         widget=forms.FileInput(attrs={
-            'class': 'form-control',
             'accept': '.pdf,.jpg,.jpeg,.png'
         }),
         help_text='Upload any relevant certificates (PDF, JPG, PNG). Max 10MB.'
@@ -194,11 +209,10 @@ class ApplicantRegistrationForm(forms.ModelForm):
         return cert
 
 
-class NewsletterSignupForm(forms.Form):
+class NewsletterSignupForm(StyledFormMixin, forms.Form):
     """Form for newsletter subscription"""
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
-            'class': 'form-control',
             'placeholder': 'Your email address',
             'aria-label': 'Email address'
         })

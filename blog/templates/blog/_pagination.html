@@ -1,0 +1,30 @@
+{% load grtts_tags %}
+{% comment %}
+  Shared pager for the blog listings. query_replace keeps any active search or
+  filter in the URL and changes only the page number.
+{% endcomment %}
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav aria-label="Pagination">
+    <ul class="grtts-pagination">
+      {% if page_obj.has_previous %}
+        <li><a href="?{% query_replace page=page_obj.previous_page_number %}" rel="prev">Previous</a></li>
+      {% else %}
+        <li><span class="is-disabled">Previous</span></li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+          <li><span aria-current="page">{{ num }}</span></li>
+        {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+          <li><a href="?{% query_replace page=num %}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li><a href="?{% query_replace page=page_obj.next_page_number %}" rel="next">Next</a></li>
+      {% else %}
+        <li><span class="is-disabled">Next</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+{% endif %}

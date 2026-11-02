@@ -1,452 +1,334 @@
 {% extends 'main/base.html' %}
 {% load static %}
 
-{% block title %}GRTTS - Game Ranger & Tracker Training Specialist{% endblock %}
+{% block title %}GRTTS — Anti-Poaching Ranger Training, Deployment & Management in Zimbabwe{% endblock %}
+{% block meta_description %}GRTTS trains, deploys and manages professional anti-poaching rangers across Zimbabwe. Over {{ site_facts.rangers_trained }} rangers trained and {{ site_facts.hectares_protected }} hectares protected since {{ site_facts.founded_year }}.{% endblock %}
+{% block og_title %}GRTTS — Training That Saves Lives{% endblock %}
+{% block og_description %}Zimbabwe's specialist in training, deploying and managing anti-poaching rangers for conservancies, NGOs and private landowners.{% endblock %}
 
 {% block content %}
-<!-- Hero Section with Enhanced Effects -->
-<section class="hero-section" style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1549366021-9f761d450615?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80') center/cover; height: 600px; display: flex; align-items: center; text-align: center; color: white; position: relative; overflow: hidden;">
-    
-    <!-- Animated Background Overlay -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(255,217,102,0.1) 0%, transparent 50%); animation: pulse-bg 4s ease-in-out infinite;"></div>
-    
-    <div class="container" style="position: relative; z-index: 2;">
-        <h1 class="gradient-text" style="font-size: 3rem; margin-bottom: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; animation: fadeInDown 1s ease;">
-            GAME RANGER AND TRACKER<br>TRAINING SPECIALIST
-        </h1>
-        <p class="neon-text" style="font-size: 2.5rem; margin-bottom: 2rem; font-weight: 300; animation: fadeInUp 1s ease 0.3s both;">
-            Training That Saves Lives
-        </p>
-        <p class="shine-text" style="background-color: rgba(45, 90, 59, 0.95); display: inline-block; padding: 1rem 3rem; border-radius: 50px; font-size: 1.3rem; border: 2px solid #ffd966; animation: fadeIn 1s ease 0.6s both;">
-            <i class="fas fa-star" style="color: #ffd966; margin-right: 10px;"></i>
-            Over a Septennium of Excellence
-            <i class="fas fa-star" style="color: #ffd966; margin-left: 10px;"></i>
-        </p>
+
+{# ── Hero ──────────────────────────────────────────────────────────────── #}
+<section class="grtts-hero grtts-overlay">
+  <div class="grtts-container grtts-hero__inner">
+    <span class="grtts-eyebrow" style="color: var(--grtts-gold-300);">
+      Training that saves lives
+    </span>
+    <h1 class="grtts-hero__title">
+      Rangers your conservancy can rely on
+    </h1>
+    <p class="grtts-hero__lead">
+      GRTTS trains, equips, deploys and manages professional anti-poaching
+      rangers across Zimbabwe — {{ site_facts.rangers_trained }}+ of them, protecting
+      {{ site_facts.hectares_protected }} hectares of private and community wildlife areas.
+    </p>
+    <div class="grtts-hero__actions">
+      <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--accent grtts-btn--lg">
+        Request a proposal
+      </a>
+      <a href="{% url 'main:locations' %}" class="grtts-btn grtts-btn--on-dark grtts-btn--lg">
+        See where we operate
+      </a>
     </div>
+  </div>
 </section>
 
-<!-- Stats Section -->
-<section class="py-5" style="background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%); color: white; position: relative; overflow: hidden;">
-    
-    <!-- Background Pattern -->
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffd966' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    
-    <div class="container" style="position: relative; z-index: 2;">
-        <div class="row text-center">
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">500+</div>
-                    <i class="fas fa-users" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">RANGERS TRAINED</h4>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Professionally equipped and field-ready</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">45,000</div>
-                    <i class="fas fa-tree" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">HECTARES PROTECTED</h4>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Private & community wildlife areas</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">2017</div>
-                    <i class="fas fa-calendar-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">YEAR FOUNDED</h4>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Over 7 years of excellence</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-card" style="padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 20px; backdrop-filter: blur(5px); border: 1px solid rgba(255,217,102,0.3); transition: all 0.3s ease;">
-                    <div style="font-size: 4rem; color: #ffd966; text-shadow: 2px 2px 0 #1e3c2c; margin-bottom: 0.5rem;">8</div>
-                    <i class="fas fa-map-marker-alt" style="color: #ffd966; font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                    <h4 style="color: white; font-size: 1.3rem; letter-spacing: 1px;">DEPLOYMENT LOCATIONS</h4>
-                    <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-top: 10px;">Across Zimbabwe's prime wildlife areas</p>
-                </div>
-            </div>
-        </div>
+{# ── Proof ─────────────────────────────────────────────────────────────── #}
+<section class="grtts-section grtts-section--inverse grtts-section--tight">
+  <div class="grtts-container">
+    <div class="grtts-grid" style="gap: var(--grtts-space-6);">
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.rangers_trained }}+</span>
+        <span class="grtts-stat__label">Rangers trained</span>
+        <span class="grtts-stat__note">Equipped, uniformed and field-ready</span>
+      </div>
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.hectares_protected }}</span>
+        <span class="grtts-stat__label">Hectares protected</span>
+        <span class="grtts-stat__note">Private &amp; community wildlife areas</span>
+      </div>
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.deployment_locations }}</span>
+        <span class="grtts-stat__label">Deployment locations</span>
+        <span class="grtts-stat__note">Across Zimbabwe's prime wildlife areas</span>
+      </div>
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.years_operating }}</span>
+        <span class="grtts-stat__label">Years in the field</span>
+        <span class="grtts-stat__note">Founded {{ site_facts.founded_year }}, registered {{ site_facts.registered_year }}</span>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- Who We Are -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5 text-3d" style="font-size: 2rem; font-weight: 600;">
-            <i class="fas fa-paw" style="color: #ffd966; margin-right: 15px;"></i>
-            WHO ARE WE?
-            <i class="fas fa-paw" style="color: #ffd966; margin-left: 15px;"></i>
-        </h2>
-        <div class="row">
-            <div class="col-lg-8 mx-auto">
-                <div class="card border-0 shadow-sm p-4" style="border-radius: 20px; background: linear-gradient(145deg, #ffffff, #f8f9fa);">
-                    <p class="lead animated-bg-text" style="font-size: 1.3rem; line-height: 1.8;">WE ARE THE LEADING ZIMBABWEAN COMPANY DEDICATED TO TRAINING, DEPLOYING AND MANAGING ANTI-POACHING RANGERS ACROSS THE COUNTRY WITH OVER A DECADE OF EXPERIENCE.</p>
-                    <p class="shine-text" style="font-size: 1.1rem; line-height: 1.6;">WE HAVE TRAINED AND DEPLOYED MORE THAN 500 MEN AND WOMEN, EMPOWERING THEM TO SERVE ON THE FRONTLINES OF WILDLIFE AND ENVIRONMENTAL PROTECTION.</p>
-                </div>
-            </div>
+{# ── What we do ────────────────────────────────────────────────────────── #}
+<section class="grtts-section">
+  <div class="grtts-container">
+    <header style="margin-bottom: var(--grtts-space-7); max-width: var(--grtts-measure);">
+      <span class="grtts-eyebrow">What we do</span>
+      <h2>End-to-end ranger capability</h2>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        We are the leading Zimbabwean company dedicated to training, deploying
+        and managing anti-poaching rangers — from first selection through to
+        day-to-day management in the field.
+      </p>
+    </header>
+
+    <div class="grtts-grid">
+      <article class="grtts-card">
+        <div class="grtts-card__body">
+          <h3 class="grtts-card__title">Ranger training</h3>
+          <p class="grtts-text-muted">
+            Structured programmes for individuals entering wildlife protection
+            and for serving rangers moving into leadership and specialist roles.
+          </p>
+          <a href="{% url 'main:courses' %}" class="grtts-btn grtts-btn--outline grtts-btn--sm"
+             style="margin-top: var(--grtts-space-3);">View courses</a>
         </div>
+      </article>
+      <article class="grtts-card">
+        <div class="grtts-card__body">
+          <h3 class="grtts-card__title">Anti-poaching deployment</h3>
+          <p class="grtts-text-muted">
+            Fully trained, professionally equipped, uniformed, armed and
+            disciplined rangers deployed to your property.
+          </p>
+          <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--outline grtts-btn--sm"
+             style="margin-top: var(--grtts-space-3);">Discuss deployment</a>
+        </div>
+      </article>
+      <article class="grtts-card">
+        <div class="grtts-card__body">
+          <h3 class="grtts-card__title">Ranger management</h3>
+          <p class="grtts-text-muted">
+            Ongoing command, welfare, reporting and conservation management so
+            your unit stays effective long after deployment.
+          </p>
+          <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--outline grtts-btn--sm"
+             style="margin-top: var(--grtts-space-3);">Talk to us</a>
+        </div>
+      </article>
     </div>
+  </div>
 </section>
 
-<!-- What We Do -->
-<section class="py-5" style="background-color: #f4f7f2;">
-    <div class="container">
-        <h2 class="text-center mb-5 split-text" data-text="WHAT WE DO" style="font-size: 2rem; font-weight: 600;">
-            WHAT WE DO
-        </h2>
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; transition: all 0.3s ease;">
-                    <div class="card-body text-center p-5">
-                        <i class="fas fa-shield-alt fa-4x mb-3" style="color: #2d5a3b;"></i>
-                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: #2d5a3b; font-weight: 600;">Ranger Training Programs</h4>
-                        <p style="font-size: 1rem; line-height: 1.6; color: #333;">Specialized training programs for individuals aspiring to join wildlife protection and anti-poaching operations.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; transition: all 0.3s ease;">
-                    <div class="card-body text-center p-5">
-                        <i class="fas fa-users fa-4x mb-3" style="color: #2d5a3b;"></i>
-                        <h4 style="font-size: 1.5rem; margin-bottom: 1rem; color: #2d5a3b; font-weight: 600;">Anti-Poaching Deployment</h4>
-                        <p style="font-size: 1rem; line-height: 1.6; color: #333;">Fully trained, professionally equipped, uniformed, armed and disciplined rangers ready for deployment.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Core Services -->
-        <div class="row mt-5">
-            <div class="col-12">
-                <h3 class="text-center mb-5" style="font-size: 2rem; font-weight: 700; color: #2d5a3b;">OUR CORE SERVICES</h3>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <i class="fas fa-graduation-cap fa-3x mb-3" style="color: #ffd966;"></i>
-                    <h5 style="color: #2d5a3b; font-weight: 600;">Ranger Training Programs</h5>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <i class="fas fa-tree fa-3x mb-3" style="color: #ffd966;"></i>
-                    <h5 style="color: #2d5a3b; font-weight: 600;">Anti-Poaching Deployment</h5>
-                </div>
-            </div>
-            <div class="col-md-4 mb-3">
-                <div class="card border-0 bg-white p-4 text-center" style="border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <i class="fas fa-hand-holding-heart fa-3x mb-3" style="color: #ffd966;"></i>
-                    <h5 style="color: #2d5a3b; font-weight: 600;">Ranger Management & Conservation</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{# ── Where we operate — the strongest proof for this audience ──────────── #}
+{% if featured_locations %}
+<section class="grtts-section grtts-section--sunken">
+  <div class="grtts-container">
+    <header style="margin-bottom: var(--grtts-space-7); max-width: var(--grtts-measure);">
+      <span class="grtts-eyebrow">Where we operate</span>
+      <h2>Deployed across Zimbabwe</h2>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        Our rangers are on the ground in conservancies, ranches, wilderness
+        areas and community lands nationwide.
+      </p>
+    </header>
 
-<!-- Featured Courses -->
-<section class="py-5">
-    <div class="container">
-        <div style="display: flex; justify-content: center;">
-            <h2 class="typing-effect" style="color: #2d5a3b; font-size: 1.5rem; font-weight: 700; display: inline-block; border-right: 4px solid #ffd966; padding-right: 10px;">
-                TRAINING PROGRAMS
-            </h2>
-        </div>
-        <div class="row mt-5">
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
-                    <div style="height: 10px; background: linear-gradient(90deg, #2d5a3b, #ffd966);"></div>
-                    <div class="card-body p-4">
-                        <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">BASIC RANGER COURSE</h4>
-                        <p class="text-muted">Conservation Guardianship</p>
-                        <p><strong>Duration:</strong> 6 Weeks</p>
-                        <p><strong>Intake:</strong> January, June, October</p>
-                        <p>Detailed entry level studies for aspiring rangers.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
-                    <div style="height: 10px; background: linear-gradient(90deg, #ffd966, #2d5a3b);"></div>
-                    <div class="card-body p-4">
-                        <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">SPECIALIST COURSES</h4>
-                        <p><strong>Available all year round</strong></p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check" style="color: #ffd966; margin-right: 8px;"></i> Basic, Advanced & Counter-Insurgency Tracking</li>
-                            <li><i class="fas fa-check" style="color: #ffd966; margin-right: 8px;"></i> Small Team Tactics</li>
-                            <li><i class="fas fa-check" style="color: #ffd966; margin-right: 8px;"></i> K9 Handling & Kennel Management</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
-                    <div style="height: 10px; background: linear-gradient(90deg, #2d5a3b, #ffd966, #2d5a3b);"></div>
-                    <div class="card-body p-4">
-                        <h4 class="card-title" style="color: #2d5a3b; font-size: 1.5rem;">ADVANCED RANGER</h4>
-                        <p><strong>Duration:</strong> 2 Weeks</p>
-                        <p><strong>Intake:</strong> March, November</p>
-                        <p>Designed for rangers moving into leadership roles.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-4">
-            <a href="{% url 'main:courses' %}" class="btn btn-lg shine-text" style="background-color: #2d5a3b; color: white; padding: 12px 40px; border-radius: 50px; font-size: 1.2rem;">
-                View All Courses <i class="fas fa-arrow-right ms-2"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- Partners Section -->
-<section class="py-5" style="background-color: #ffffff;">
-    <div class="container">
-        <h2 class="text-center mb-4" style="font-size: 1.5rem; font-weight: 700; color: #2d5a3b;">
-            <i class="fas fa-handshake" style="color: #ffd966; margin-right: 15px;"></i>
-            Our Network
-            <i class="fas fa-handshake" style="color: #ffd966; margin-left: 15px;"></i>
-        </h2>
-        <p class="text-center text-muted mb-5" style="font-size: 1.1rem;">
-            Collaborating with leading organizations to protect Zimbabwe's wildlife
-        </p>
-        
-        {% if partners %}
-        <div class="row align-items-center justify-content-center g-4">
-            {% for partner in partners %}
-            <div class="col-6 col-md-3 col-lg-2 text-center partner-item">
-                <div class="p-3 rounded shadow-sm bg-white h-100 d-flex flex-column align-items-center justify-content-center" 
-                     style="transition: transform 0.3s ease, box-shadow 0.3s ease; min-height: 140px; border: 1px solid #e9ecef;">
-                    {% if partner.logo %}
-                        {% if partner.website %}
-                        <a href="{{ partner.website }}" target="_blank" rel="noopener noreferrer" title="{{ partner.name }}" 
-                           style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; text-decoration: none;">
-                            <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" 
-                                 class="img-fluid" 
-                                 style="max-height: 70px; max-width: 140px; object-fit: contain; filter: grayscale(0%); transition: filter 0.3s ease;"
-                                 onmouseover="this.style.filter='grayscale(0%) brightness(1.1)'" 
-                                 onmouseout="this.style.filter='grayscale(0%)'">
-                        </a>
-                        {% else %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" 
-                             class="img-fluid" 
-                             style="max-height: 70px; max-width: 140px; object-fit: contain;">
-                        {% endif %}
-                    {% else %}
-                        <div class="text-center">
-                            <i class="fas fa-building fa-2x text-muted"></i>
-                            <p class="mt-2 small">{{ partner.name }}</p>
-                        </div>
-                    {% endif %}
-                </div>
-                <p class="mt-2 small text-muted">{{ partner.name }}</p>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="text-center py-4">
-            <p class="text-muted">No partners added yet.</p>
-            <p class="small text-muted">Check back later to see our partner organizations.</p>
-        </div>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Testimonials Section -->
-{% if testimonials %}
-<section class="py-5" style="background-color: #f4f7f2;">
-    <div class="container">
-        <h2 class="text-center mb-5 gradient-text" style="font-size: 2.5rem; font-weight: 800; position: relative;">
-            What People Say
-            <span style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 100px; height: 4px; background: #ffd966; animation: underline-grow 2s infinite;"></span>
-        </h2>
-        
-        <!-- Testimonials Carousel -->
-        <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for testimonial in testimonials %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="card shadow-sm border-0" style="border-radius: 20px; background: white;">
-                                <div class="card-body text-center p-5">
-                                    <i class="fas fa-quote-left fa-3x mb-4" style="color: #ffd966; opacity: 0.5;"></i>
-                                    <p class="lead mb-4" style="font-style: italic; font-size: 1.2rem; line-height: 1.8;">
-                                        "{{ testimonial.content }}"
-                                    </p>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        {% if testimonial.image %}
-                                        <img src="{{ testimonial.image.url }}" 
-                                             alt="{{ testimonial.name }}" 
-                                             class="rounded-circle me-3"
-                                             style="width: 70px; height: 70px; object-fit: cover; border: 3px solid #ffd966;">
-                                        {% else %}
-                                        <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                                             style="width: 70px; height: 70px; background-color: #2d5a3b; color: white; border: 3px solid #ffd966;">
-                                            <span style="font-size: 24px; font-weight: bold;">
-                                                {{ testimonial.name|make_list|first }}
-                                            </span>
-                                        </div>
-                                        {% endif %}
-                                        <div class="text-start">
-                                            <h5 class="mb-1" style="color: #2d5a3b;">{{ testimonial.name }}</h5>
-                                            <p class="text-muted mb-0">{{ testimonial.position }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            
-            {% if testimonials|length > 1 %}
-            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true" style="background-color: #2d5a3b; border-radius: 50%; padding: 20px;"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: #2d5a3b; border-radius: 50%; padding: 20px;"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+    <div class="grtts-grid">
+      {% for location in featured_locations %}
+        <a href="{% url 'main:location_detail' location.id %}" class="grtts-card grtts-card--interactive"
+           style="text-decoration: none; color: inherit;">
+          {% if location.main_image %}
+            <img src="{{ location.main_image.url }}" alt="" class="grtts-card__media" loading="lazy">
+          {% endif %}
+          <div class="grtts-card__body">
+            <h3 class="grtts-card__title" style="font-size: var(--grtts-text-lg);">{{ location.name }}</h3>
+            {% if location.description %}
+              <p class="grtts-card__meta">{{ location.description|striptags|truncatewords:18 }}</p>
             {% endif %}
-        </div>
+          </div>
+        </a>
+      {% endfor %}
     </div>
+
+    {% if location_count > featured_locations|length %}
+      <p style="margin-top: var(--grtts-space-6); text-align: center;">
+        <a href="{% url 'main:locations' %}" class="grtts-btn grtts-btn--outline">
+          All {{ location_count }} locations
+        </a>
+      </p>
+    {% endif %}
+  </div>
 </section>
 {% endif %}
 
-<!-- Locations -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5" style="font-size: 2rem; font-weight: 800; color: #2d5a3b;">
-            <i class="fas fa-map-marker-alt" style="color: #ffd966; margin-right: 15px;"></i>
-            TRAINING & DEPLOYMENT LOCATIONS
-            <i class="fas fa-map-marker-alt" style="color: #ffd966; margin-left: 15px;"></i>
-        </h2>
-        <div class="row text-center">
-            <div class="col-md-2 col-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
-                    <strong style="color: #2d5a3b;">GWERU</strong>
-                </div>
-            </div>
-            <div class="col-md-2 col-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
-                    <strong style="color: #2d5a3b;">GURUVE</strong>
-                </div>
-            </div>
-            <div class="col-md-2 col-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
-                    <strong style="color: #2d5a3b;">MATOPO</strong>
-                </div>
-            </div>
-            <div class="col-md-2 col-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
-                    <strong style="color: #2d5a3b;">HWANGE</strong>
-                </div>
-            </div>
-            <div class="col-md-2 col-4 mb-3">
-                <div class="p-3 bg-white rounded shadow-sm float-number" style="border-radius: 10px; border: 2px solid transparent; transition: all 0.3s ease;">
-                    <strong style="color: #2d5a3b;">VICTORIA FALLS</strong>
-                </div>
-            </div>
-        </div>
+{# ── Testimonials ──────────────────────────────────────────────────────── #}
+{% if testimonials %}
+<section class="grtts-section">
+  <div class="grtts-container">
+    <header style="margin-bottom: var(--grtts-space-7); max-width: var(--grtts-measure);">
+      <span class="grtts-eyebrow">In their words</span>
+      <h2>What people say</h2>
+    </header>
+    <div class="grtts-grid">
+      {% for testimonial in testimonials %}
+        <figure class="grtts-card" style="margin: 0;">
+          <div class="grtts-card__body">
+            <blockquote style="margin: 0; font-size: var(--grtts-text-lg); line-height: var(--grtts-leading-relaxed);">
+              {{ testimonial.content }}
+            </blockquote>
+          </div>
+          <figcaption class="grtts-card__footer"
+                      style="display: flex; align-items: center; gap: var(--grtts-space-3);">
+            {% if testimonial.image %}
+              <img src="{{ testimonial.image.url }}" alt="" width="48" height="48" loading="lazy"
+                   style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+            {% endif %}
+            <span>
+              <strong style="display: block;">{{ testimonial.name }}</strong>
+              <span class="grtts-text-subtle" style="font-size: var(--grtts-text-sm);">{{ testimonial.position }}</span>
+            </span>
+          </figcaption>
+        </figure>
+      {% endfor %}
     </div>
+  </div>
+</section>
+{% endif %}
+
+{# ── Training programmes (secondary track) ─────────────────────────────── #}
+{% if featured_courses %}
+<section class="grtts-section grtts-section--sunken">
+  <div class="grtts-container">
+    <header style="margin-bottom: var(--grtts-space-7); max-width: var(--grtts-measure);">
+      <span class="grtts-eyebrow">For aspiring rangers</span>
+      <h2>Training programmes</h2>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        Join the frontline of wildlife protection.
+      </p>
+    </header>
+    <div class="grtts-grid">
+      {% for course in featured_courses %}
+        <article class="grtts-card grtts-card--interactive">
+          <div class="grtts-card__body">
+            <span class="grtts-badge">{{ course.get_course_type_display }}</span>
+            <h3 class="grtts-card__title" style="margin-top: var(--grtts-space-3);">{{ course.title }}</h3>
+            <p class="grtts-card__meta" style="margin-bottom: var(--grtts-space-3);">
+              {{ course.duration }}{% if course.intake_dates %} &middot; {{ course.intake_dates }}{% endif %}
+            </p>
+            <p class="grtts-text-muted">{{ course.description|striptags|truncatewords:22 }}</p>
+          </div>
+          <div class="grtts-card__footer">
+            <a href="{% url 'main:course_detail' course.id %}" class="grtts-btn grtts-btn--outline grtts-btn--sm">
+              Course details
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    <p style="margin-top: var(--grtts-space-6); text-align: center;">
+      <a href="{% url 'main:courses' %}" class="grtts-btn grtts-btn--primary">All training programmes</a>
+    </p>
+  </div>
+</section>
+{% endif %}
+
+{# ── Partners ──────────────────────────────────────────────────────────── #}
+{% if partners %}
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <h2 class="grtts-center" style="font-size: var(--grtts-text-xl); margin-bottom: var(--grtts-space-6);">
+      Working alongside
+    </h2>
+    <ul class="grtts-partners">
+      {% for partner in partners %}
+        <li>
+          {% if partner.website %}<a href="{{ partner.website }}" rel="noopener noreferrer nofollow" target="_blank">{% endif %}
+          {% if partner.logo %}
+            <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" loading="lazy">
+          {% else %}
+            <span class="grtts-text-muted">{{ partner.name }}</span>
+          {% endif %}
+          {% if partner.website %}</a>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{# ── Closing CTA ───────────────────────────────────────────────────────── #}
+<section class="grtts-section grtts-section--inverse">
+  <div class="grtts-container grtts-center">
+    <span class="grtts-eyebrow">Get in touch</span>
+    <h2>Protecting your wildlife area starts with a conversation</h2>
+    <p class="grtts-measure" style="margin-inline: auto; color: var(--grtts-green-200); font-size: var(--grtts-text-lg);">
+      Tell us about your property and the pressures you face. We will come back
+      with a deployment plan and costing.
+    </p>
+    <div class="grtts-hero__actions" style="justify-content: center; margin-top: var(--grtts-space-6);">
+      <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--accent grtts-btn--lg">
+        Request a proposal
+      </a>
+      <a href="tel:+263781603802" class="grtts-btn grtts-btn--on-dark grtts-btn--lg">
+        +263 781 603 802
+      </a>
+    </div>
+  </div>
 </section>
 
-<!-- Contact CTA -->
-<section class="py-5" style="background: linear-gradient(135deg, #2d5a3b 0%, #1e3c2c 100%); color: white; position: relative; overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 70% 30%, rgba(255,217,102,0.1) 0%, transparent 50%);"></div>
-    
-    <div class="container text-center" style="position: relative; z-index: 2;">
-        <h3 style="font-size: 2.5rem; margin-bottom: 1rem; text-shadow: 0 0 10px rgba(255,217,102,0.3);">GET IN TOUCH</h3>
-        <p class="lead mb-4 animated-bg-text" style="font-size: 1.3rem;">For course deployment plans or ranger management contracts</p>
-        <div class="row justify-content-center">
-            <div class="col-md-4 mb-2">
-                <div style="display: inline-block;">
-                    <i class="fas fa-phone-alt" style="color: #ffd966; margin-right: 8px;"></i> 
-                    <span style="font-size: 1.2rem;">+263 781 603 802</span>
-                </div>
-            </div>
-            <div class="col-md-4 mb-2">
-                <div style="display: inline-block;">
-                    <i class="fas fa-phone-alt" style="color: #ffd966; margin-right: 8px;"></i> 
-                    <span style="font-size: 1.2rem;">+263 788 661 234</span>
-                </div>
-            </div>
-            <div class="col-md-4 mb-2">
-                <div style="display: inline-block;">
-                    <i class="fas fa-envelope" style="color: #ffd966; margin-right: 8px;"></i> 
-                    <span style="font-size: 1.2rem;">grttsrangers@gmail.com</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{% endblock %}
 
-<!-- All Animations -->
+{% block extra_css %}
 <style>
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    @keyframes pulse-bg {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 0.6; }
-    }
-    
-    @keyframes underline-grow {
-        0% { width: 50px; opacity: 0.5; }
-        50% { width: 150px; opacity: 1; }
-        100% { width: 50px; opacity: 0.5; }
-    }
-    
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-5px); }
-        100% { transform: translateY(0px); }
-    }
-    
-    .float-number {
-        animation: float 3s ease-in-out infinite;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-5px) !important;
-        box-shadow: 0 15px 25px rgba(0,0,0,0.2) !important;
-        border-color: #ffd966 !important;
-    }
-    
-    .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-    }
-    
-    .partner-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-        border-color: #ffd966 !important;
-    }
+  .grtts-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: clamp(26rem, 62vh, 40rem);
+    padding-block: var(--grtts-space-8);
+    background-image: url("{% static 'images/hero-rangers-960.jpg' %}");
+    background-size: cover;
+    background-position: center 35%;
+    color: #fff;
+  }
+  @media (min-width: 961px) {
+    .grtts-hero { background-image: url("{% static 'images/hero-rangers-1920.jpg' %}"); }
+  }
+  .grtts-hero__inner { max-width: 46rem; }
+  .grtts-hero__title {
+    color: #fff;
+    margin-bottom: var(--grtts-space-4);
+    text-shadow: 0 2px 16px rgba(6, 21, 13, 0.5);
+  }
+  .grtts-hero__lead {
+    font-size: var(--grtts-text-lg);
+    line-height: var(--grtts-leading-relaxed);
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: var(--grtts-space-6);
+  }
+  .grtts-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grtts-space-3);
+  }
+
+  .grtts-partners {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--grtts-space-6) var(--grtts-space-8);
+  }
+  .grtts-partners img {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
+    /* Logos arrive in mixed colours and formats; desaturating until hover
+       keeps the row reading as one band rather than a ransom note. */
+    filter: grayscale(100%);
+    opacity: 0.75;
+    transition: filter var(--grtts-duration-base) var(--grtts-ease),
+                opacity var(--grtts-duration-base) var(--grtts-ease);
+  }
+  .grtts-partners a:hover img,
+  .grtts-partners a:focus-visible img {
+    filter: grayscale(0);
+    opacity: 1;
+  }
 </style>
 {% endblock %}

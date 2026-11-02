@@ -1,0 +1,77 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Certificate {{ certificate.certificate_number }} — GRTTS{% endblock %}
+{% block meta_description %}Verified GRTTS training certificate {{ certificate.certificate_number }}: {{ certificate.course_name }}, completed {{ certificate.completion_date|date:"F Y" }}.{% endblock %}
+{% block meta_robots %}<meta name="robots" content="noindex, follow">{% endblock %}
+{% block og_title %}Certificate {{ certificate.certificate_number }} — GRTTS{% endblock %}
+
+{% block content %}
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <div style="max-width: 40rem; margin-inline: auto;">
+
+      <nav aria-label="Breadcrumb">
+        <ol class="grtts-breadcrumb">
+          <li><a href="{% url 'main:verify_certificate' %}">Verify a certificate</a></li>
+          <li class="grtts-breadcrumb__sep" aria-hidden="true">/</li>
+          <li aria-current="page">{{ certificate.certificate_number }}</li>
+        </ol>
+      </nav>
+
+      <div class="grtts-alert grtts-alert--success">
+        <strong>This certificate is genuine and valid.</strong>
+        Verified against GRTTS records on {% now "j F Y" %}.
+      </div>
+
+      <div class="grtts-card" style="margin-top: var(--grtts-space-5);">
+        <div class="grtts-card__body">
+          <span class="grtts-eyebrow">GRTTS certificate</span>
+          <h1 style="font-size: var(--grtts-text-2xl);">{{ certificate.full_name }}</h1>
+
+          <dl class="grtts-datalist" style="margin-top: var(--grtts-space-5);">
+            <dt>Certificate number</dt>
+            <dd>{{ certificate.certificate_number }}</dd>
+            <dt>Course</dt>
+            <dd>{{ certificate.course_name }}</dd>
+            <dt>Duration</dt>
+            <dd>{{ certificate.duration }}</dd>
+            <dt>Completed</dt>
+            <dd>{{ certificate.completion_date|date:"j F Y" }}</dd>
+            <dt>Issued</dt>
+            <dd>{{ certificate.issue_date|date:"j F Y" }}</dd>
+            {% if certificate.grade %}
+              <dt>Grade</dt>
+              <dd>{{ certificate.grade }}</dd>
+            {% endif %}
+            {% if certificate.score %}
+              <dt>Score</dt>
+              <dd>{{ certificate.score }}%</dd>
+            {% endif %}
+          </dl>
+
+          {% if certificate.pdf_file %}
+            <a href="{{ certificate.pdf_file.url }}" class="grtts-btn grtts-btn--outline"
+               style="margin-top: var(--grtts-space-5);" target="_blank" rel="noopener">
+              Open the certificate
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="grtts-card" style="margin-top: var(--grtts-space-5);">
+        <div class="grtts-card__body">
+          <h2 class="grtts-card__title">Checking someone else?</h2>
+          <a href="{% url 'main:verify_certificate' %}" class="grtts-btn grtts-btn--primary" style="width: 100%;">
+            Verify another certificate
+          </a>
+          <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--outline"
+             style="width: 100%; margin-top: var(--grtts-space-3);">
+            Hire trained rangers from us
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

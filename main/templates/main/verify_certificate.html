@@ -1,59 +1,98 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Certificate Verification - GRTTS{% endblock %}
+{% block title %}Verify a GRTTS Certificate{% endblock %}
+{% block meta_description %}Check that a GRTTS ranger training certificate is genuine. Enter the certificate number to see the holder, course and completion date.{% endblock %}
+{% block og_title %}Verify a GRTTS Certificate{% endblock %}
+{% block og_description %}Confirm a GRTTS training certificate is genuine.{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-5" style="color: #2d5a3b;">Certificate Verification</h1>
-    
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg border-0">
-                <div class="card-header" style="background-color: #2d5a3b; color: white;">
-                    <h4 class="mb-0">Verify a Certificate</h4>
-                </div>
-                <div class="card-body p-4">
-                    <p class="text-muted mb-4">
-                        Enter the certificate number to verify its authenticity.
-                    </p>
-                    
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Certificate Number</label>
-                            <input type="text" name="certificate_number" class="form-control form-control-lg" 
-                                   placeholder="e.g., GRTTS-2024-0001" required>
-                        </div>
-                        
-                        <button type="submit" class="btn w-100 py-2" style="background-color: #2d5a3b; color: white;">
-                            <i class="fas fa-search"></i> Verify Certificate
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            {% if verified and certificate %}
-            <div class="card mt-4 border-success">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-check-circle"></i> Certificate Verified</h5>
-                </div>
-                <div class="card-body">
-                    <h4 class="text-success">✓ Valid Certificate</h4>
-                    <hr>
-                    <p><strong>Certificate Number:</strong> {{ certificate.certificate_number }}</p>
-                    <p><strong>Recipient:</strong> {{ certificate.full_name }}</p>
-                    <p><strong>Course:</strong> {{ certificate.course_name }}</p>
-                    <p><strong>Completion Date:</strong> {{ certificate.completion_date|date:"F j, Y" }}</p>
-                    <p><strong>Issue Date:</strong> {{ certificate.issue_date|date:"F j, Y" }}</p>
-                    
-                    <a href="{% url 'main:certificate_detail' certificate.certificate_number %}" class="btn btn-outline-success w-100">
-                        View Full Certificate
-                    </a>
-                </div>
-            </div>
-            {% endif %}
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <div style="max-width: 44rem; margin-inline: auto;">
+      <header style="margin-bottom: var(--grtts-space-6);">
+        <span class="grtts-eyebrow">Verification</span>
+        <h1>Verify a certificate</h1>
+        <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+          Hiring a ranger who says they trained with us? Enter the number
+          printed on their certificate and we will confirm it.
+        </p>
+      </header>
+
+      <form method="post" action="{% url 'main:verify_certificate' %}">
+        {% csrf_token %}
+        <label class="grtts-field">
+          <span class="grtts-label">Certificate number <abbr title="required">*</abbr></span>
+          <div style="display: flex; gap: var(--grtts-space-2); flex-wrap: wrap;">
+            <input type="text" name="certificate_number" class="grtts-input"
+                   required autocomplete="off" spellcheck="false"
+                   style="flex: 1 1 14rem;"
+                   placeholder="e.g. GRTTS-2024-0142">
+            <button type="submit" class="grtts-btn grtts-btn--primary">Verify</button>
+          </div>
+          <span class="grtts-help">
+            Printed on the certificate. Case does not matter, but include any
+            dashes.
+          </span>
+        </label>
+      </form>
+
+      {% if verified and certificate %}
+        <div class="grtts-alert grtts-alert--success" style="margin-top: var(--grtts-space-6);">
+          <strong>This certificate is genuine and valid.</strong>
         </div>
+
+        <div class="grtts-card" style="margin-top: var(--grtts-space-4);">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">{{ certificate.full_name }}</h2>
+            <dl class="grtts-datalist" style="margin-top: var(--grtts-space-5);">
+              <dt>Certificate number</dt>
+              <dd>{{ certificate.certificate_number }}</dd>
+              <dt>Course</dt>
+              <dd>{{ certificate.course_name }}</dd>
+              <dt>Duration</dt>
+              <dd>{{ certificate.duration }}</dd>
+              <dt>Completed</dt>
+              <dd>{{ certificate.completion_date|date:"j F Y" }}</dd>
+              <dt>Issued</dt>
+              <dd>{{ certificate.issue_date|date:"j F Y" }}</dd>
+              {% if certificate.grade %}
+                <dt>Grade</dt>
+                <dd>{{ certificate.grade }}</dd>
+              {% endif %}
+              {% if certificate.score %}
+                <dt>Score</dt>
+                <dd>{{ certificate.score }}%</dd>
+              {% endif %}
+            </dl>
+            {% if certificate.pdf_file %}
+              <a href="{{ certificate.pdf_file.url }}" class="grtts-btn grtts-btn--outline"
+                 style="margin-top: var(--grtts-space-5);" target="_blank" rel="noopener">
+                Open the certificate
+              </a>
+            {% endif %}
+          </div>
+        </div>
+
+        <p class="grtts-help" style="margin-top: var(--grtts-space-4);">
+          Permanent link to this record:
+          <a href="{% url 'main:certificate_detail' certificate.certificate_number %}">{{ certificate.certificate_number }}</a>
+        </p>
+      {% endif %}
+
+      <div class="grtts-card" style="margin-top: var(--grtts-space-7);">
+        <div class="grtts-card__body">
+          <h2 class="grtts-card__title">Number not recognised?</h2>
+          <p class="grtts-text-muted">
+            Certificates issued before our records went online may not appear
+            here, and a certificate we have withdrawn will not verify. Either
+            way, email us the number and we will check by hand.
+          </p>
+          <a href="{% url 'main:contact' %}?type=other" class="grtts-btn grtts-btn--outline">
+            Ask us to check
+          </a>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
 {% endblock %}

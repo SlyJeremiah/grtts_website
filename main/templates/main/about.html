@@ -1,24 +1,149 @@
 {% extends 'main/base.html' %}
+{% load static %}
 
-{% block title %}About Us - GRTTS{% endblock %}
+{% block title %}About GRTTS — Ranger Training, Deployment & Management{% endblock %}
+{% block meta_description %}GRTTS is a Zimbabwean ranger training, deployment and management company. Founded in {{ site_facts.founded_year }}, we have trained over {{ site_facts.rangers_trained }} rangers and protect {{ site_facts.hectares_protected }} hectares of wildlife area.{% endblock %}
+{% block og_title %}About GRTTS{% endblock %}
+{% block og_description %}Zimbabwean specialists in training, deploying and managing anti-poaching rangers.{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-5" style="color: #2d5a3b;">About GRTTS</h1>
-    
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="card shadow-sm p-4 mb-4">
-                <h3>Who We Are</h3>
-                <p>GRTTS is a ranger training, deployment and management private company. We have trained over 500 rangers to date and we cover nearly 45,000ha of private and community owned wildlife areas across Zimbabwe.</p>
-                
-                <h3 class="mt-4">Our History</h3>
-                <p>Founded by Zimbabwean conservationists and wildlife managers, GRTTS was registered in Zimbabwe in 2017 and has been active in wildlife protection since then.</p>
-                
-                <h3 class="mt-4">Our Mission</h3>
-                <p>To empower men and women to serve on the frontlines of wildlife and environmental protection through professional training and deployment.</p>
-            </div>
-        </div>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <header class="grtts-measure" style="margin-bottom: var(--grtts-space-7);">
+      <span class="grtts-eyebrow">About us</span>
+      <h1>We train rangers, then we stand behind them in the field</h1>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        GRTTS is a Zimbabwean ranger training, deployment and management
+        company. We do not only run courses &mdash; we place rangers on the
+        ground and keep managing them, so the people who protect your land
+        answer to a standard someone is accountable for.
+      </p>
+    </header>
+
+    <div class="grtts-grid" style="--grtts-grid-min: 14rem;">
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.rangers_trained }}+</span>
+        <span class="grtts-stat__label">Rangers trained</span>
+        <span class="grtts-stat__note">Since {{ site_facts.founded_year }}</span>
+      </div>
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.hectares_protected }}</span>
+        <span class="grtts-stat__label">Hectares protected</span>
+        <span class="grtts-stat__note">Private and community land</span>
+      </div>
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.deployment_locations }}</span>
+        <span class="grtts-stat__label">Deployment locations</span>
+        <span class="grtts-stat__note">Across Zimbabwe</span>
+      </div>
+      <div class="grtts-stat">
+        <span class="grtts-stat__value">{{ site_facts.years_operating }}</span>
+        <span class="grtts-stat__label">Years operating</span>
+        <span class="grtts-stat__note">Registered {{ site_facts.registered_year }}</span>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<section class="grtts-section grtts-section--sunken">
+  <div class="grtts-container">
+    <div style="display: grid; gap: var(--grtts-space-7); grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start;"
+         class="grtts-about-grid">
+
+      <div class="grtts-prose">
+        <h2>Who we are</h2>
+        <p>
+          GRTTS is a private ranger training, deployment and management
+          company. We have trained over {{ site_facts.rangers_trained }}
+          rangers to date and we cover {{ site_facts.hectares_protected }}
+          hectares of private and community-owned wildlife area across
+          Zimbabwe.
+        </p>
+
+        <h2>Our history</h2>
+        <p>
+          GRTTS was founded in {{ site_facts.founded_year }} by Zimbabwean
+          conservationists and wildlife managers, and formally registered in
+          Zimbabwe in {{ site_facts.registered_year }}. We have been active in
+          wildlife protection for {{ site_facts.years_operating }} years.
+        </p>
+
+        <h2>Our mission</h2>
+        <p>
+          To empower men and women to serve on the frontlines of wildlife and
+          environmental protection through professional training and
+          deployment.
+        </p>
+
+        <h2>How we work</h2>
+        <p>
+          Our instructors have worked the ground they teach. Training is
+          practical and field-based rather than classroom-led, and it continues
+          after deployment &mdash; rangers we place remain under GRTTS
+          management, with supervision, refresher training and reporting back
+          to the landowner or NGO we work for.
+        </p>
+      </div>
+
+      <aside class="grtts-stack">
+        <div class="grtts-card">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">What we offer</h2>
+            <ul class="grtts-stack" style="list-style: none; padding: 0; margin: 0;">
+              <li><strong>Ranger training</strong><br>
+                <span class="grtts-text-muted">Basic, advanced, tracking and specialist courses.</span></li>
+              <li><strong>Ranger deployment</strong><br>
+                <span class="grtts-text-muted">Vetted, trained rangers placed on your property.</span></li>
+              <li><strong>Ongoing management</strong><br>
+                <span class="grtts-text-muted">Supervision, patrol reporting and refresher training.</span></li>
+            </ul>
+            <a href="{% url 'main:courses' %}" class="grtts-btn grtts-btn--outline"
+               style="width: 100%; margin-top: var(--grtts-space-5);">
+              See our programmes
+            </a>
+          </div>
+        </div>
+
+        <div class="grtts-card">
+          <div class="grtts-card__body">
+            <h2 class="grtts-card__title">Where to find us</h2>
+            <p class="grtts-text-muted" style="margin-bottom: var(--grtts-space-4);">
+              Plot 72, Mityana Farm, Makonde, Zimbabwe
+            </p>
+            <ul style="list-style: none; padding: 0; margin: 0;" class="grtts-stack">
+              <li><a href="tel:+263781603802">+263 781 603 802</a></li>
+              <li><a href="mailto:info@grtts.co.zw">info@grtts.co.zw</a></li>
+            </ul>
+            <a href="{% url 'main:locations' %}" class="grtts-btn grtts-btn--outline"
+               style="width: 100%; margin-top: var(--grtts-space-5);">
+              All locations
+            </a>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<section class="grtts-section grtts-section--inverse">
+  <div class="grtts-container grtts-center">
+    <h2>Need rangers on your land?</h2>
+    <p class="grtts-measure" style="margin-inline: auto; color: var(--grtts-green-200);">
+      Tell us the size of the area, the pressure you are under and the
+      timeframe. We will come back with a staffing and training proposal.
+    </p>
+    <p style="margin-top: var(--grtts-space-5);">
+      <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--accent grtts-btn--lg">
+        Request a proposal
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  @media (max-width: 900px) {
+    .grtts-about-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
 {% endblock %}

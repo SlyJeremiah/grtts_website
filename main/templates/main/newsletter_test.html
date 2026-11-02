@@ -1,84 +1,83 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Newsletter Test - GRTTS{% endblock %}
+{% block title %}Newsletter Endpoint Test — GRTTS{% endblock %}
+{% block meta_robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-header" style="background-color: #2d5a3b; color: white;">
-                    <h4 class="mb-0">🔧 Newsletter Test Page</h4>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted">This page tests if the newsletter endpoint is working.</p>
-                    
-                    <div id="result" class="alert alert-info" style="display: none;"></div>
-                    
-                    <form id="test-form" method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">Test Email</label>
-                            <input type="email" name="email" class="form-control" value="test@example.com" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            Send Test Request
-                        </button>
-                    </form>
-                    
-                    <hr>
-                    
-                    <h5>Debug Info:</h5>
-                    <ul>
-                        <li><strong>Test URL:</strong> <code>{% url 'main:newsletter_test' %}</code></li>
-                        <li><strong>Real URL:</strong> <code>{% url 'main:newsletter_signup' %}</code></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <div style="max-width: 36rem; margin-inline: auto;">
+      <span class="grtts-eyebrow">Staff tools</span>
+      <h1>Newsletter endpoint test</h1>
+      <p class="grtts-text-muted">
+        Posts to the live signup endpoint and shows the raw response. Use a
+        throwaway address &mdash; a successful post creates a real subscriber
+        and sends the auto-reply.
+      </p>
 
+      <div id="result" style="margin: var(--grtts-space-5) 0;"></div>
+
+      <form id="test-form" method="post" action="{% url 'main:newsletter_signup' %}">
+        {% csrf_token %}
+        <label class="grtts-field">
+          <span class="grtts-label">Test email</span>
+          <input type="email" name="email" class="grtts-input" value="test@example.com" required>
+        </label>
+        <label style="display: flex; gap: var(--grtts-space-2); align-items: center; margin-bottom: var(--grtts-space-4);">
+          <input type="checkbox" name="consent" value="1" checked>
+          <span>Send the consent flag</span>
+        </label>
+        <button type="submit" class="grtts-btn grtts-btn--primary">Send test request</button>
+      </form>
+
+      <h2 style="margin-top: var(--grtts-space-7);">Raw response</h2>
+      <pre id="raw" style="background: var(--grtts-surface-sunken); border: 1px solid var(--grtts-line); border-radius: var(--grtts-radius-md); padding: var(--grtts-space-4); overflow-x: auto; font-size: var(--grtts-text-sm);">Nothing sent yet.</pre>
+
+      <p style="margin-top: var(--grtts-space-6);">
+        <a href="{% url 'admin:index' %}" class="grtts-btn grtts-btn--outline">Back to admin</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-document.getElementById('test-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const form = this;
-    const formData = new FormData(form);
-    const resultDiv = document.getElementById('result');
-    
-    // Show loading
-    resultDiv.style.display = 'block';
-    resultDiv.className = 'alert alert-info';
-    resultDiv.innerHTML = 'Sending test request...';
-    
-    fetch('{% url 'main:newsletter_test' %}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+(function () {
+  'use strict';
+
+  var form = document.getElementById('test-form');
+  var result = document.getElementById('result');
+  var raw = document.getElementById('raw');
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    raw.textContent = 'Sending…';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Test response:', data);
-        
-        if (data.success) {
-            resultDiv.className = 'alert alert-success';
-            resultDiv.innerHTML = '<strong>✅ Success!</strong><br>' + 
-                                data.message + 
-                                '<br><br><pre style="background:#f8f9fa; padding:10px;">' + 
-                                JSON.stringify(data.debug, null, 2) + '</pre>';
-        } else {
-            resultDiv.className = 'alert alert-danger';
-            resultDiv.innerHTML = '<strong>❌ Failed:</strong> ' + data.message;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        resultDiv.className = 'alert alert-danger';
-        resultDiv.innerHTML = '<strong>❌ Network Error:</strong> ' + error;
-    });
-});
+      .then(function (response) {
+        return response.text().then(function (body) {
+          return { status: response.status, body: body };
+        });
+      })
+      .then(function (data) {
+        raw.textContent = 'HTTP ' + data.status + '\n\n' + data.body;
+        var ok = data.status >= 200 && data.status < 300;
+        result.innerHTML = '';
+        var box = document.createElement('div');
+        box.className = 'grtts-alert grtts-alert--' + (ok ? 'success' : 'danger');
+        box.textContent = ok ? 'Endpoint responded ' + data.status + '.'
+                             : 'Endpoint responded ' + data.status + '.';
+        result.appendChild(box);
+      })
+      .catch(function (error) {
+        raw.textContent = 'Request failed: ' + error;
+      });
+  });
+}());
 </script>
 {% endblock %}

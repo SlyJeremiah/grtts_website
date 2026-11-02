@@ -1,142 +1,125 @@
 {% extends 'main/base.html' %}
 
-{% block title %}Training Courses - GRTTS{% endblock %}
+{% block title %}Training Courses — GRTTS{% endblock %}
+{% block meta_description %}Ranger training courses from GRTTS: basic ranger, advanced ranger and patrol, tracking and specialist courses including K9 handling and small team tactics.{% endblock %}
+{% block og_title %}Training Courses — GRTTS{% endblock %}
+{% block og_description %}Basic, advanced, tracking and specialist ranger training courses delivered across Zimbabwe.{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-5" style="color: #2d5a3b;">Our Training Programs</h1>
-    
-    <!-- Filter Info -->
-    {% if current_filter %}
-    <div class="alert alert-info mb-4">
-        Showing: <strong>{{ current_filter|title }} Courses</strong>
-        <a href="{% url 'main:courses' %}" class="float-end">Clear Filter</a>
-    </div>
-    {% endif %}
-    
-    <!-- Search Bar -->
-    <div class="row mb-4">
-        <div class="col-md-6 mx-auto">
-            <form method="get" action="{% url 'main:courses' %}">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search courses..." value="{{ search_query|default:'' }}">
-                    <button class="btn" style="background-color: #2d5a3b; color: white;" type="submit">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Basic Course -->
-    {% if not current_filter or current_filter == 'basic' %}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header" style="background-color: #2d5a3b; color: white;">
-                    <h3 class="mb-0">BASIC RANGER COURSE</h3>
-                </div>
-                <div class="card-body">
-                    <h5>Conservation Guardianship</h5>
-                    <p><strong>Duration:</strong> 6 Weeks</p>
-                    <p><strong>Intake:</strong> January, June, October</p>
-                    <p>Detailed entry level studies for individuals aspiring to join the field of wildlife protection and anti-poaching operations.</p>
-                    <!-- UPDATED: Added type=course parameter -->
-                    <a href="{% url 'main:contact' %}?type=course&course=basic" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
-                        <i class="fas fa-info-circle"></i> Inquire About This Course
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    
-    <!-- Specialist Courses -->
-    {% if not current_filter or current_filter == 'specialist' %}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header" style="background-color: #2d5a3b; color: white;">
-                    <h3 class="mb-0">SPECIALIST COURSES</h3>
-                </div>
-                <div class="card-body">
-                    <p><strong>Available all year round</strong></p>
-                    <ul>
-                        <li>Basic, Advanced and Counter-Insurgency Tracking</li>
-                        <li>Small Team Tactics</li>
-                        <li>K9 Handling and Kennel Management</li>
-                    </ul>
-                    <!-- UPDATED: Added type=course parameter -->
-                    <a href="{% url 'main:contact' %}?type=course&course=specialist" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
-                        <i class="fas fa-info-circle"></i> Inquire About Specialist Courses
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+<section class="grtts-section grtts-section--tight">
+  <div class="grtts-container">
+    <header class="grtts-center grtts-measure" style="margin-bottom: var(--grtts-space-7);">
+      <span class="grtts-eyebrow">Training Programmes</span>
+      <h1>Courses</h1>
+      <p class="grtts-text-muted" style="font-size: var(--grtts-text-lg);">
+        Field-tested instruction for aspiring rangers, serving rangers moving
+        into leadership, and specialist units.
+      </p>
+    </header>
+
+    <form method="get" action="{% url 'main:courses' %}" role="search"
+          style="max-width: 32rem; margin: 0 auto var(--grtts-space-6);">
+      <label for="course-search" class="grtts-visually-hidden">Search courses</label>
+      <div style="display: flex; gap: var(--grtts-space-2);">
+        <input type="search" id="course-search" name="q" class="grtts-input"
+               placeholder="Search courses…" value="{{ search_query|default:'' }}">
+        <button type="submit" class="grtts-btn grtts-btn--primary">Search</button>
+      </div>
+    </form>
+
+    {% comment %}
+      Filter chips are built from the model's own choices, so adding a course
+      type in models.py surfaces here without touching this template.
+    {% endcomment %}
+    <nav aria-label="Filter by course type"
+         style="display: flex; flex-wrap: wrap; gap: var(--grtts-space-2); justify-content: center; margin-bottom: var(--grtts-space-7);">
+      <a href="{% url 'main:courses' %}"
+         class="grtts-btn grtts-btn--sm {% if not current_filter %}grtts-btn--primary{% else %}grtts-btn--outline{% endif %}">
+        All courses
+      </a>
+      {% for value, label in course_types %}
+        <a href="{% url 'main:courses' %}?type={{ value|lower }}"
+           class="grtts-btn grtts-btn--sm {% if current_filter == value|lower %}grtts-btn--primary{% else %}grtts-btn--outline{% endif %}">
+          {{ label }}
+        </a>
+      {% endfor %}
+    </nav>
+
+    {% if search_query or current_filter %}
+      <p class="grtts-center grtts-text-muted" style="margin-bottom: var(--grtts-space-5);">
+        {{ courses|length }} course{{ courses|length|pluralize }} found
+        {% if search_query %}for &ldquo;{{ search_query }}&rdquo;{% endif %}
+        &middot; <a href="{% url 'main:courses' %}">Clear</a>
+      </p>
     {% endif %}
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5890129130238734"
-     crossorigin="anonymous"></script>
-    <!-- Advanced Course -->
-    {% if not current_filter or current_filter == 'advanced' %}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header" style="background-color: #2d5a3b; color: white;">
-                    <h3 class="mb-0">ADVANCED RANGER & PATROL</h3>
-                </div>
-                <div class="card-body">
-                    <p><strong>Duration:</strong> 2 Weeks</p>
-                    <p><strong>Intake:</strong> March, November</p>
-                    <p>Designed for rangers moving into leadership roles.</p>
-                    <!-- UPDATED: Added type=course parameter -->
-                    <a href="{% url 'main:contact' %}?type=course&course=advanced" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
-                        <i class="fas fa-info-circle"></i> Inquire About Advanced Course
-                    </a>
-                </div>
+    {% if courses %}
+      <div class="grtts-grid">
+        {% for course in courses %}
+          <article class="grtts-card grtts-card--interactive">
+            {% if course.image %}
+              <img src="{{ course.image.url }}" alt="" class="grtts-card__media" loading="lazy">
+            {% endif %}
+            <div class="grtts-card__body">
+              <span class="grtts-badge">{{ course.get_course_type_display }}</span>
+              <h2 class="grtts-card__title" style="margin-top: var(--grtts-space-3);">
+                {{ course.title }}
+              </h2>
+
+              <dl class="grtts-card__meta" style="display: grid; grid-template-columns: auto 1fr; gap: var(--grtts-space-1) var(--grtts-space-3); margin: 0 0 var(--grtts-space-3);">
+                <dt><strong>Duration</strong></dt>
+                <dd style="margin: 0;">{{ course.duration }}</dd>
+                {% if course.intake_dates %}
+                  <dt><strong>Intake</strong></dt>
+                  <dd style="margin: 0;">{{ course.intake_dates }}</dd>
+                {% endif %}
+                {% if course.price %}
+                  <dt><strong>Fee</strong></dt>
+                  <dd style="margin: 0;">USD {{ course.price }}</dd>
+                {% endif %}
+              </dl>
+
+              <div class="grtts-prose" style="font-size: var(--grtts-text-base);">
+                {{ course.description|linebreaks }}
+              </div>
             </div>
-        </div>
-    </div>
-    {% endif %}
-    
-    <!-- Tracking Course -->
-    {% if not current_filter or current_filter == 'tracking' %}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header" style="background-color: #2d5a3b; color: white;">
-                    <h3 class="mb-0">BASIC TRACKING COURSE</h3>
-                </div>
-                <div class="card-body">
-                    <p><strong>Duration:</strong> 7 Days</p>
-                    <p><strong>Location:</strong> Victoria Falls (Big 5 area)</p>
-                    <h5>Course Covers:</h5>
-                    <ul>
-                        <li>Signs of the wild</li>
-                        <li>The art of human and wildlife tracking</li>
-                        <li>Tracking as a science</li>
-                        <li>Track and Sign identification</li>
-                        <li>Trailing</li>
-                        <li>Tracking evaluation</li>
-                    </ul>
-                    <p><strong>Accommodation:</strong> Tents provided (bring personal gear)</p>
-                    <!-- UPDATED: Added type=course parameter -->
-                    <a href="{% url 'main:contact' %}?type=course&course=tracking" class="btn btn-sm" style="background-color: #ffd966; color: #2d5a3b;">
-                        <i class="fas fa-info-circle"></i> Inquire About Tracking Course
-                    </a>
-                </div>
+            <div class="grtts-card__footer">
+              <a href="{% url 'main:contact' %}?type=course&course={{ course.id }}"
+                 class="grtts-btn grtts-btn--accent grtts-btn--sm">
+                Enquire about this course
+              </a>
             </div>
-        </div>
-    </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="grtts-alert grtts-alert--info grtts-center grtts-measure"
+           style="margin-inline: auto;">
+        {% if search_query or current_filter %}
+          No courses match that search.
+          <a href="{% url 'main:courses' %}">View all courses</a>.
+        {% else %}
+          Course listings are being updated. Please
+          <a href="{% url 'main:contact' %}">get in touch</a> and we will send
+          you the current programme.
+        {% endif %}
+      </div>
     {% endif %}
-    
-    <!-- No Results Message -->
-    {% if current_filter and not basic_courses and not specialist_courses and not advanced_courses and not tracking_courses %}
-    <div class="alert alert-warning text-center">
-        <i class="fas fa-exclamation-triangle"></i> No courses found for this category. 
-        <a href="{% url 'main:courses' %}" class="alert-link">View all courses</a>
-    </div>
-    {% endif %}
-</div>
+  </div>
+</section>
+
+<section class="grtts-section grtts-section--inverse">
+  <div class="grtts-container grtts-center">
+    <h2>Training for your rangers?</h2>
+    <p class="grtts-measure" style="margin-inline: auto; color: var(--grtts-green-200);">
+      We design and deliver training programmes for conservancies, NGOs and
+      private landowners, and can deploy and manage the rangers afterwards.
+    </p>
+    <p style="margin-top: var(--grtts-space-5);">
+      <a href="{% url 'main:contact' %}?type=landowner" class="grtts-btn grtts-btn--accent grtts-btn--lg">
+        Request a proposal
+      </a>
+    </p>
+  </div>
+</section>
 {% endblock %}
