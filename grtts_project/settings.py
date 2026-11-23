@@ -90,6 +90,15 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default=f'GRTTS <{EMAIL_HOST_USER
 CONTACT_RECIPIENT = env('CONTACT_RECIPIENT', default='shanyaslym19@gmail.com')
 CONTACT_CC = env.list('CONTACT_CC', default=['grttsrangers@gmail.com'])
 
+# The site's own public address. Email clients cannot resolve a relative URL,
+# so every absolute link and image in an outgoing mail is built from this.
+# main/utils.py has always read settings.SITE_URL; it was never defined, so the
+# newsletter admin action raised AttributeError before sending anything.
+SITE_URL = env('SITE_URL', default='https://www.grtts.co.zw').rstrip('/')
+
+# Internal recipients for the notification mail in main/utils.py.
+ADMIN_EMAILS = env.list('ADMIN_EMAILS', default=[CONTACT_RECIPIENT] + CONTACT_CC)
+
 # Application definition
 INSTALLED_APPS = [
     'admin_interface',        # Must come before django.contrib.admin

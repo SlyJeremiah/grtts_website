@@ -1,138 +1,148 @@
-<!DOCTYPE html>
-<html>
+{% load grtts_tags %}<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* Reset styles */
-        body, p, h1, h2, h3, h4, h5, h6 {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        
-        /* Main container */
-        .email-wrapper {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #f4f7f2;
-        }
-        
-        /* Header */
-        .header {
-            background-color: #2d5a3b;
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            font-size: 16px;
-            color: #ffd966;
-        }
-        
-        /* Content */
-        .content {
-            background-color: white;
-            padding: 30px 20px;
-            line-height: 1.6;
-            color: #333;
-        }
-        
-        .content h2 {
-            color: #2d5a3b;
-            margin-bottom: 20px;
-        }
-        
-        .content p {
-            margin-bottom: 15px;
-        }
-        
-        /* Button */
-        .button {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #2d5a3b;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
-        }
-        
-        /* Footer */
-        .footer {
-            background-color: #1e3c2c;
-            color: #999;
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-        }
-        
-        .footer a {
-            color: #ffd966;
-            text-decoration: none;
-        }
-        
-        .social-links {
-            margin: 15px 0;
-        }
-        
-        .social-links a {
-            display: inline-block;
-            margin: 0 10px;
-        }
-        
-        /* Tracking pixel (invisible) */
-        .tracking-pixel {
-            display: none;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="format-detection" content="telephone=no,address=no,email=no,date=no">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>{{ campaign.subject|default:campaign.title }}</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<style>
+  /* Mail clients strip most CSS, so everything structural is inlined on the
+     elements below. This block only holds what an attribute cannot express. */
+  body { margin:0; padding:0; width:100% !important; }
+  img { border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+  table { border-collapse:collapse !important; }
+
+  /* The campaign body is pasted into the admin as HTML. Styling its tags here
+     means whoever writes a campaign does not have to inline every rule. */
+  .grtts-body p { margin:0 0 18px; }
+  .grtts-body h2 { margin:34px 0 12px; font-size:21px; line-height:1.3; color:#0C2B1A; font-weight:700; }
+  .grtts-body h3 { margin:28px 0 10px; font-size:17px; line-height:1.35; color:#114026; font-weight:700; }
+  .grtts-body ul, .grtts-body ol { margin:0 0 18px; padding-left:22px; }
+  .grtts-body li { margin:0 0 8px; }
+  .grtts-body img { max-width:100%; height:auto; display:block; }
+  .grtts-body a { color:#16572F; }
+  .grtts-body blockquote {
+    margin:24px 0; padding:4px 0 4px 18px;
+    border-left:3px solid #D9B43F; color:#4A5A51; font-style:italic;
+  }
+  .grtts-caption { font-size:13px; line-height:1.5; color:#4A5A51; padding:10px 2px 0; }
+
+  @media only screen and (max-width:620px) {
+    .grtts-shell { width:100% !important; }
+    .grtts-pad { padding-left:22px !important; padding-right:22px !important; }
+    .grtts-stack { display:block !important; width:100% !important; padding:0 0 18px !important; }
+    .grtts-h1 { font-size:24px !important; }
+  }
+</style>
 </head>
-<body>
-    <div class="email-wrapper">
-        <!-- Header -->
-        <div class="header">
-            <h1>GRTTS Newsletter</h1>
-            <p>Training That Saves Lives</p>
-        </div>
-        
-        <!-- Content -->
-        <div class="content">
-            <h2>{{ campaign.title }}</h2>
-            
-            {{ campaign.content|safe|linebreaks }}
-            
-            <!-- Tracking pixel - helps count opens -->
-            {% if tracking_pixel %}
-            <img src="{{ tracking_pixel }}" width="1" height="1" class="tracking-pixel">
-            {% endif %}
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <div class="social-links">
-                <a href="{{ site_url }}">Website</a> |
-                <a href="#">Facebook</a> |
-                <a href="#">Twitter</a> |
-                <a href="#">LinkedIn</a>
-            </div>
-            
-            <p>
-                You're receiving this email because you subscribed to the GRTTS newsletter.<br>
-                <a href="{{ site_url }}/newsletter/unsubscribe/{{ subscriber.email }}">Unsubscribe</a> |
-                <a href="{{ site_url }}">Visit our website</a>
-            </p>
-            
-            <p style="margin-top: 15px;">
-                &copy; {% now "Y" %} Game Ranger and Tracker Training Specialist. All rights reserved.<br>
-                Plot 72, Mityana Farm, Makonde, Mashonaland West, Zimbabwe
-            </p>
-        </div>
-    </div>
+<body style="margin:0; padding:0; background-color:#F5F8F6;">
+
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#F5F8F6;">
+  {{ campaign.content|striptags|truncatewords:28 }}
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F5F8F6;">
+<tr><td align="center" style="padding:24px 12px 40px;">
+
+  <table role="presentation" class="grtts-shell" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#FFFFFF;">
+
+    <!-- Masthead. The logo artwork carries its own white background, so this
+         band stays light and the green rule beneath it carries the brand. -->
+    <tr>
+      <td align="center" class="grtts-pad" style="padding:28px 40px 20px; background-color:#FFFFFF;">
+        <a href="{{ site_url }}/" style="text-decoration:none;">
+          <img src="{{ site_url }}/static/images/logo.png" width="168" alt="Game Ranger and Tracker Training Specialist"
+               style="display:block; width:168px; max-width:168px; height:auto;">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color:#0C2B1A;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td style="padding:14px 40px; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:12px; line-height:1.4; letter-spacing:1.4px; text-transform:uppercase; color:#E7CC78;">
+              Field Report
+            </td>
+            <td align="right" style="padding:14px 40px; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:12px; line-height:1.4; letter-spacing:0.6px; color:#A9D8BB;">
+              {% now "F Y" %}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Headline -->
+    <tr>
+      <td class="grtts-pad" style="padding:36px 40px 0; background-color:#FFFFFF;">
+        <h1 class="grtts-h1" style="margin:0; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:28px; line-height:1.22; font-weight:700; color:#0C2B1A;">
+          {{ campaign.title }}
+        </h1>
+        <div style="width:56px; height:3px; background-color:#D9B43F; margin:18px 0 0; font-size:0; line-height:0;">&nbsp;</div>
+      </td>
+    </tr>
+
+    <!-- Campaign body -->
+    <tr>
+      <td class="grtts-body grtts-pad" style="padding:26px 40px 8px; background-color:#FFFFFF; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.65; color:#14201A;">
+        {{ campaign.content|rich_text }}
+      </td>
+    </tr>
+
+    <!-- Standing call to action -->
+    <tr>
+      <td class="grtts-pad" style="padding:14px 40px 36px; background-color:#FFFFFF;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td align="center" bgcolor="#16572F" style="border-radius:4px;">
+              <a href="{{ site_url }}/courses/" style="display:inline-block; padding:14px 28px; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:15px; font-weight:700; line-height:1; color:#FFFFFF; text-decoration:none; border-radius:4px;">
+                See our training courses
+              </a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td class="grtts-pad" style="padding:30px 40px; background-color:#0C2B1A; font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; font-size:13px; line-height:1.65; color:#A9D8BB;">
+        <p style="margin:0 0 14px; font-size:15px; font-weight:700; color:#FFFFFF;">
+          Game Ranger and Tracker Training Specialist (Pvt) Ltd
+        </p>
+        <p style="margin:0 0 16px;">
+          Plot 72, Mityana Farm, Makonde, Mashonaland West, Zimbabwe<br>
+          <a href="mailto:info@grtts.co.zw" style="color:#E7CC78; text-decoration:underline;">info@grtts.co.zw</a>
+          &nbsp;&middot;&nbsp;
+          <a href="tel:+263781603802" style="color:#E7CC78; text-decoration:underline;">+263 781 603 802</a>
+        </p>
+        <p style="margin:0 0 16px;">
+          <a href="{{ site_url }}/" style="color:#E7CC78; text-decoration:underline;">Website</a>
+          &nbsp;&middot;&nbsp;
+          <a href="{{ site_url }}/courses/" style="color:#E7CC78; text-decoration:underline;">Courses</a>
+          &nbsp;&middot;&nbsp;
+          <a href="{{ site_url }}/locations/" style="color:#E7CC78; text-decoration:underline;">Deployments</a>
+          &nbsp;&middot;&nbsp;
+          <a href="{{ site_url }}/contact/" style="color:#E7CC78; text-decoration:underline;">Contact</a>
+        </p>
+        <p style="margin:0; font-size:12px; color:#71BE8C;">
+          You are receiving this because you subscribed at grtts.co.zw.{% if subscriber %}
+          <a href="{{ site_url }}{% url 'main:unsubscribe_newsletter' subscriber.email %}" style="color:#E7CC78; text-decoration:underline;">Unsubscribe</a>.{% endif %}
+          &copy; {% now "Y" %} GRTTS. All rights reserved.
+        </p>
+      </td>
+    </tr>
+
+  </table>
+
+  {% if tracking_pixel %}<img src="{{ tracking_pixel }}" width="1" height="1" alt="" style="display:block; width:1px; height:1px; border:0;">{% endif %}
+
+</td></tr>
+</table>
 </body>
 </html>

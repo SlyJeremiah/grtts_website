@@ -922,3 +922,27 @@ img { max-width: 100%; height: auto; }
 .grtts-field abbr,
 .grtts-label abbr { text-decoration: none; color: var(--grtts-danger); }
 input[type="file"].grtts-input { padding: var(--grtts-space-2); }
+
+/* Figures inside long-form prose. .grtts-gallery crops everything to 4:3,
+   which decapitates a portrait field photograph, so these keep their own
+   proportions and simply fill the measure. */
+.grtts-figure { margin: 0; }
+.grtts-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--grtts-radius-md);
+}
+.grtts-figure figcaption {
+  margin-top: var(--grtts-space-2);
+  font-size: var(--grtts-text-sm);
+  line-height: var(--grtts-leading-normal, 1.5);
+  color: var(--grtts-ink-subtle);
+}
+
+/* Two photographs side by side, stacking on a narrow screen. */
+.grtts-figure-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--grtts-space-4);
+}
