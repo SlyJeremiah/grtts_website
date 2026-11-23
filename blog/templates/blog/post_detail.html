@@ -1,4 +1,5 @@
 {% extends 'main/base.html' %}
+{% load grtts_tags %}
 
 {% block title %}{{ post.meta_title|default:post.title }} — GRTTS{% endblock %}
 {% block meta_description %}{{ post.meta_description|default:post.excerpt|striptags|truncatewords:30 }}{% endblock %}
@@ -46,7 +47,7 @@
           </p>
         {% endif %}
 
-        <div class="grtts-prose">{{ post.content|linebreaks }}</div>
+        <div class="grtts-prose">{{ post.content|rich_text }}</div>
 
         {% with images=post.images.all %}
           {% if images %}

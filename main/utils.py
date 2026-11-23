@@ -8,8 +8,11 @@ import hashlib
 import time
 from django.core.mail import EmailMultiAlternatives
 from django.utils import timezone
+from django.urls import reverse
 import logging
+import re
 import traceback
+from html import unescape
 
 def send_contact_notification(contact_message):
     """Send email notification for new contact form submission"""
@@ -112,6 +115,45 @@ def send_confirmation_email(subscriber):
 # Set up logging
 logger = logging.getLogger(__name__)
 
+
+def plain_text_version(campaign, subscriber, site_url):
+    """Build the text/plain half of the newsletter.
+
+    This used to be strip_tags() over the whole rendered document, which keeps
+    the contents of <title> and <style> — so every newsletter went out with a
+    text alternative that opened with the email's own CSS. Plain-text readers
+    saw that, and so did the spam filters that compare the two parts.
+
+    Working from the campaign body instead keeps the two halves saying the same
+    thing. Block tags become blank lines so the result still reads as prose.
+    """
+    html = campaign.content or ''
+    html = re.sub(r'(?i)<br\s*/?>', '\n', html)
+    html = re.sub(r'(?i)</(p|div|h[1-6]|li|tr|blockquote)>', '\n\n', html)
+    text = unescape(strip_tags(html))
+
+    lines = []
+    for raw in text.splitlines():
+        line = raw.strip()
+        # Keep paragraph breaks, drop the runs of blank lines that the markup
+        # leaves behind.
+        if line or (lines and lines[-1]):
+            lines.append(line)
+
+    unsubscribe = site_url + reverse(
+        'main:unsubscribe_newsletter', args=[subscriber.email]
+    )
+    return (
+        f"{campaign.title}\n\n"
+        f"{chr(10).join(lines).strip()}\n\n"
+        f"{'-' * 40}\n"
+        f"Game Ranger and Tracker Training Specialist (Pvt) Ltd\n"
+        f"{site_url}/\n\n"
+        f"You are receiving this because you subscribed at grtts.co.zw.\n"
+        f"Unsubscribe: {unsubscribe}\n"
+    )
+
+
 def send_newsletter_campaign(campaign_id):
     """Send newsletter campaign to all active subscribers with debugging"""
     from .models import NewsletterCampaign, NewsletterSubscriber
@@ -146,7 +188,12 @@ def send_newsletter_campaign(campaign_id):
                 print(f"✓ Tracking record created: {tracking.id}")
                 
                 # Generate tracking pixel URL
-                tracking_pixel = f"{settings.SITE_URL}/newsletter/track/open/{tracking.id}/"
+                # The route is newsletter/track/<id>/ — the hand-written URL
+                # here had an extra "open/" segment and always 404'd, so no
+                # open was ever recorded. Reverse it instead of spelling it out.
+                tracking_pixel = settings.SITE_URL + reverse(
+                    'main:track_newsletter_open', args=[tracking.id]
+                )
                 
                 # Render HTML email
                 html_content = render_to_string('emails/newsletter_template.html', {
@@ -160,10 +207,18 @@ def send_newsletter_campaign(campaign_id):
                 # Create email
                 email = EmailMultiAlternatives(
                     subject=campaign.subject,
-                    body=strip_tags(html_content),
+                    body=plain_text_version(campaign, subscriber, settings.SITE_URL),
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     to=[subscriber.email],
                 )
+                # Let a mail client offer one-click unsubscribe instead of
+                # making the reader hunt for the footer link.
+                email.extra_headers = {
+                    'List-Unsubscribe': '<{}{}>'.format(
+                        settings.SITE_URL,
+                        reverse('main:unsubscribe_newsletter', args=[subscriber.email]),
+                    ),
+                }
                 email.attach_alternative(html_content, "text/html")
                 print(f"✓ Email object created")
                 

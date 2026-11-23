@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, F
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.core.mail import send_mail, EmailMessage
@@ -21,7 +21,8 @@ import json
 from .models import (
     StudentInquiry, LandownerInquiry, EnthusiastInquiry, OtherInquiry,
     Course, Testimonial, DeploymentLocation, FAQ, ContactMessage,
-    NewsletterSubscriber, NewsletterTracking, Certificate, CertificateVerificationLog,
+    NewsletterSubscriber, NewsletterTracking, NewsletterCampaign,
+    Certificate, CertificateVerificationLog,
     UserDocument, ApplicantProfile, CourseApplication, User,
     JobPost, JobApplication
 )
@@ -799,8 +800,15 @@ def newsletter_signup(request):
 def track_newsletter_open(request, tracking_id):
     try:
         tracking = NewsletterTracking.objects.get(id=tracking_id)
-        tracking.opened_at = timezone.now()
-        tracking.save()
+        if tracking.opened_at is None:
+            # Count each subscriber once; mail clients re-fetch the pixel every
+            # time the message is reopened. The admin shows opens_count, which
+            # stayed at zero because nothing ever wrote to it.
+            tracking.opened_at = timezone.now()
+            tracking.save(update_fields=['opened_at'])
+            NewsletterCampaign.objects.filter(pk=tracking.campaign_id).update(
+                opens_count=F('opens_count') + 1
+            )
         pixel = b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00\x21\xf9\x04\x01\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b'
         return HttpResponse(pixel, content_type='image/gif')
     except NewsletterTracking.DoesNotExist:
@@ -808,14 +816,28 @@ def track_newsletter_open(request, tracking_id):
 
 
 def unsubscribe_newsletter(request, email):
+    """Unsubscribe, after asking.
+
+    This used to act on the GET. Mail clients and corporate security gateways
+    fetch every link in a message to check it before the reader ever sees it,
+    so a one-visit unsubscribe can take people off the list without them
+    touching anything. The link now opens a confirmation page and the removal
+    happens on the POST.
+    """
     try:
         subscriber = NewsletterSubscriber.objects.get(email=email)
-        subscriber.is_active = False
-        subscriber.unsubscribed_at = timezone.now()
-        subscriber.save()
-        return render(request, 'main/unsubscribe_confirmed.html', {'email': email})
     except NewsletterSubscriber.DoesNotExist:
         return render(request, 'main/unsubscribe_not_found.html')
+
+    if request.method != 'POST':
+        return render(request, 'main/unsubscribe_confirm.html', {'email': email})
+
+    if subscriber.is_active:
+        subscriber.is_active = False
+        subscriber.unsubscribed_at = timezone.now()
+        subscriber.save(update_fields=['is_active', 'unsubscribed_at'])
+
+    return render(request, 'main/unsubscribe_confirmed.html', {'email': email})
 
 
 @staff_member_required

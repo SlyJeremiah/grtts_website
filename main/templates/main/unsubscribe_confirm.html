@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Unsubscribe — GRTTS{% endblock %}
+{% block meta_robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+<section class="grtts-section">
+  <div class="grtts-container">
+    <div style="max-width: 36rem; margin-inline: auto;">
+      <span class="grtts-eyebrow">Newsletter</span>
+      <h1>Unsubscribe from the GRTTS newsletter?</h1>
+
+      <p>
+        This will stop the newsletter going to <strong>{{ email }}</strong>.
+        We will still reply to you directly if you contact us about training
+        or a deployment.
+      </p>
+
+      {# The action is a POST on purpose. Mail clients and security scanners
+         routinely fetch every link in an email to check it, so an unsubscribe
+         that acted on the GET would quietly empty the list. #}
+      <form method="post" style="margin-top: var(--grtts-space-6); display: flex; gap: var(--grtts-space-3); flex-wrap: wrap;">
+        {% csrf_token %}
+        <button type="submit" class="grtts-btn grtts-btn--primary">Yes, unsubscribe me</button>
+        <a href="{% url 'main:home' %}" class="grtts-btn grtts-btn--outline">Keep me subscribed</a>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
